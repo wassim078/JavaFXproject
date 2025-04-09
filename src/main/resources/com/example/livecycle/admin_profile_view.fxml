@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.ProfileViewController"
+      spacing="20"
+      alignment="TOP_CENTER"
+      style="-fx-background-color: white; -fx-padding: 20;" stylesheets="@profile-style.css"
+>
+
+    <StackPane>
+        <ImageView fx:id="profileImage"
+                   fitWidth="150"
+                   fitHeight="150"
+                   preserveRatio="true"/>
+    </StackPane>
+
+    <VBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 20;">
+        <HBox spacing="10">
+            <Label text="First Name:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="firstNameLabel"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Last Name:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="lastNameLabel"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Email:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="emailLabel"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Phone:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="phoneLabel"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Address:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="addressLabel"/>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Role:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="roleLabel"/>
+        </HBox>
+    </VBox>
+</VBox>

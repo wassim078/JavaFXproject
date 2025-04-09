@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane fx:controller="com.example.livecycle.controllers.UserCreateController"
+          xmlns:fx="http://javafx.com/fxml"
+          hgap="10" vgap="10"
+          styleClass="user-form"
+          stylesheets="@user_form.css"
+          maxWidth="500"
+          prefWidth="500"
+          alignment="CENTER">
+
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <rowConstraints>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Title -->
+        <RowConstraints minHeight="120" prefHeight="120"/> <!-- Image -->
+        <RowConstraints minHeight="20" prefHeight="20"/> <!-- Image Error -->
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- First Name -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Last Name -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Email -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Phone -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Address -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Password -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40" prefHeight="40"/> <!-- Role -->
+        <RowConstraints minHeight="20" prefHeight="20"/>
+    </rowConstraints>
+
+
+    <!-- Title -->
+    <Label text="CREATE USER" styleClass="form-title"
+           GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"
+           alignment="CENTER" maxWidth="Infinity"/>
+
+    <!-- Image Upload -->
+    <StackPane fx:id="imageContainer"
+               GridPane.rowIndex="1" GridPane.columnIndex="1"
+               onMouseClicked="#handleImageUpload"
+               styleClass="image-circle">
+        <ImageView fitWidth="32" fitHeight="32" preserveRatio="true">
+            <image>
+                <Image url="@logo_camera.png" />
+            </image>
+        </ImageView>
+    </StackPane>
+    <Label fx:id="imageError" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- First Name -->
+    <Label text="First Name:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="firstNameField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    <Label fx:id="firstNameError" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- Last Name -->
+    <Label text="Last Name:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <TextField fx:id="lastNameField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    <Label fx:id="lastNameError" GridPane.rowIndex="6" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- Email -->
+    <Label text="Email:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <TextField fx:id="emailField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+    <Label fx:id="emailError" GridPane.rowIndex="8" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- Phone -->
+    <Label text="Phone:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+    <TextField fx:id="phoneField" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+    <Label fx:id="phoneError" GridPane.rowIndex="10" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- Address -->
+    <Label text="Address:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+    <TextField fx:id="addressField" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+    <Label fx:id="addressError" GridPane.rowIndex="12" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- Password -->
+    <Label text="Password:" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="passwordField" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
+    <Label fx:id="passwordError" GridPane.rowIndex="14" GridPane.columnIndex="1" styleClass="error-label"/>
+
+    <!-- Role -->
+    <Label text="Role:" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="roleComboBox" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
+    <Label fx:id="roleError" GridPane.rowIndex="16" GridPane.columnIndex="1" styleClass="error-label"/>
+
+</GridPane>

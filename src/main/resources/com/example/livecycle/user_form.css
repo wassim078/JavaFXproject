@@ -1,0 +1,84 @@
+.user-form {
+    /* Increase padding and gaps for a more spacious layout */
+    -fx-padding: 30;
+    -fx-hgap: 15;
+    -fx-vgap: 15;
+
+    /* A light background gradient with a hint of green */
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f9f9f9, #e8f5e9);
+    -fx-background-radius: 10;
+
+    /* A subtle drop shadow for depth */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+}
+
+.user-form Label {
+    -fx-font-weight: bold;
+    /* Use a rich green for labels */
+    -fx-text-fill: #2e7d32;
+    -fx-font-size: 14px;
+}
+
+.user-form TextField,
+.user-form PasswordField,
+.user-form ComboBox {
+    -fx-pref-width: 200;
+    /* Light green border for normal state */
+    -fx-border-color: #a5d6a7;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+    /* White background to keep fields clear */
+    -fx-background-color: #fff;
+}
+
+/* Focus effect: using a slightly darker green with a soft inner shadow */
+.user-form TextField:focused,
+.user-form PasswordField:focused,
+.user-form ComboBox:focused {
+    -fx-border-color: #66bb6a;
+    -fx-effect: innershadow(gaussian, #66bb6a, 3, 0.5, 0, 0);
+}
+
+.error-label {
+    /* A professional red for error text and slightly smaller italicized font */
+    -fx-text-fill: #d32f2f;
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+}
+
+.image-circle {
+    -fx-background-color: #ccc;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-min-width: 120px;
+    -fx-min-height: 120px;
+    -fx-max-width: 120px;
+    -fx-max-height: 120px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0.1, 0, 2);
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+/* Camera icon styling */
+.image-circle .image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0.5, 0, 1);
+}
+
+.image-circle:hover {
+    -fx-background-color: #ccc;
+}
+
+.image-circle:hover .image-view {
+    -fx-opacity: 0.9;
+}
+.form-title {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+    -fx-padding: 0 0 20 0;
+}
