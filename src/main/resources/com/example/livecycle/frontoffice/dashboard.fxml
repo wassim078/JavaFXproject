@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #f5f5f5;">
+
+    <VBox alignment="CENTER" spacing="20"
+          AnchorPane.topAnchor="50"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="50">
+
+        <!-- Titre principal -->
+        <Label text="LiveCycle - Gestion des Déchets"
+               style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;"/>
+
+
+        <!-- Image illustrative -->
+        <ImageView fitWidth="300" fitHeight="200" preserveRatio="true">
+            <Image url="@../images/waste.png" />
+        </ImageView>
+        <!-- Image illustrative -->
+        <!-- <ImageView fitWidth="300" fitHeight="200" preserveRatio="true">
+             <Image url="@waste.png" />
+         </ImageView>   -->
+
+         <!-- Description de l'application -->
+        <Label text="Welcome to your ecological management platform"
+               style="-fx-font-size: 24px; -fx-text-fill: #333;"/>
+
+        <!-- Texte d'introduction -->
+        <Label wrapText="true" maxWidth="600"
+               text="LiveCycle is revolutionizing waste management by connecting individuals, businesses, and local authorities. Our platform allows you to :"
+               style="-fx-font-size: 16px; -fx-text-fill: #666;"/>
+
+        <!-- Liste des fonctionnalités -->
+        <VBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="✓ Track and optimize your waste collection activities."
+                   style="-fx-font-size: 14px; -fx-text-fill: #444;"/>
+            <Label text="✓ Manage your recyclable material listings."
+                   style="-fx-font-size: 14px; -fx-text-fill: #444;"/>
+            <Label text="✓ Handle complaints in real time."
+                   style="-fx-font-size: 14px; -fx-text-fill: #444;"/>
+            <Label text="✓ Join an engaged ecological community"
+                   style="-fx-font-size: 14px; -fx-text-fill: #444;"/>
+        </VBox>
+
+    </VBox>
+
+</AnchorPane>

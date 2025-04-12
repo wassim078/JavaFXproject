@@ -1,0 +1,84 @@
+/* Table styling */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Header styling */
+.table-view .column-header-background {
+    -fx-background-color: #c3baba;
+    -fx-background-radius: 5 5 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 10 15;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Table cells */
+.table-view .table-cell {
+    -fx-padding: 10 15;
+    /* Removed border to eliminate lines */
+    -fx-text-fill: #000000;
+}
+
+/* Row styling */
+.table-row-cell {
+    -fx-background-color: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f8f8;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e0f7fa;
+}
+
+/* Action buttons */
+.action-button {
+    -fx-padding: 5 10;
+    -fx-background-radius: 3;
+    -fx-font-size: 12;
+    -fx-cursor: hand;
+}
+
+.view-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+}
+
+.edit-button {
+    -fx-background-color: #379623;
+    -fx-text-fill: white;
+}
+
+.delete-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+/* Profile image styling */
+.profile-image {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+.table-view .placeholder {
+    visibility: hidden;
+}
+
+.table-avatar {
+    -fx-clip: circle(20px); /* Half of 40x40 image */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-background-color: #e0e0e0;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 50%;
+}
+
+/* Optional: Add hover effect */
+.table-avatar:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}

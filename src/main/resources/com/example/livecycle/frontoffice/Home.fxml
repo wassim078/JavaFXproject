@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+
+<?import javafx.scene.layout.StackPane?>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.frontoffice.UserDashboardController">
+
+    <stylesheets>
+        <URL value="@../css/navbar-style.css" />
+    </stylesheets>
+
+    <!-- ========== TOP NAVIGATION BAR ========== -->
+    <top>
+        <HBox styleClass="nav-bar" spacing="30" prefHeight="60">
+
+            <!-- Section gauche : Logo -->
+            <HBox alignment="CENTER_LEFT">
+                <Label text="LiveCycle" styleClass="brand-name"/>
+            </HBox>
+
+            <!-- Espace extensible -->
+            <HBox HBox.hgrow="ALWAYS"/>
+
+            <!-- Section centrale : Liens -->
+            <HBox alignment="CENTER" spacing="40" styleClass="nav-links">
+                <Button text="Dashboard" onAction="#showDashboard" styleClass="nav-link" fx:id="dashboardBtn"/>
+                <Button text="my Announcements" onAction="#showAnnonceManagement" styleClass="nav-link" fx:id="annonceBtn"/>
+                <Button text="collections" onAction="#showCollectManagement" styleClass="nav-link" fx:id="collectBtn"/>
+                <Button text="Report an issue" onAction="#showReclamationManagement" styleClass="nav-link" fx:id="reclamationBtn"/>
+                <Button text="Commandes" onAction="#showCommandManagement" styleClass="nav-link" fx:id="commandBtn"/>
+                <Button text="Forum" onAction="#showForumManagement" styleClass="nav-link" fx:id="forumBtn"/>
+
+
+            </HBox>
+
+            <!-- Espace extensible -->
+            <HBox HBox.hgrow="ALWAYS"/>
+
+            <!-- Section droite : Déconnexion -->
+            <HBox alignment="CENTER_RIGHT" styleClass="user-section" spacing="15">
+                <StackPane styleClass="avatar-container" onMouseClicked="#handleAvatarClick">
+                    <ImageView fx:id="userPhoto" fitWidth="45" fitHeight="45" preserveRatio="true" />
+                </StackPane>
+                <Button text="Logout" onAction="#handleLogout" styleClass="logout-btn"/>
+            </HBox>
+        </HBox>
+    </top>
+
+
+    <!-- Contenu principal -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+</BorderPane>
+

@@ -1,0 +1,138 @@
+/* Nav bar modernisée */
+.nav-bar {
+    -fx-background-color: #008000; /* Vert émeraude */
+    -fx-padding: 0 30px;
+    -fx-border-color: #27ae60; /* Vert plus foncé pour la bordure */
+    -fx-border-width: 0 0 3px 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+
+/* Texte logo */
+.brand-name {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+/* Liens centrés */
+.nav-links {
+    -fx-spacing: 30;
+}
+
+/* Boutons de navigation */
+.nav-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 18px 20px;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: transparent;
+}
+
+.nav-link {
+    -fx-transition: all 0.3s ease;
+    -fx-cursor: hand;
+}
+.nav-link.active {
+    -fx-border-color: black;
+    -fx-background-color: #006400;
+    -fx-text-fill: white;
+    -fx-border-width: 0 0 3px 0;
+    -fx-cursor: default;
+}
+.nav-link:hover {
+    -fx-cursor: hand;
+    /* ... your existing hover styles ... */
+}
+.nav-link.active:hover {
+    -fx-border-color: black;
+    -fx-background-color: #006400;
+}
+/* Déconnexion */
+.logout-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #008000;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 18px;
+    -fx-background-radius: 20px;
+    -fx-margin: 0 0 0 15px;
+}
+
+.logout-btn:hover {
+    -fx-background-color: #fff8dc;
+}
+
+/* Zone contenu */
+.content-area {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+}
+
+
+/* Styles complémentaires pour le dashboard */
+.label {
+    -fx-font-family: 'Arial';
+}
+
+VBox {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+.avatar-container {
+    -fx-background-color: transparent; /* Changed from white */
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-border-width: 2px;
+    -fx-padding: 0; /* Remove padding */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+.avatar-container > .image-view {
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+.profile-menu-item:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #008000;
+}
+.profile-menu-item {
+    -fx-text-fill: #2d3436;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-color: transparent;
+    -fx-graphic-text-gap: 15px;
+    -fx-cursor: hand;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.profile-menu {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 3);
+    -fx-min-width: 180px;
+}
+.profile-menu-item .ikonli-font-icon {
+    -fx-icon-color: #008000;
+    -fx-icon-size: 18px;
+}
+.menu-separator {
+    -fx-padding: 5px 0;
+}
+.menu-separator .line {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+}

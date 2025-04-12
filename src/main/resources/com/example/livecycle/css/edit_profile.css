@@ -1,0 +1,127 @@
+/* Base background */
+.stack-pane {
+    -fx-background-color: #f1f8e9;
+}
+
+/* Main container */
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 5;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.15), 25, 0, 0, 5);
+    -fx-spacing: 5;
+    -fx-max-width: 600;
+    -fx-border-color: #c8e6c9;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+}
+
+/* Title */
+.form-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2d342e;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.1), 0, 2, 2, 2);
+}
+
+/* Avatar */
+.avatar {
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.2), 10, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-border-radius: 50%;
+    -fx-border-width: 3px;
+    -fx-border-color: #e8f5e9;
+}
+
+/* Form grid */
+.form-grid {
+    -fx-background-color: #fafafa;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-border-color: #e0f2e9;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+}
+
+/* Form elements */
+.form-label {
+    -fx-text-fill: #4a6560;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 12;
+    -fx-font-size: 14px;
+    -fx-border-color: #dcedc8;
+    -fx-focus-color: #81c784;
+    -fx-faint-focus-color: #81c78422;
+}
+
+/* Button container */
+.button-container {
+    -fx-padding: 25 0 0 0;
+}
+
+/* Save button */
+.save-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-padding: 15 40;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.3), 8, 0, 0, 3);
+}
+
+.save-button:hover {
+    -fx-background-color: #66BB6A;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.4), 10, 0, 0, 4);
+}
+
+.save-button:pressed {
+    -fx-background-color: #43A047;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.2), 4, 0, 0, 2);
+}
+
+/* Role display */
+.role-label {
+    -fx-text-fill: #78909c;
+    -fx-font-style: italic;
+    -fx-font-size: 13px;
+}
+/* Success alert styling */
+.alert.information.dialog-pane {
+    -fx-background-color: #e8f5e9;
+    -fx-border-color: #81c784;
+    -fx-border-width: 2px;
+}
+
+.alert.information.dialog-pane .header-panel {
+    -fx-background-color: #c8e6c9;
+}
+
+.alert.information.dialog-pane .label.content {
+    -fx-text-fill: #2e7d32;
+    -fx-font-size: 14px;
+}
+
+.alert.information.dialog-pane .button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+
+.alert.information.dialog-pane .button:hover {
+    -fx-background-color: #66BB6A;
+}
+.error-label {
+    -fx-text-fill: #ff4444;
+    -fx-font-size: 12px;
+    -fx-padding: 2px 0 0 5px;
+}

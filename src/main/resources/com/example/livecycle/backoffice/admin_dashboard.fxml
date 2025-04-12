@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.backoffice.AdminDashboardController">
+
+    <!-- Top Header -->
+    <top>
+        <HBox prefHeight="45" style="-fx-background-color: #379623; -fx-padding: 5 10; -fx-spacing: 5;">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="98.0" prefWidth="286.0" style="-fx-text-fill: white;" text="LIVE CYCLE">
+                <font>
+                    <Font name="Verdana Pro Bold" size="28.0" />
+                </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Profile Section -->
+            <StackPane>
+                <ImageView fx:id="userPhoto" fitHeight="60" fitWidth="60" onMouseClicked="#toggleProfileMenu" style="-fx-cursor: hand;">
+                    <clip>
+                        <Circle centerX="30" centerY="30" radius="30" />
+                    </clip>
+                </ImageView>
+
+                <!-- Profile Dropdown -->
+                <VBox fx:id="profileMenu" style="-fx-background-color: white; -fx-border-color: gray; -fx-spacing: 3; -fx-padding: 10;" styleClass="profile-menu" visible="false">
+                    <Button onAction="#handleProfile" styleClass="menu-item" text="Profile" textFill="black" />
+                    <Button onAction="#handleLogout" styleClass="menu-item" text="Logout" textFill="black"/>
+                </VBox>
+            </StackPane>
+        </HBox>
+    </top>
+
+
+    <!-- Left Side Menu with Icons -->
+    <left>
+        <VBox fx:id="sidebarMenu" prefHeight="506.0" prefWidth="305.0" style="-fx-background-color: white; -fx-spacing: 20; -fx-padding: 50;">
+
+               <Button onAction="#showDashboard" styleClass="menu-btn" text="Dashboard" />
+
+               <Button onAction="#showUserManagement" prefHeight="41.0" prefWidth="194.0" styleClass="menu-btn" text="User Management" />
+
+               <Button onAction="#showAnnonceManagement" styleClass="menu-btn" text="Annonce Management" />
+
+               <Button onAction="#showCollectManagement" styleClass="menu-btn" text="Collect Management" />
+
+               <Button onAction="#showReclamationManagement" prefHeight="42.0" prefWidth="264.0" styleClass="menu-btn" text="Reclamation Management" />
+
+               <Button onAction="#showCategoryManagement" styleClass="menu-btn" text="Category Management" />
+
+               <Button onAction="#showCommandeManagement" styleClass="menu-btn" text="Commande Management" />
+
+                <Button onAction="#showForumManagement" styleClass="menu-btn" text="Forum Management" />
+
+   
+           </VBox>
+    </left>
+
+    <!-- Center Content Area -->
+    <center>
+        <StackPane fx:id="contentArea" prefHeight="503.0" prefWidth="725.0" />
+    </center>
+
+    <!-- CSS Styling -->
+    <stylesheets>
+        <URL value="@../css/dashboard_admin.css" />
+    </stylesheets>
+</BorderPane>
