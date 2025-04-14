@@ -5,6 +5,7 @@ import com.example.livecycle.entities.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,7 +25,7 @@ public class UserDashboardController {
     @FXML private Button dashboardBtn;
     @FXML private Button collectBtn;
     @FXML private Button annonceBtn;
-    @FXML private Button reclamationBtn;
+    @FXML private MenuButton reclamationBtn;
     @FXML private Button commandBtn;
     @FXML private Button forumBtn;
 
@@ -101,35 +102,36 @@ public class UserDashboardController {
         loadView("/com/example/livecycle/frontoffice/dashboard.fxml");
     }
 
-    private void setActiveButton(Button activeButton) {
-        // Remove active class from all buttons
-        List<Button> navButtons = Arrays.asList(
+    private void setActiveButton(Node activeControl) {
+        // Clear existing active states
+        List<Node> navControls = Arrays.asList(
                 dashboardBtn, collectBtn, annonceBtn,
                 reclamationBtn, commandBtn, forumBtn
         );
 
-        navButtons.forEach(btn -> {
-            btn.getStyleClass().remove("active");
-            btn.setStyle(""); // Clear inline styles if any
+        navControls.forEach(control -> {
+            if (control instanceof ButtonBase) { // Handles both Button and MenuButton
+                control.getStyleClass().remove("active");
+            }
         });
 
-        // Add active class to clicked button
-        if (activeButton != null) {
-            activeButton.getStyleClass().add("active");
+        // Set new active state
+        if (activeControl != null && activeControl instanceof ButtonBase) {
+            activeControl.getStyleClass().add("active");
         }
     }
     private void deleteActiveButton() {
-        // Remove active class from all buttons
-        List<Button> navButtons = Arrays.asList(
+        List<Node> navControls = Arrays.asList(
                 dashboardBtn, collectBtn, annonceBtn,
                 reclamationBtn, commandBtn, forumBtn
         );
 
-        navButtons.forEach(btn -> {
-            btn.getStyleClass().remove("active");
-            btn.setStyle(""); // Clear inline styles if any
+        navControls.forEach(control -> {
+            if (control instanceof ButtonBase) {
+                control.getStyleClass().remove("active");
+                ((ButtonBase) control).setStyle("");
+            }
         });
-
     }
 
 
@@ -179,11 +181,25 @@ public class UserDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
-            contentArea.getChildren().setAll(view); // Remplace le contenu
+
+            // Add null check for contentArea
+            if (contentArea != null) {
+                contentArea.getChildren().setAll(view);
+            } else {
+                System.err.println("Error: contentArea is not initialized!");
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            showLoadError("View Loading", e);
         }
     }
+
+
+
+
+
+
+
 
     // Méthodes de navigation
     public void showDashboard(ActionEvent actionEvent) {
@@ -201,10 +217,7 @@ public class UserDashboardController {
         loadView("/com/example/livecycle/backoffice/annonce_management.fxml");
     }
 
-    public void showReclamationManagement(ActionEvent actionEvent) {
-        setActiveButton(reclamationBtn);
-        loadView("/com/example/livecycle/backoffice/reclamation_management.fxml");
-    }
+
     public void showCommandManagement(ActionEvent actionEvent) {
         setActiveButton(commandBtn);
         loadView("/com/example/livecycle/backoffice/commande_management.fxml");
@@ -232,6 +245,43 @@ public class UserDashboardController {
         alert.setHeaderText("Error loading " + screenName);
         alert.setContentText(e.getMessage());
         alert.showAndWait();
+    }
+    @FXML
+    private void showMyComplaints(ActionEvent event) {
+        setActiveButton(reclamationBtn);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/my_complaints.fxml"));
+            Parent view = loader.load();
+
+            MyComplaintsController controller = loader.getController();
+            controller.setCurrentUser(currentUser); // Make sure currentUser is properly set
+
+            if (contentArea != null) {
+                contentArea.getChildren().setAll(view);
+            } else {
+                showLoadError("My Complaints", new Exception("Content area not initialized"));
+            }
+
+        } catch (IOException e) {
+            showLoadError("My Complaints", e);
+        }
+    }
+
+    @FXML
+    private void showCreateComplaint(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/create_complaint.fxml"));
+            Parent view = loader.load();
+
+            CreateComplaintController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            if (contentArea != null) {
+                contentArea.getChildren().setAll(view);
+            }
+        } catch (IOException e) {
+            showLoadError("Create Complaint", e);
+        }
     }
 
     public void handleLogout(ActionEvent actionEvent) {

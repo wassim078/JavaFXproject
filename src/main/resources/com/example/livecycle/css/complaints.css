@@ -1,0 +1,170 @@
+/* Add these new styles */
+.complaints-table {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.complaints-table .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.complaints-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 10px;
+}
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-margin: 0 0 10px 0;
+    -fx-padding: 12px;
+}
+
+
+.table-row-cell:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
+}
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+/* Keep existing status styles */
+.status-badge {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 15px;
+}
+
+.status-en-attente {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+}
+
+.status-en-cours {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.status-resolue {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+}
+
+.status-rejetée {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+/* Improved table layout */
+.complaints-table {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent;
+    -fx-min-width: 800px;
+        -fx-hbar-policy: never; /* Remove horizontal scroll */
+        -fx-vbar-policy: never;
+}
+
+.complaints-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 10px 0;
+}
+
+.complaints-table .column-header {
+    -fx-background-color: #caccca;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px 5px 0 0;
+    -fx-padding: 8px;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-margin: 5px;
+    -fx-padding: 12px;
+}
+
+.table-row-cell:filled {
+    -fx-background-insets: 0 5px 5px 5px;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+    -fx-padding: 0;
+}
+
+/* Ensure proper spacing between rows */
+.complaints-table .virtual-flow .clipped-container .sheet .table-row-cell {
+    -fx-padding: 0 0 10px 0;
+}
+/* complaints.css */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-margin: 0 0 10px 0;
+}
+
+.complaints-table {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10px;
+}
+
+.complaints-table .column-header {
+    -fx-background-color: #caccca;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+}
+.header-label {
+    -fx-font-size: 24px; /* Bigger text */
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 20px 0;
+}
+AnchorPane {
+    -fx-alignment: center;
+}
+VBox {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+    -fx-padding: 30px;
+}
+/* Delete button styling */
+.delete-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px 15px;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Adjust table padding */
+.complaints-table {
+    -fx-padding: 0 10px 10px 10px;
+}

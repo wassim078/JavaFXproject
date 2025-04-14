@@ -1,0 +1,27 @@
+/* Status colors */
+.status-pending {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.status-in-progress {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.status-resolved {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.status-rejected {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.table-view .column-header-background {
+    -fx-size: 0;
+}

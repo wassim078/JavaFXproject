@@ -1,14 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.util.Callback?>
+<?import java.net.URL?>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.backoffice.ReclamationManagementController"
+      spacing="15"
+      style="-fx-padding: 25; -fx-background-color: #f8f9fa;">
+    <stylesheets>
+        <URL value="@../css/Reclamation.css" />
+    </stylesheets>
+    <!-- Titre avec style amélioré -->
+    <Label text="Gestion des Réclamations"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 1);"/>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.livecycle.controllers.backoffice.ReclamationManagement"
-            prefHeight="400.0" prefWidth="600.0">
+    <!-- TableView avec style moderne -->
+    <TableView fx:id="reclamationTable" prefHeight="450" prefWidth="850"
+               style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);"
+               >
 
-</AnchorPane>
+        <columns>
+            <!-- Colonne ID -->
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+
+            <TableColumn fx:id="userEmailColumn" text="User Email" prefWidth="180"/>
+
+            <!-- Sujet -->
+            <TableColumn fx:id="sujetColumn" text="Sujet" prefWidth="200"/>
+            <!-- Type -->
+            <TableColumn fx:id="typeColumn" text="Type" prefWidth="120"/>
+            <!-- État -->
+            <TableColumn fx:id="etatColumn" text="État" prefWidth="120"/>
+            <!-- Date -->
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
+            <!-- Actions -->
+            <TableColumn fx:id="actionColumn" text="Actions" prefWidth="180"/>
+        </columns>
+    </TableView>
+
+    <!-- Popup pour la modification avec style cohérent -->
+    <fx:define>
+        <DialogPane fx:id="editDialog" style="-fx-pref-width: 550; -fx-background-radius: 5;">
+            <header>
+                <Label text="Modifier Réclamation"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            </header>
+            <content>
+                <GridPane hgap="15" vgap="15" style="-fx-padding: 20;">
+                    <Label text="Sujet:" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="editSujetField" style="-fx-pref-width: 350; -fx-background-radius: 3;"/>
+
+                    <Label text="Description:" style="-fx-font-weight: bold;" GridPane.rowIndex="1"/>
+                    <TextArea fx:id="editDescriptionField" style="-fx-pref-width: 350; -fx-pref-height: 100; -fx-background-radius: 3;" GridPane.rowIndex="1"/>
+
+                    <Label text="Type:" style="-fx-font-weight: bold;" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="editTypeComboBox" style="-fx-pref-width: 150; -fx-background-radius: 3;" GridPane.rowIndex="2"/>
+
+                    <Label text="État:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                    <ComboBox fx:id="editEtatComboBox" style="-fx-pref-width: 150; -fx-background-radius: 3;" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                    <Label text="Fichier joint:" style="-fx-font-weight: bold;" GridPane.rowIndex="3"/>
+                    <HBox spacing="10" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3">
+                        <TextField fx:id="editFileField" style="-fx-pref-width: 300; -fx-background-radius: 3;"/>
+                        <Button text="Parcourir"
+                                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 3;"/>
+                    </HBox>
+                </GridPane>
+            </content>
+            <buttonTypes>
+                <ButtonType text="Enregistrer" buttonData="OK_DONE"/>
+                <ButtonType text="Annuler" buttonData="CANCEL_CLOSE"/>
+            </buttonTypes>
+        </DialogPane>
+    </fx:define>
+</VBox>

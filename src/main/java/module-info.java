@@ -24,4 +24,5 @@ module com.example.livecycle {
     opens com.example.livecycle.controllers.frontoffice to javafx.fxml;
     exports com.example.livecycle.controllers.auth;
     opens com.example.livecycle.controllers.auth to javafx.fxml;
+    exports com.example.livecycle.services;
 }

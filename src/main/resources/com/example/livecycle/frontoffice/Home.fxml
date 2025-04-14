@@ -10,6 +10,8 @@
 <?import java.net.URL?>
 
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.MenuButton?>
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.frontoffice.UserDashboardController">
@@ -35,7 +37,12 @@
                 <Button text="Dashboard" onAction="#showDashboard" styleClass="nav-link" fx:id="dashboardBtn"/>
                 <Button text="my Announcements" onAction="#showAnnonceManagement" styleClass="nav-link" fx:id="annonceBtn"/>
                 <Button text="collections" onAction="#showCollectManagement" styleClass="nav-link" fx:id="collectBtn"/>
-                <Button text="Report an issue" onAction="#showReclamationManagement" styleClass="nav-link" fx:id="reclamationBtn"/>
+                <MenuButton text="Complaints" styleClass="nav-link" fx:id="reclamationBtn">
+                    <items>
+                        <MenuItem text="My Complaints" onAction="#showMyComplaints" styleClass="menu-item"/>
+                        <MenuItem text="Create Complaint" onAction="#showCreateComplaint" styleClass="menu-item"/>
+                    </items>
+                </MenuButton>
                 <Button text="Commandes" onAction="#showCommandManagement" styleClass="nav-link" fx:id="commandBtn"/>
                 <Button text="Forum" onAction="#showForumManagement" styleClass="nav-link" fx:id="forumBtn"/>
 
