@@ -1,104 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.paint.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.livecycle.controllers.frontoffice.EditProfileController"
-           stylesheets="@../css/edit_profile.css" styleClass="gradient-background">
+<?import javafx.scene.layout.StackPane?>
+<BorderPane styleClass="gradient-background" stylesheets="@../css/edit_profile.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.frontoffice.EditProfileController">
 
-    <!-- Background with green gradient blur -->
-    <Rectangle width="610" height="900">
-        <effect>
-            <GaussianBlur radius="10" />
-        </effect>
-        <fill>
-            <LinearGradient startX="0" startY="0" endX="1" endY="1">
-                <stops>
-                    <Stop color="#e8f5e9" offset="0.0"/>
-                    <Stop color="#c8e6c9" offset="1.0"/>
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="scroll-pane" vbarPolicy="AS_NEEDED">
+            <VBox fx:id="formContainer" alignment="CENTER" fillWidth="false" spacing="20" styleClass="form-container">
+                <padding>
+                    <Insets bottom="20.0" left="10.0" right="10.0" top="50.0" />
+                </padding>
+                <!-- Form Title -->
+                <Label styleClass="form-title" text="Edit Profile" textAlignment="CENTER" />
 
-                </stops>
-            </LinearGradient>
-        </fill>
-    </Rectangle>
+                <!-- Avatar image -->
+                <HBox alignment="CENTER">
+                    <StackPane styleClass="avatar-border">
+                        <ImageView fx:id="userImageView" fitHeight="100" fitWidth="100.0" onMouseClicked="#handleImageClick" styleClass="avatar" />
+                    </StackPane>
+                </HBox>
 
+                <!-- Main form content in a GridPane with RowConstraints -->
+                <GridPane alignment="CENTER" hgap="15.0" styleClass="form-grid" vgap="14.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" prefWidth="120" />
+                        <ColumnConstraints hgrow="ALWAYS" prefWidth="300" />
+                    </columnConstraints>
 
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" >
-        <HBox alignment="CENTER" styleClass="scroll-content-wrapper">
-    <!-- White content container -->
-    <VBox fx:id="formContainer"  styleClass="form-container"  alignment="TOP_CENTER" spacing="20" maxWidth="600">
-        <!-- Avatar image with click handler -->
-        <HBox alignment="CENTER">
-            <ImageView fx:id="userImageView"
-                       fitWidth="100"
-                       fitHeight="100"
-                       onMouseClicked="#handleImageClick"
-                       styleClass="avatar"/>
-        </HBox>
+                    <!-- Define row constraints so that each row takes the space needed -->
+                    <rowConstraints>
+                        <RowConstraints fillHeight="false" minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <!-- Row for Roles -->
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <!-- Current password -->
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <!-- New password -->
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                        <!-- Confirm password -->
+                        <RowConstraints minHeight="30" prefHeight="30" />
+                        <RowConstraints minHeight="15" prefHeight="15" />
+                    </rowConstraints>
 
-        <!-- Form title -->
-        <Label text="Edit Profile" styleClass="form-title"/>
+                    <!-- Form rows: -->
+                    <Label styleClass="form-label" text="Prénom:" GridPane.rowIndex="0" />
 
-        <!-- Main form content -->
-        <GridPane hgap="15" vgap="15" styleClass="form-grid">
-            <columnConstraints>
-                <ColumnConstraints prefWidth="120" halignment="RIGHT"/>
-                <ColumnConstraints prefWidth="300" hgrow="ALWAYS"/>
-            </columnConstraints>
+                    <TextField fx:id="prenomField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                  <GridPane.margin>
+                     <Insets right="30.0" />
+                  </GridPane.margin></TextField>
+                    <Label fx:id="prenomError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-            <!-- Form Rows -->
-            <!-- Modified Form Rows with error labels -->
-            <Label text="Prénom:" styleClass="form-label" GridPane.rowIndex="0"/>
-            <TextField fx:id="prenomField" styleClass="text-field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            <Label fx:id="prenomError" styleClass="error-label" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    <Label styleClass="form-label" text="Nom:" GridPane.rowIndex="2" />
+                    <TextField fx:id="nomField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <GridPane.margin>
+                     <Insets right="30.0" />
+                  </GridPane.margin></TextField>
+                    <Label fx:id="nomError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label text="Nom:" styleClass="form-label" GridPane.rowIndex="2"/>
-            <TextField fx:id="nomField" styleClass="text-field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            <Label fx:id="nomError" styleClass="error-label" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    <Label styleClass="form-label" text="Email:" GridPane.rowIndex="4" />
+                    <TextField fx:id="emailField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <GridPane.margin>
+                     <Insets right="30.0" />
+                  </GridPane.margin></TextField>
+                    <Label fx:id="emailError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-            <Label text="Email:" styleClass="form-label" GridPane.rowIndex="4"/>
-            <TextField fx:id="emailField" styleClass="text-field" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            <Label fx:id="emailError" styleClass="error-label" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                    <Label styleClass="form-label" text="Téléphone:" GridPane.rowIndex="6" />
+                    <TextField fx:id="telephoneField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  <GridPane.margin>
+                     <Insets right="30.0" />
+                  </GridPane.margin></TextField>
+                    <Label fx:id="telephoneError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
-            <Label text="Téléphone:" styleClass="form-label" GridPane.rowIndex="6"/>
-            <TextField fx:id="telephoneField" styleClass="text-field" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-            <Label fx:id="telephoneError" styleClass="error-label" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+                    <Label styleClass="form-label" text="Adresse:" GridPane.rowIndex="8" />
+                    <TextField fx:id="adresseField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                  <GridPane.margin>
+                     <Insets right="30.0" />
+                  </GridPane.margin></TextField>
+                    <Label fx:id="adresseError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 
-            <Label text="Adresse:" styleClass="form-label" GridPane.rowIndex="8"/>
-            <TextField fx:id="adresseField" styleClass="text-field" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
-            <Label fx:id="adresseError" styleClass="error-label" GridPane.rowIndex="9" GridPane.columnIndex="1" />
+                    <!-- Roles -->
+                    <Label styleClass="form-label" text="Roles:" GridPane.rowIndex="10" />
+                    <Label fx:id="rolesLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 
-            <!-- Password Section -->
-            <Label text="Roles:" styleClass="form-label" GridPane.rowIndex="10"/>
-            <Label fx:id="rolesLabel" styleClass="form-label" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+                    <!-- Current Password -->
+                    <Label styleClass="form-label" text="Current Password:" GridPane.rowIndex="11">
+                  <GridPane.margin>
+                     <Insets top="40.0" />
+                  </GridPane.margin></Label>
+                    <PasswordField fx:id="currentPasswordField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="11">
+                  <GridPane.margin>
+                     <Insets right="30.0" top="40.0" />
+                  </GridPane.margin>
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets></PasswordField>
+                    <Label fx:id="currentPasswordError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="12" />
 
-            <Label text="Current Password:" styleClass="form-label" GridPane.rowIndex="11"/>
-            <PasswordField fx:id="currentPasswordField" styleClass="text-field" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
-            <Label fx:id="currentPasswordError" styleClass="error-label" GridPane.rowIndex="12" GridPane.columnIndex="1" />
+                    <!-- New Password -->
+                    <Label styleClass="form-label" text="New Password:" GridPane.rowIndex="13">
+                  <GridPane.margin>
+                     <Insets top="40.0" />
+                  </GridPane.margin></Label>
+                    <PasswordField fx:id="newPasswordField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="13">
+                  <GridPane.margin>
+                     <Insets right="30.0" top="40.0" />
+                  </GridPane.margin>
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets></PasswordField>
+                    <Label fx:id="newPasswordError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="14" />
 
-            <Label text="New Password:" styleClass="form-label" GridPane.rowIndex="13"/>
-            <PasswordField fx:id="newPasswordField" styleClass="text-field" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
-            <Label fx:id="newPasswordError" styleClass="error-label" GridPane.rowIndex="14" GridPane.columnIndex="1" />
+                    <!-- Confirm Password -->
+                    <Label styleClass="form-label" text="Confirm Password:" GridPane.rowIndex="15">
+                  <GridPane.margin>
+                     <Insets top="40.0" />
+                  </GridPane.margin></Label>
+                    <PasswordField fx:id="confirmPasswordField" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="15">
+                  <GridPane.margin>
+                     <Insets right="30.0" top="40.0" />
+                  </GridPane.margin>
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets></PasswordField>
+                    <Label fx:id="confirmPasswordError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+                </GridPane>
 
-            <Label text="Confirm Password:" styleClass="form-label" GridPane.rowIndex="15"/>
-            <PasswordField fx:id="confirmPasswordField" styleClass="text-field" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
-            <Label fx:id="confirmPasswordError" styleClass="error-label" GridPane.rowIndex="16" GridPane.columnIndex="1" />
-        </GridPane>
+                <!-- Save Button container -->
+                <HBox alignment="CENTER" spacing="15" styleClass="button-container">
+                    <Button onAction="#handleSaveChanges" styleClass="save-button" text="Save" />
+                </HBox>
 
-        <!-- Save Button -->
-        <HBox alignment="CENTER" spacing="15" styleClass="button-container">
-            <Button text="Save" styleClass="save-button" onAction="#handleSaveChanges"/>
-        </HBox>
-
-
-        <Pane VBox.vgrow="ALWAYS" />
-    </VBox>
-        </HBox>
-    </ScrollPane>
-</StackPane>
+                <!-- Filler Pane to absorb extra space -->
+                <Pane VBox.vgrow="ALWAYS" />
+            </VBox>
+        </ScrollPane>
+    </center>
+   <padding>
+      <Insets left="400.0" />
+   </padding>
+</BorderPane>

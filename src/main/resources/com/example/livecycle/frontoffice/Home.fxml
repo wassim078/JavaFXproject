@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import java.net.URL?>
-
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.MenuButton?>
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.livecycle.controllers.frontoffice.UserDashboardController">
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.frontoffice.UserDashboardController">
 
     <stylesheets>
         <URL value="@../css/navbar-style.css" />
@@ -22,42 +19,45 @@
 
     <!-- ========== TOP NAVIGATION BAR ========== -->
     <top>
-        <HBox styleClass="nav-bar" spacing="30" prefHeight="60">
+        <HBox prefHeight="60" spacing="30" styleClass="nav-bar">
 
             <!-- Section gauche : Logo -->
             <HBox alignment="CENTER_LEFT">
-                <Label text="LiveCycle" styleClass="brand-name"/>
+                <Label styleClass="brand-name" text="LiveCycle" />
             </HBox>
 
             <!-- Espace extensible -->
-            <HBox HBox.hgrow="ALWAYS"/>
+            <HBox HBox.hgrow="ALWAYS" />
 
             <!-- Section centrale : Liens -->
             <HBox alignment="CENTER" spacing="40" styleClass="nav-links">
-                <Button text="Dashboard" onAction="#showDashboard" styleClass="nav-link" fx:id="dashboardBtn"/>
-                <Button text="my Announcements" onAction="#showAnnonceManagement" styleClass="nav-link" fx:id="annonceBtn"/>
-                <Button text="collections" onAction="#showCollectManagement" styleClass="nav-link" fx:id="collectBtn"/>
-                <MenuButton text="Complaints" styleClass="nav-link" fx:id="reclamationBtn">
+                <Button fx:id="dashboardBtn" onAction="#showDashboard" styleClass="nav-link" text="Dashboard" />
+                <Button fx:id="annonceBtn" onAction="#showAnnonceManagement" styleClass="nav-link" text="my Announcements" />
+                <Button fx:id="collectBtn" onAction="#showCollectManagement" styleClass="nav-link" text="collections" />
+                <MenuButton fx:id="reclamationBtn" styleClass="nav-link" text="Complaints">
                     <items>
-                        <MenuItem text="My Complaints" onAction="#showMyComplaints" styleClass="menu-item"/>
-                        <MenuItem text="Create Complaint" onAction="#showCreateComplaint" styleClass="menu-item"/>
+                        <MenuItem onAction="#showMyComplaints" styleClass="menu-item" text="My Complaints" />
+                        <MenuItem onAction="#showCreateComplaint" styleClass="menu-item" text="Create Complaint" />
                     </items>
                 </MenuButton>
-                <Button text="Commandes" onAction="#showCommandManagement" styleClass="nav-link" fx:id="commandBtn"/>
-                <Button text="Forum" onAction="#showForumManagement" styleClass="nav-link" fx:id="forumBtn"/>
+                <Button fx:id="commandBtn" onAction="#showCommandManagement" styleClass="nav-link" text="Commandes" />
+                <Button fx:id="forumBtn" onAction="#showForumManagement" styleClass="nav-link" text="Forum" />
 
 
             </HBox>
 
             <!-- Espace extensible -->
-            <HBox HBox.hgrow="ALWAYS"/>
+            <HBox HBox.hgrow="ALWAYS" />
 
             <!-- Section droite : Déconnexion -->
-            <HBox alignment="CENTER_RIGHT" styleClass="user-section" spacing="15">
-                <StackPane styleClass="avatar-container" onMouseClicked="#handleAvatarClick">
-                    <ImageView fx:id="userPhoto" fitWidth="45" fitHeight="45" preserveRatio="true" />
+            <HBox alignment="CENTER_RIGHT" spacing="15" styleClass="user-section">
+                <StackPane onMouseClicked="#handleAvatarClick" styleClass="avatar-container">
+                    <ImageView fx:id="userPhoto" fitHeight="40.0" fitWidth="40.0" preserveRatio="true" StackPane.alignment="CENTER">
+                  <StackPane.margin>
+                     <Insets right="9.0" />
+                  </StackPane.margin></ImageView>
                 </StackPane>
-                <Button text="Logout" onAction="#handleLogout" styleClass="logout-btn"/>
+                <Button onAction="#handleLogout" styleClass="logout-btn" text="Logout" />
             </HBox>
         </HBox>
     </top>
@@ -65,7 +65,6 @@
 
     <!-- Contenu principal -->
     <center>
-        <StackPane fx:id="contentArea" styleClass="content-area"/>
+        <StackPane fx:id="contentArea" styleClass="content-area" />
     </center>
 </BorderPane>
-

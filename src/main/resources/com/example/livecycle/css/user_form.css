@@ -5,7 +5,7 @@
     -fx-vgap: 15;
 
     /* A light background gradient with a hint of green */
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f9f9f9, #e8f5e9);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #e4e1e1, #dfe1df);
     -fx-background-radius: 10;
 
     /* A subtle drop shadow for depth */
@@ -107,6 +107,6 @@
 .avatar-circle {
     -fx-clip: circle(50%); /* Makes the ImageView circular */
     -fx-border-width: 2px;
-    -fx-border-color: #ccc;
+    -fx-border-color: green;
     -fx-border-radius: 50%;
 }

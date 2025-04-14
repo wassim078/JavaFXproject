@@ -203,9 +203,8 @@ public class UserManagement {
             UserCreateController controller = (UserCreateController)loader.getController();
 
             Dialog<User> dialog = new Dialog<>();
-            dialog.setResizable(true);
-            dialog.getDialogPane().setMinSize(400, 800); // Account for window decorations
-            dialog.getDialogPane().setPrefSize(400, 800);
+            dialog.setResizable(true);// Account for window decorations
+            dialog.getDialogPane().setPrefSize(530, 750);
             dialog.setTitle("Create New User");
             dialog.getDialogPane().setContent(form);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -272,8 +271,7 @@ public class UserManagement {
                 // Create a dialog to display the form
                 Dialog<User> dialog = new Dialog<>();
                 dialog.setResizable(true);
-                dialog.getDialogPane().setMinSize(400, 800); // Account for window decorations
-                dialog.getDialogPane().setPrefSize(400, 800);
+                dialog.getDialogPane().setPrefSize(400, 750);
                 dialog.setTitle("Edit User");
                 dialog.getDialogPane().setContent(form);
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);

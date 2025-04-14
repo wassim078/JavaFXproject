@@ -45,6 +45,7 @@ public class LoginController implements Main.HostServicesAware {
     private static final String SCOPE = "email profile";
     private static final String TOKEN_URL = "https://oauth2.googleapis.com/token";
     private static final String USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
+    private static final String CLIENT_SECRET = "";
     private HostServices hostServices;
     private static HttpServer callbackServer;
     private static Timer timeoutTimer;
@@ -284,8 +285,8 @@ private void handleGoogleLogin() {
     private String getAccessToken(String code) throws IOException {
         HttpClient client = HttpClient.newHttpClient();
         String requestBody = String.format(
-                "",
-                code, CLIENT_ID, "", REDIRECT_URI
+                "code=%s&client_id=%s&client_secret=%s&redirect_uri=%s&grant_type=authorization_code",
+                code, CLIENT_ID,CLIENT_SECRET, REDIRECT_URI
         );
 
         try {

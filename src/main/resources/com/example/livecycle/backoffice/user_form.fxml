@@ -1,109 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<?import javafx.scene.layout.StackPane?>
+<ScrollPane fitToWidth="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.example.livecycle.controllers.backoffice.UserFormController">
+<GridPane alignment="CENTER" maxWidth="Infinity" prefWidth="450" styleClass="user-form" stylesheets="@../css/user_form.css">
 
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.control.ScrollPane?>
+    <Label fx:id="formTitle" alignment="CENTER" maxWidth="Infinity" styleClass="form-title" text="EDIT USER" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
 
+    <Label text="image: " GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <HBox fx:id="imageContainer" alignment="CENTER" prefHeight="120" prefWidth="120" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <ImageView fx:id="userImageView" fitHeight="100" fitWidth="100" onMouseClicked="#handleImageUpload" styleClass="avatar-circle">
+            <HBox.margin>
+               <Insets right="80.0" />
+            </HBox.margin></ImageView>
+    </HBox>
+    <Label fx:id="imageError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-<ScrollPane fx:controller="com.example.livecycle.controllers.backoffice.UserFormController"
-            fitToWidth="true"
-            xmlns:fx="http://javafx.com/fxml">
-<GridPane styleClass="user-form"
-          stylesheets="@../css/user_form.css"
-          maxWidth="Infinity"
-          prefWidth="450"
-          alignment="CENTER">
+    <!-- Groupe 1 : First Name -->
+    <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+    <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+    <Label fx:id="firstNameError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-    <Label fx:id="formTitle" text="EDIT USER" styleClass="form-title"
-           GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"
-           alignment="CENTER" maxWidth="Infinity"/>
+    <!-- Groupe 2 : Last Name -->
+    <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+    <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+    <Label fx:id="lastNameError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+    <!-- Groupe 3 : Email -->
+    <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+    <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+    <Label fx:id="emailError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+
+    <!-- Groupe 4 : Phone -->
+    <Label text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+    <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+    <Label fx:id="phoneError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+
+    <!-- Groupe 5 : Address -->
+    <Label text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+    <TextField fx:id="addressField" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+    <Label fx:id="addressError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+
+    <!-- Groupe 6 : Password -->
+    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+    <Label fx:id="passwordError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+
+    <!-- Groupe 7 : Role ComboBox -->
+    <Label text="Role:" GridPane.columnIndex="0" GridPane.rowIndex="16" />
+    <ComboBox fx:id="roleComboBox" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+    <Label fx:id="roleError" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="17" />
     <!-- Définition des contraintes de ligne -->
     <rowConstraints>
         <!-- Groupe 1 (Image) -->
-        <RowConstraints minHeight="60" prefHeight="60"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="60.0" prefHeight="60.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 2 (First Name) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 3 (Last Name) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 4 (Email) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 5 (Phone) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 6 (Address) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 7 (Password) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
         <!-- Groupe 8 (Role) -->
-        <RowConstraints minHeight="40" prefHeight="40"/>
-        <RowConstraints minHeight="20" prefHeight="20"/>
+        <RowConstraints minHeight="40.0" prefHeight="40.0" />
+        <RowConstraints minHeight="20.0" prefHeight="20.0" />
+         <RowConstraints />
+         <RowConstraints />
     </rowConstraints>
-
-    <Label text="image: " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-    <HBox fx:id="imageContainer" alignment="CENTER"
-          GridPane.rowIndex="2"
-          GridPane.columnIndex="1"
-          prefWidth="120"
-          prefHeight="120">
-        <ImageView fx:id="userImageView"
-                   fitWidth="100"
-                   fitHeight="100"
-                   onMouseClicked="#handleImageUpload"
-                   styleClass="avatar-circle"/>
-    </HBox>
-    <Label fx:id="imageError" styleClass="error-label" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-    <!-- Groupe 1 : First Name -->
-    <Label text="First Name:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-    <TextField fx:id="firstNameField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-    <Label fx:id="firstNameError" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="error-label"/>
-
-    <!-- Groupe 2 : Last Name -->
-    <Label text="Last Name:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-    <TextField fx:id="lastNameField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-    <Label fx:id="lastNameError" GridPane.rowIndex="7" GridPane.columnIndex="1" styleClass="error-label"/>
-
-    <!-- Groupe 3 : Email -->
-    <Label text="Email:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-    <TextField fx:id="emailField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
-    <Label fx:id="emailError" GridPane.rowIndex="9" GridPane.columnIndex="1" styleClass="error-label"/>
-
-    <!-- Groupe 4 : Phone -->
-    <Label text="Phone:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-    <TextField fx:id="phoneField" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
-    <Label fx:id="phoneError" GridPane.rowIndex="11" GridPane.columnIndex="1" styleClass="error-label"/>
-
-    <!-- Groupe 5 : Address -->
-    <Label text="Address:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
-    <TextField fx:id="addressField" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
-    <Label fx:id="addressError" GridPane.rowIndex="13" GridPane.columnIndex="1" styleClass="error-label"/>
-
-    <!-- Groupe 6 : Password -->
-    <Label text="Password:" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
-    <PasswordField fx:id="passwordField" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
-    <Label fx:id="passwordError" GridPane.rowIndex="15" GridPane.columnIndex="1" styleClass="error-label"/>
-
-    <!-- Groupe 7 : Role ComboBox -->
-    <Label text="Role:" GridPane.rowIndex="16" GridPane.columnIndex="0"/>
-    <ComboBox fx:id="roleComboBox" GridPane.rowIndex="16" GridPane.columnIndex="1"/>
-    <Label fx:id="roleError" GridPane.rowIndex="17" GridPane.columnIndex="1" styleClass="error-label"/>
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
 
 
 
