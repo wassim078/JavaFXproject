@@ -24,7 +24,7 @@ import java.util.List;
 public class UserDashboardController {
     @FXML private Button dashboardBtn;
     @FXML private Button collectBtn;
-    @FXML private Button annonceBtn;
+    @FXML private MenuButton annonceBtn;
     @FXML private MenuButton reclamationBtn;
     @FXML private Button commandBtn;
     @FXML private Button forumBtn;
@@ -209,22 +209,32 @@ public class UserDashboardController {
 
     public void showCollectManagement(ActionEvent actionEvent) {
         setActiveButton(collectBtn);
-        loadView("/com/example/livecycle/backoffice/collect_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/collect_management.fxml");
     }
 
-    public void showAnnonceManagement(ActionEvent actionEvent) {
+    public void showAnnouncementShop(ActionEvent event) {
         setActiveButton(annonceBtn);
-        loadView("/com/example/livecycle/backoffice/annonce_management.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/annonce_management.fxml"));
+            Parent view = loader.load();
+
+            AnnonceManagementController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            showLoadError("Announcement Shop", e);
+        }
     }
 
 
     public void showCommandManagement(ActionEvent actionEvent) {
         setActiveButton(commandBtn);
-        loadView("/com/example/livecycle/backoffice/commande_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/commande_management.fxml");
     }
     public void showForumManagement(ActionEvent actionEvent) {
         setActiveButton(forumBtn);
-        loadView("/com/example/livecycle/backoffice/forum_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/forum_management.fxml");
     }
     public void showEditUser() {
         deleteActiveButton();
@@ -326,6 +336,26 @@ public class UserDashboardController {
     public void refreshUserAvatar() {
         loadUserAvatar();
     }
+
+
+
+    public void showMyAnnouncements(ActionEvent event) {
+        setActiveButton(annonceBtn);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/my_announcements.fxml"));
+            Parent view = loader.load();
+
+            MyAnnouncementsController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            showLoadError("My Announcements", e);
+        }
+    }
+
+
+
 
 }
 

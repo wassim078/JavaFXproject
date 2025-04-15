@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.frontoffice.MyAnnouncementsController"
+            stylesheets="@../css/annonce.css">
+
+    <top>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20 20 40 20;">
+            <Text text="My Announcements" style="-fx-font-size: 28px; -fx-fill: #2F4F4F; -fx-font-weight: bold;"/>
+            <Button text="+ Create New Announcement"
+                    style="-fx-font-size: 14px; -fx-padding: 12 30; -fx-background-color: #4CAF50; -fx-text-fill: white;"
+                    onAction="#handleCreateAnnonce"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #F5F5F5;">
+            <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20;">
+                <GridPane fx:id="annoncesGrid" hgap="30" vgap="30"
+                          style="-fx-padding: 30; -fx-max-width: 1200px;">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="100"/>
+                    </columnConstraints>
+                </GridPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
