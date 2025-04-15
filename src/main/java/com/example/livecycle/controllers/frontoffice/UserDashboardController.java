@@ -224,7 +224,7 @@ public class UserDashboardController {
     }
     public void showForumManagement(ActionEvent actionEvent) {
         setActiveButton(forumBtn);
-        loadView("/com/example/livecycle/backoffice/forum_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/UserCategoryView.fxml");
     }
     public void showEditUser() {
         deleteActiveButton();
