@@ -38,7 +38,18 @@
                         <MenuItem onAction="#showAnnouncementShop" styleClass="menu-item" text="Announcement Shop" />
                     </items>
                 </MenuButton>
-                <Button fx:id="collectBtn" onAction="#showCollectManagement" styleClass="nav-link" text="collections" />
+
+
+                <MenuButton  fx:id="collectBtn"  styleClass="nav-link" text="collections">
+
+                    <items>
+                        <MenuItem onAction="#showMyCollects" styleClass="menu-item" text="My Collects" />
+                        <MenuItem onAction="#showAllCollects" styleClass="menu-item" text="Collects" />
+                    </items>
+
+                </MenuButton>
+
+
                 <MenuButton fx:id="reclamationBtn" styleClass="nav-link" text="Complaints">
                     <items>
                         <MenuItem onAction="#showMyComplaints" styleClass="menu-item" text="My Complaints" />

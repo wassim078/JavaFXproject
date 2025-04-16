@@ -24,7 +24,7 @@ import java.util.List;
 
 public class UserDashboardController {
     @FXML private Button dashboardBtn;
-    @FXML private Button collectBtn;
+    @FXML private MenuButton collectBtn;
     @FXML private MenuButton annonceBtn;
     @FXML private MenuButton reclamationBtn;
     @FXML private Button commandBtn;
@@ -214,11 +214,42 @@ public class UserDashboardController {
         loadView("/com/example/livecycle/frontoffice/dashboard.fxml");
     }
 
-    public void showCollectManagement(ActionEvent actionEvent) {
+
+
+
+    public void showMyCollects(ActionEvent actionEvent) {
         refreshCurrentUser();
         setActiveButton(collectBtn);
-        loadView("/com/example/livecycle/frontoffice/collect_management.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/showMyCollects.fxml"));
+            Parent view = loader.load();
+
+            // Get the controller and set the current user
+            ShowMyCollectsController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showLoadError("My Collects", e);
+        }
     }
+
+
+    public void showAllCollects(ActionEvent actionEvent) {
+        refreshCurrentUser();
+        setActiveButton(collectBtn);
+        loadView("/com/example/livecycle/frontoffice/showAllCollects.fxml");
+    }
+
+
+
+
+
+
+
+
+
     public void showAnnouncementShop(ActionEvent event) {
         setActiveButton(annonceBtn);
         try {
@@ -377,6 +408,9 @@ public class UserDashboardController {
             showLoadError("My Announcements", e);
         }
     }
+
+
+
 
 
 

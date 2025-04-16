@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import java.net.URL?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.livecycle.controllers.backoffice.CollectManagement"
-            prefHeight="400.0" prefWidth="600.0">
+            style="-fx-background-color: #f5f5f5;"
+            prefHeight="600.0" prefWidth="1000.0">
 
+    <VBox spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <Label text="Collect Management"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d6b4d;">
+            <padding>
+                <Insets top="20" right="0" bottom="0" left="20"/>
+            </padding>
+        </Label>
+
+        <TableView fx:id="collectsTable"
+                   style="-fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="150">
+                    <cellValueFactory><PropertyValueFactory property="titre"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="productColumn" text="Product" prefWidth="120">
+                    <cellValueFactory><PropertyValueFactory property="nomProduit"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="80">
+                    <cellValueFactory><PropertyValueFactory property="quantite"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="locationColumn" text="Location" prefWidth="120">
+                    <cellValueFactory><PropertyValueFactory property="lieu"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="dateColumn" text="Start Date" prefWidth="120">
+                    <cellValueFactory><PropertyValueFactory property="dateDebut"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="120"/>
+                <TableColumn fx:id="emailColumn" text="User Email" prefWidth="180">
+                    <cellValueFactory><PropertyValueFactory property="userEmail"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <stylesheets>
+        <URL value="@../css/table_style_back_collect.css"/>
+    </stylesheets>
 </AnchorPane>
