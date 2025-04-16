@@ -135,3 +135,16 @@ GridPane {
     -fx-background-color: lightgrey;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);
 }
+
+#captcha-container {
+    -fx-padding: 10px;
+    -fx-background-color: #f9f9f9;
+    -fx-border-radius: 5px;
+    -fx-border-color: #ddd;
+}.web-view {
+     -fx-border-color: #ddd;
+     -fx-border-radius: 5px;
+     -fx-padding: 10px;
+     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+ }
+ 

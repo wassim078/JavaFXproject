@@ -1,9 +1,11 @@
 package com.example.livecycle.controllers.auth;
 
 import com.example.livecycle.Main;
+import com.example.livecycle.services.EmailService;
 import com.example.livecycle.services.UserService;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.utils.ValidationUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -47,6 +49,7 @@ public class RegisterController {
     private static final String UPLOAD_DIR = "uploads" + File.separator;
     private static final String DEFAULT_AVATAR = "default-avatar.png";
     private final UserService userService = new UserService();
+    private final EmailService emailService = new EmailService();
 
     @FXML
     public void initialize() {
@@ -128,11 +131,16 @@ public class RegisterController {
                 finalImageName
         );
 
-        if (userService.createUser(user)) {
-            showAlert(Alert.AlertType.INFORMATION, "Success", "User registered successfully!");
+        if (userService.createUserWithVerification(user)) {
+            sendVerificationEmail(user);
+            showAlert(Alert.AlertType.INFORMATION,
+                    "Registration Successful",
+                    "Verification email sent! Please check your inbox.");
             clearForm();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Error", "Registration failed!");
+            showAlert(Alert.AlertType.ERROR,
+                    "Registration Failed",
+                    "Could not complete registration. Please try again.");
         }
     }
 
@@ -224,4 +232,23 @@ public class RegisterController {
             new Alert(Alert.AlertType.ERROR, "Could not load login form", ButtonType.OK).show();
         }
     }
+
+
+    private void sendVerificationEmail(User user) {
+        new Thread(() -> {
+            try {
+                String verificationLink = "http://localhost:8082/verify?token=" +
+                        user.getVerificationToken();
+                emailService.sendVerificationEmail(user.getEmail(), verificationLink);
+            } catch (Exception e) {
+                Platform.runLater(() ->
+                        showAlert(Alert.AlertType.ERROR,
+                                "Email Error",
+                                "Failed to send verification email: " + e.getMessage())
+                );
+            }
+        }).start();
+    }
+
+
 }

@@ -155,5 +155,17 @@
     /* Optionally, add some padding if you want extra space between the image and border */
     -fx-padding: 3;
 }
+.warning-text {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 5 0 15 0;
+}
+.verified-text {
+    -fx-text-fill: #2e7d32;  /* Dark green color */
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 5 0 15 0;
+}
 
 

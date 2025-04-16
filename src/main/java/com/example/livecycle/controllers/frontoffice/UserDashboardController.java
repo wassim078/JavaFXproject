@@ -2,6 +2,7 @@ package com.example.livecycle.controllers.frontoffice;
 
 import com.example.livecycle.controllers.auth.LoginController;
 import com.example.livecycle.entities.User;
+import com.example.livecycle.services.UserService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ public class UserDashboardController {
     @FXML private Button commandBtn;
     @FXML private Button forumBtn;
 
+
     @FXML
     private ImageView userPhoto;
 
@@ -38,6 +40,9 @@ public class UserDashboardController {
     private ContextMenu profileMenu;
     private MenuItem editProfileItem;
     private MenuItem notificationsItem;
+    private final UserService userService = new UserService();
+
+
 
     public void initialize() {
         // Set initial active state
@@ -89,6 +94,7 @@ public class UserDashboardController {
     }
 
     private void showEditProfile() {
+        refreshCurrentUser();
         showEditUser();
         System.out.println("Edit Profile clicked");
     }
@@ -203,36 +209,46 @@ public class UserDashboardController {
 
     // Méthodes de navigation
     public void showDashboard(ActionEvent actionEvent) {
+        refreshCurrentUser();
         setActiveButton(dashboardBtn);
         loadView("/com/example/livecycle/frontoffice/dashboard.fxml");
     }
 
     public void showCollectManagement(ActionEvent actionEvent) {
+        refreshCurrentUser();
         setActiveButton(collectBtn);
-        loadView("/com/example/livecycle/backoffice/collect_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/collect_management.fxml");
     }
 
     public void showAnnonceManagement(ActionEvent actionEvent) {
+        refreshCurrentUser();
         setActiveButton(annonceBtn);
-        loadView("/com/example/livecycle/backoffice/annonce_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/annonce_management.fxml");
     }
 
 
     public void showCommandManagement(ActionEvent actionEvent) {
+        refreshCurrentUser();
         setActiveButton(commandBtn);
-        loadView("/com/example/livecycle/backoffice/commande_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/commande_management.fxml");
     }
     public void showForumManagement(ActionEvent actionEvent) {
+        refreshCurrentUser();
         setActiveButton(forumBtn);
-        loadView("/com/example/livecycle/backoffice/forum_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/forum_management.fxml");
     }
     public void showEditUser() {
         deleteActiveButton();
         try {
+            // Always get fresh data before showing edit form
+            refreshCurrentUser();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/edit_profile.fxml"));
             Parent view = loader.load();
+
             EditProfileController controller = loader.getController();
-            controller.initData(currentUser,this);
+            controller.initData(currentUser, this);
+
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
             showLoadError("Edit Profile", e);
@@ -325,6 +341,15 @@ public class UserDashboardController {
 
     public void refreshUserAvatar() {
         loadUserAvatar();
+    }
+
+
+
+    public void refreshCurrentUser() {
+        User freshUser = userService.getUser(currentUser.getId());
+        if (freshUser != null) {
+            this.currentUser = freshUser;
+        }
     }
 
 }

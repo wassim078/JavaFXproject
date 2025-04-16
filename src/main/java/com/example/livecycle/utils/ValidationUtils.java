@@ -56,4 +56,13 @@ public class ValidationUtils {
 
         return errors;
     }
+
+
+    public static boolean isValidEmail(String email) {
+        return EMAIL_REGEX.matcher(email).matches();
+    }
+
+    public static boolean isValidPassword(String password) {
+        return PASSWORD_REGEX.matcher(password).matches();
+    }
 }

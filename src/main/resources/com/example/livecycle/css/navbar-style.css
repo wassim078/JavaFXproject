@@ -197,3 +197,8 @@ VBox {
 .menu-item:focused, .menu-item:showing {
     -fx-background: #e8f5e9;
 }
+.warning-text {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}

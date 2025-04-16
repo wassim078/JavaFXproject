@@ -2,6 +2,7 @@ package com.example.livecycle.controllers.frontoffice;
 
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.UserService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,7 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EditProfileController {
     @FXML private TextField prenomField;
@@ -41,6 +44,9 @@ public class EditProfileController {
     @FXML private Label newPasswordError;
     @FXML private Label confirmPasswordError;
     @FXML private Label adresseError;
+    @FXML private Label verificationWarning;
+
+
     @FXML
     public void initialize() {
         setupImageClip();
@@ -51,7 +57,9 @@ public class EditProfileController {
     private static final String UPLOADS_DIR = System.getProperty("user.dir") + "/uploads/";
     private static final String DEFAULT_AVATAR = "/com/example/livecycle/images/default-avatar.png";
     private UserDashboardController dashboardController;
-
+    public static final Map<Integer, EditProfileController> openInstances = new ConcurrentHashMap<>();
+    private static final String VERIFIED_STYLE = "verified-text";
+    private static final String UNVERIFIED_STYLE = "warning-text";
 
 
     private void setupImageClip() {
@@ -64,10 +72,46 @@ public class EditProfileController {
 
 
 
-    public void initData(User user,UserDashboardController dashboardController) {
-        this.currentUser = user;
-        this.dashboardController = dashboardController; // Add this line
+    public void initData(User user, UserDashboardController dashboardController) {
+        User freshUser = userService.getUser(user.getId());
+        this.currentUser = freshUser;
+        this.dashboardController = dashboardController;
         populateForm();
+        updateVerificationStatus();
+        registerInstance();
+    }
+
+
+
+    private void registerInstance() {
+        openInstances.put(currentUser.getId(), this);
+    }
+
+    private void unregisterInstance() {
+        openInstances.remove(currentUser.getId());
+    }
+
+    public void refreshUserData() {
+        User updatedUser = userService.getUser(currentUser.getId());
+        if (updatedUser != null) {
+            this.currentUser = updatedUser;
+            Platform.runLater(() -> {
+                populateForm();
+                updateVerificationStatus();
+            });
+        }
+    }
+    private void updateVerificationStatus() {
+        if (currentUser.isEnabled()) {
+            verificationWarning.getStyleClass().remove(UNVERIFIED_STYLE);
+            verificationWarning.getStyleClass().add(VERIFIED_STYLE);
+            verificationWarning.setText("✓ Email verified successfully!");
+        } else {
+            verificationWarning.getStyleClass().remove(VERIFIED_STYLE);
+            verificationWarning.getStyleClass().add(UNVERIFIED_STYLE);
+            verificationWarning.setText("Your email is not verified! Please check your inbox.");
+        }
+        verificationWarning.setVisible(true);
     }
 
     private void populateForm() {
@@ -145,13 +189,16 @@ public class EditProfileController {
 
         updateUserFromForm();
         if (userService.updateUserProfile(currentUser)) {
+            // Refresh both user data and avatar
+            dashboardController.refreshCurrentUser();
             dashboardController.refreshUserAvatar();
             showSuccessAlert("Succès", "Profil mis à jour avec succès!");
         } else {
             showErrorAlert("Échec", "Erreur lors de la mise à jour");
         }
     }
-    private boolean validatePassword() {
+
+    boolean validatePassword() {
         if (!newPasswordField.getText().isEmpty()) {
             if (!BCrypt.checkpw(currentPasswordField.getText(), currentUser.getPassword())) {
                 showErrorAlert("Password Error", "Current password is incorrect");
@@ -181,6 +228,8 @@ public class EditProfileController {
     }
 
     private void closeWindow() {
+        unregisterInstance();
+        dashboardController.refreshCurrentUser(); // Refresh parent controller's data
         Stage stage = (Stage) formContainer.getScene().getWindow();
         stage.close();
     }

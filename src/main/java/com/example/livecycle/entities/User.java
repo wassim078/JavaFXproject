@@ -1,5 +1,6 @@
 package com.example.livecycle.entities;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -15,8 +16,15 @@ public class User {
     private SimpleStringProperty telephone = new SimpleStringProperty();
     private SimpleStringProperty roles = new SimpleStringProperty();
     private SimpleStringProperty image = new SimpleStringProperty();
+    private SimpleBooleanProperty enabled = new SimpleBooleanProperty(false);
+    private SimpleStringProperty verificationToken = new SimpleStringProperty();
+
+
     private static final String UPLOADS_DIR = System.getProperty("user.dir") + "/uploads/";
     private static final String DEFAULT_AVATAR = "/com/example/livecycle/images/default-avatar.png";
+
+
+
     // Constructeur
 
     public User() {
@@ -49,6 +57,8 @@ public class User {
         this.telephone.set(telephone);
         this.roles.set(roles);
         this.image.set(image);
+        this.enabled.set(false);
+        this.verificationToken.set("");
     }
     // Add property getters
     public StringProperty prenomProperty() { return prenom; }
@@ -78,6 +88,17 @@ public class User {
     public void setTelephone(String telephone) { this.telephone.set(telephone); }
     public void setRoles(String roles) { this.roles.set(roles); }
     public void setImage(String image) { this.image.set(image); }
+
+
+
+
+    public void setEnabled(boolean enabled) { this.enabled.set(enabled); }
+    public boolean isEnabled() { return enabled.get(); }
+    public String getVerificationToken() { return verificationToken.get(); }
+    public void setVerificationToken(String token) { verificationToken.set(token); }
+
+
+
 
     public String getFormattedRoles() {
         try {

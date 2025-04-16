@@ -261,7 +261,7 @@ public class UserManagement {
         if (user != null) {
             try {
                 // Load the FXML for the user form
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/backoffice/user_form.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/backoffice/user_edit_form.fxml"));
                 Parent form = loader.load();
 
                 // Get the form controller and pass in the selected user's data

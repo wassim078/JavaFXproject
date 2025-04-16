@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ScrollPane?>
-
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<BorderPane stylesheets="@../css/registration.css"
-            xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.livecycle.controllers.auth.LoginController"
-            prefWidth="600">
+<BorderPane prefWidth="600" stylesheets="@../css/registration.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.auth.LoginController">
 
     <top>
         <VBox alignment="CENTER" spacing="15" style="-fx-padding: 40 0 20 0;">
@@ -32,48 +28,57 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true">
+        <ScrollPane fitToHeight="true" fitToWidth="true">
             <VBox alignment="CENTER" spacing="25" style="-fx-padding: 0 10%;">
                 <VBox alignment="CENTER" spacing="25" style="-fx-max-width: 800;">
-                    <GridPane hgap="15" vgap="10" styleClass="form-container">
+                    <GridPane hgap="15" styleClass="form-container" vgap="10">
                         <VBox.margin>
                             <Insets top="20" />
                         </VBox.margin>
                         <columnConstraints>
-                            <ColumnConstraints hgrow="NEVER" percentWidth="30"/>
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="70" maxWidth="300"/>
+                            <ColumnConstraints hgrow="NEVER" percentWidth="20.0" />
+                            <ColumnConstraints hgrow="ALWAYS" maxWidth="300" percentWidth="70" />
                         </columnConstraints>
 
                         <!-- Row 0: Email Label & Field -->
-                        <Label text="Email:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                        <TextField fx:id="emailField" promptText="example@mail.com" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="emailField" promptText="example@mail.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         <!-- Row 1: Email Error -->
-                        <Label fx:id="emailError" styleClass="error-label" text=""
-                               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label fx:id="emailError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                         <!-- Row 2: Password Label & Field -->
-                        <Label text="Password:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                        <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <!-- Row 3: Password Error -->
-                        <Label fx:id="passwordError" styleClass="error-label" text=""
-                               GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <Label fx:id="passwordError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <!-- Row 4: reCAPTCHA -->
+                        <WebView fx:id="captchaWebView" prefHeight="228.0" prefWidth="358.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
+
+                        <!-- Row 5: CAPTCHA Error -->
+                        <Label fx:id="captchaError" styleClass="error-label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
 
                     </GridPane>
 
-                    <Button styleClass="submit-button" text="Sign In" onAction="#handleLogin"
-                            GridPane.halignment="CENTER">
+                    <Button fx:id="loginButton" onAction="#handleLogin" styleClass="submit-button" text="Sign In" GridPane.halignment="CENTER">
 
-
-
-                    <VBox.margin>
-                        <Insets bottom="10" />
-                    </VBox.margin>
+                        <VBox.margin>
+                            <Insets bottom="10" />
+                        </VBox.margin>
 
                     </Button>
 
                     <Button onAction="#handleGoogleLogin" styleClass="google-login-btn">
                         <graphic>
-                            <ImageView fitWidth="24" fitHeight="24">
+                            <ImageView fitHeight="24" fitWidth="24">
                                 <Image url="@../images/google-icon.png" />
                             </ImageView>
                         </graphic>
@@ -86,9 +91,11 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER" spacing="5" styleClass="footer" style="-fx-padding: 20;">
+        <HBox alignment="CENTER" spacing="5" style="-fx-padding: 20;" styleClass="footer">
             <Label styleClass="footer-text" text="Don't have an account?" />
-            <Hyperlink styleClass="footer-link" text="Register Here" onAction="#handleRegisterNavigation"/>
+            <Hyperlink onAction="#handleRegisterNavigation" styleClass="footer-link" text="Register Here" />
+            <Label styleClass="footer-text" text="|" />
+            <Hyperlink onAction="#handleForgotPasswordNavigation" styleClass="footer-link" text="Forgot Password?" />
         </HBox>
     </bottom>
 </BorderPane>

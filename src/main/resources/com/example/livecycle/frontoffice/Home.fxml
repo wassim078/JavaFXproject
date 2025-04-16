@@ -60,11 +60,13 @@
                 <Button onAction="#handleLogout" styleClass="logout-btn" text="Logout" />
             </HBox>
         </HBox>
+
     </top>
 
 
     <!-- Contenu principal -->
     <center>
+
         <StackPane fx:id="contentArea" styleClass="content-area" />
     </center>
 </BorderPane>
