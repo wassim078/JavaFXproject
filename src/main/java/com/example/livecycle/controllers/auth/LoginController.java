@@ -53,8 +53,8 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     @FXML private Button loginButton;
 
     private String captchaToken;
-    private static final String RECAPTCHA_SITE_KEY = "6Ld16BgrAAAAAHEILb8IZ06YLUX6PJ3g9sM70zhU";
-    private static final String RECAPTCHA_SECRET_KEY = "6Ld16BgrAAAAAPziBh6ubEuAw7SXchKZ9L9hF7Wp";
+    private static final String RECAPTCHA_SITE_KEY = System.getenv("RECAPTCHA_SITE_KEY");
+    private static final String RECAPTCHA_SECRET_KEY = System.getenv("RECAPTCHA_SECRET_KEY");
     private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
     private static HttpServer staticContentServer;
 
@@ -224,7 +224,6 @@ public class LoginController implements Main.HostServicesAware, Initializable {
 
     @FXML
     private void handleLogin() throws IOException {
-
         if(captchaToken == null || captchaToken.isEmpty()) {
             captchaError.setText("Please complete the CAPTCHA");
             captchaError.setVisible(true);
@@ -556,27 +555,20 @@ private void handleGoogleLogin() {
         try {
 
             WebEngine webEngine = captchaWebView.getEngine();
-            webEngine.load("about:blank");
 
-            webEngine.loadContent("");
-            webEngine.reload();
-
-            webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
             // Add error handling
             webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
                 if (newState == Worker.State.SUCCEEDED) {
-                    // Inject console logger
                     JSObject window = (JSObject) webEngine.executeScript("window");
                     window.setMember("javaConnector", new JavaConnector());
-                    webEngine.executeScript(
-                            "console.log = function(message) { javaConnector.log(message); };"
-                    );
+                    webEngine.executeScript("console.log = function(message) { javaConnector.log(message); };");
                 }
             });
 
             JSObject window = (JSObject) webEngine.executeScript("window");
             window.setMember("javaConnector", new JavaConnector());
 
+            // Load the recaptcha HTML page (ensure this file has your proper site-key in it)
             String captchaUrl = "http://localhost:8085/recaptcha.html";
             webEngine.load(captchaUrl);
 
@@ -592,23 +584,25 @@ private void handleGoogleLogin() {
 
     public class JavaConnector {
         public void onCaptchaSuccess(String token) {
-            System.out.println("[DEBUG] CAPTCHA callback received");
-            Platform.runLater(() -> {
-                System.out.println("[DEBUG] Processing token: " + token);
-                if(verifyCaptcha(token)) {
-                    System.out.println("[DEBUG] CAPTCHA verified successfully");
-                    captchaError.setVisible(false);
-                    loginButton.setDisable(false);
-                    captchaToken = token;
-                    // Force UI refresh
-                    loginButton.requestLayout();
-                } else {
-                    System.out.println("[DEBUG] CAPTCHA verification failed");
-                    captchaError.setText("CAPTCHA verification failed");
-                    captchaError.setVisible(true);
-                    captchaToken = null;
-                }
-            });
+            System.out.println("[DEBUG] CAPTCHA callback received with token: " + token);
+            // Perform verification in a new thread to avoid UI blocking
+            new Thread(() -> {
+                boolean verified = verifyCaptcha(token);
+                Platform.runLater(() -> {
+                    if (verified) {
+                        System.out.println("[DEBUG] CAPTCHA verified successfully");
+                        captchaError.setVisible(false);
+                        loginButton.setDisable(false);
+                        captchaToken = token;
+                        // Optional: Inform the user or update UI as needed
+                    } else {
+                        System.out.println("[DEBUG] CAPTCHA verification failed");
+                        captchaError.setText("CAPTCHA verification failed");
+                        captchaError.setVisible(true);
+                        captchaToken = null;
+                    }
+                });
+            }).start();
         }
     }
 
