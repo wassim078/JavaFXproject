@@ -53,7 +53,12 @@
                         <Label fx:id="passwordError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                         <!-- Row 4: reCAPTCHA -->
-                        <WebView fx:id="captchaWebView" prefHeight="228.0" prefWidth="358.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
+                        <WebView fx:id="captchaWebView"
+                                 style="-fx-border-color: red;"
+                                 prefHeight="228" prefWidth="358"
+                                 minHeight="120"
+                                 GridPane.columnIndex="1"
+                                 GridPane.rowIndex="4"/>
 
                         <!-- Row 5: CAPTCHA Error -->
                         <Label fx:id="captchaError" styleClass="error-label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />

@@ -2,19 +2,24 @@
 <html>
 <head>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onCaptchaSuccess(token) {
+            if (window.javaConnector && window.javaConnector.isInitialized()) {
+                window.javaConnector.onCaptchaSuccess(token);
+            }
+        }
+
+        function onCaptchaExpired() {
+            if (window.javaConnector) {
+                window.javaConnector.onCaptchaExpired();
+            }
+        }
+    </script>
 </head>
 <body>
-<div id="captcha-container">
-    <div class="g-recaptcha"
-         data-sitekey="6Ld16BgrAAAAAHEILb8IZ06YLUX6PJ3g9sM70zhU"
-         data-callback="onCaptchaSuccess"
-         data-size="compact">
-    </div>
-</div>
-<script>
-    function onCaptchaSuccess(token) {
-        window.javaConnector.onCaptchaSuccess(token);
-    }
-</script>
+<div class="g-recaptcha"
+     data-sitekey="6LfiKRsrAAAAAPACnY4E9YRaZGDGP5Z_4capkh4w"
+     data-callback="onCaptchaSuccess"
+     data-expired-callback="onCaptchaExpired"></div>
 </body>
 </html>

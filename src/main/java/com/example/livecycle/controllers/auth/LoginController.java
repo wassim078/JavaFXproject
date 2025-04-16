@@ -53,8 +53,8 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     @FXML private Button loginButton;
 
     private String captchaToken;
-    private static final String RECAPTCHA_SITE_KEY = System.getenv("RECAPTCHA_SITE_KEY");
-    private static final String RECAPTCHA_SECRET_KEY = System.getenv("RECAPTCHA_SECRET_KEY");
+    private static final String RECAPTCHA_SITE_KEY = "6LfiKRsrAAAAAPACnY4E9YRaZGDGP5Z_4capkh4w";
+    private static final String RECAPTCHA_SECRET_KEY = "6LfiKRsrAAAAAF2zFH8zW7e009I4jjl1nuNOfOjy";
     private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
     private static HttpServer staticContentServer;
 
@@ -75,10 +75,8 @@ public class LoginController implements Main.HostServicesAware, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        monitorButtonState();
-        startStaticContentServer();
-        setupRecaptcha();
+        startStaticContentServer();  // ← start serving /recaptcha.html
+        setupRecaptcha();            // ← *then* load it into the WebView
         startVerificationServer();
     }
 
@@ -209,32 +207,14 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     @FXML
     private void handleLogin() throws IOException {
-        if(captchaToken == null || captchaToken.isEmpty()) {
-            captchaError.setText("Please complete the CAPTCHA");
-            captchaError.setVisible(true);
-            return;
-        }
-
         clearErrors();
+        
 
+        // 2. Validate other fields
         String email = emailField.getText().trim();
         String password = passwordField.getText().trim();
-
         Map<String, String> errors = ValidationUtils.validateLogin(email, password);
 
         if (!errors.isEmpty()) {
@@ -243,20 +223,26 @@ public class LoginController implements Main.HostServicesAware, Initializable {
             return;
         }
 
+        // 3. Proceed with authentication
         User user = userService.authenticateUser(email, password);
-
         if (user != null) {
-            if (!user.isEnabled()) {
-                showAlertInfo("Account Not Verified",
-                        "Please verify your email first. Check your inbox.");
-            }
-            redirectBasedOnRole(user);
+            handleSuccessfulLogin(user);
         } else {
-            passwordError.setText("Invalid email or password");
+            passwordError.setText("Invalid credentials");
+        }
+    }
+
+    private void handleSuccessfulLogin(User user) throws IOException {
+        if (!user.isEnabled()) {
+            showAlertInfo("Account Not Verified", "Verify your email first");
+            return;
         }
 
+        // Clear CAPTCHA state
+        captchaToken = null;
+        captchaWebView.getEngine().reload();
 
-
+        redirectBasedOnRole(user);
     }
 
 
@@ -544,73 +530,75 @@ private void handleGoogleLogin() {
 
 
 
-    private void monitorButtonState() {
-        loginButton.disabledProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("[DEBUG] Login button state changed to: " + (newVal ? "disabled" : "enabled"));
-        });
-    }
-
-
     private void setupRecaptcha() {
-        try {
+        WebEngine webEngine = captchaWebView.getEngine();
+        webEngine.setJavaScriptEnabled(true);
+        webEngine.setUserAgent(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/115.0.0.0 Safari/537.36"
+        );
 
-            WebEngine webEngine = captchaWebView.getEngine();
 
-            // Add error handling
-            webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-                if (newState == Worker.State.SUCCEEDED) {
-                    JSObject window = (JSObject) webEngine.executeScript("window");
-                    window.setMember("javaConnector", new JavaConnector());
-                    webEngine.executeScript("console.log = function(message) { javaConnector.log(message); };");
-                }
-            });
+        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                // Inject Java connector when page loads
+                JSObject window = (JSObject) webEngine.executeScript("window");
+                window.setMember("javaConnector", new JavaConnector());
+            }
+        });
 
-            JSObject window = (JSObject) webEngine.executeScript("window");
-            window.setMember("javaConnector", new JavaConnector());
-
-            // Load the recaptcha HTML page (ensure this file has your proper site-key in it)
-            String captchaUrl = "http://localhost:8085/recaptcha.html";
-            webEngine.load(captchaUrl);
-
-        } catch (Exception e) {
-            System.err.println("CAPTCHA initialization failed: " + e.getMessage());
-            e.printStackTrace();
-            Platform.runLater(() -> {
-                captchaError.setText("CAPTCHA service unavailable");
-                captchaError.setVisible(true);
-            });
-        }
+        String url = "http://localhost:8085/recaptcha.html?t=" + System.currentTimeMillis();
+        webEngine.load(url);
     }
 
     public class JavaConnector {
+        public boolean isInitialized() { return true; }
+
         public void onCaptchaSuccess(String token) {
-            System.out.println("[DEBUG] CAPTCHA callback received with token: " + token);
-            // Perform verification in a new thread to avoid UI blocking
+            Platform.runLater(() -> {
+                captchaToken = token;
+                captchaError.setVisible(false);
+            });
+
             new Thread(() -> {
-                boolean verified = verifyCaptcha(token);
+                boolean isValid = verifyCaptcha(token);
                 Platform.runLater(() -> {
-                    if (verified) {
-                        System.out.println("[DEBUG] CAPTCHA verified successfully");
-                        captchaError.setVisible(false);
-                        loginButton.setDisable(false);
-                        captchaToken = token;
-                        // Optional: Inform the user or update UI as needed
-                    } else {
-                        System.out.println("[DEBUG] CAPTCHA verification failed");
+                    if (!isValid) {
+                        captchaToken = null;
+                        loginButton.setDisable(true);
                         captchaError.setText("CAPTCHA verification failed");
                         captchaError.setVisible(true);
-                        captchaToken = null;
+                        resetCaptchaWidget();
                     }
                 });
             }).start();
         }
-    }
 
+        public void onCaptchaExpired() {
+            Platform.runLater(() -> {
+                captchaToken = null;
+                loginButton.setDisable(true);
+                captchaError.setText("CAPTCHA expired - please complete it again");
+                captchaError.setVisible(true);
+                resetCaptchaWidget();
+            });
+        }
+
+        private void resetCaptchaWidget() {
+            Platform.runLater(() -> {
+                captchaWebView.getEngine().executeScript(
+                        "if(typeof grecaptcha !== 'undefined') grecaptcha.reset()"
+                );
+            });
+        }
+    }
 
     private boolean verifyCaptcha(String token) {
         try {
             HttpClient client = HttpClient.newHttpClient();
-            String params = "secret=" + RECAPTCHA_SECRET_KEY + "&response=" + token;
+            String params = "secret=" + URLEncoder.encode(RECAPTCHA_SECRET_KEY, StandardCharsets.UTF_8) +
+                    "&response=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(VERIFY_URL))
@@ -619,30 +607,11 @@ private void handleGoogleLogin() {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // Add debug logging
-            System.out.println("reCAPTCHA Response: " + response.body());
-
             JsonObject json = new Gson().fromJson(response.body(), JsonObject.class);
 
-            if (!json.has("success")) {
-                System.err.println("Invalid reCAPTCHA response format");
-                return false;
-            }
-
-            boolean success = json.get("success").getAsBoolean();
-
-            // Check for error codes
-            if (json.has("error-codes")) {
-                JsonArray errors = json.getAsJsonArray("error-codes");
-                errors.forEach(e -> System.err.println("reCAPTCHA Error: " + e.getAsString()));
-            }
-
-            return success;
-
+            return json.get("success").getAsBoolean();
         } catch (Exception e) {
             System.err.println("reCAPTCHA Verification Error: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }

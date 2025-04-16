@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -39,6 +40,9 @@ public class UserManagement {
     private final UserService userService = new UserService();
     private ObservableList<User> users = FXCollections.observableArrayList();
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + File.separator + "uploads" + File.separator;
+
+
+
     private static final String DEFAULT_IMAGE_PATH = "/com/example/livecycle/images/default-avatar.png";
     static {
         new File(UPLOAD_DIR).mkdirs();
@@ -68,19 +72,32 @@ public class UserManagement {
 
     private Callback<TableColumn<User, String>, TableCell<User, String>> createProfileCellFactory() {
         return column -> new TableCell<>() {
+            private final StackPane container = new StackPane();
             private final ImageView imageView = new ImageView();
+            private final Circle clip = new Circle();
             private final Image defaultImage = new Image(
                     getClass().getResourceAsStream(DEFAULT_IMAGE_PATH)
             );
 
             {
-                // Circular clip setup
-                Circle clip = new Circle(20, 20, 20);
-                imageView.setClip(clip);
-                imageView.setFitWidth(40);
-                imageView.setFitHeight(40);
+                // Container setup
+                container.setPrefSize(30, 30);
+                container.setMaxSize(30, 30);
+
+                // Dynamic clipping
+                clip.radiusProperty().bind(container.widthProperty().divide(2));
+                clip.centerXProperty().bind(container.widthProperty().divide(2));
+                clip.centerYProperty().bind(container.heightProperty().divide(2));
+                container.setClip(clip);
+
+                // ImageView setup
                 imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                imageView.fitWidthProperty().bind(container.widthProperty());
+                imageView.fitHeightProperty().bind(container.heightProperty());
                 imageView.getStyleClass().add("table-avatar");
+
+                container.getChildren().add(imageView);
             }
 
             @Override
@@ -92,39 +109,40 @@ public class UserManagement {
                 }
 
                 try {
-                    Image image = defaultImage;
-                    if (imageName != null && !imageName.isEmpty()) {
-                        if (imageName.startsWith("http")) {
-                            // Load from URL with error handling
-                            image = new Image(imageName, 40, 40, true, true, true);
-
-                        } else {
-                            // Load from local file
-                            File imageFile = new File(UPLOAD_DIR + imageName);
-                            if (imageFile.exists()) {
-                                image = new Image(imageFile.toURI().toString(), 40, 40, true, true);
-                            }
-                        }
-                    }
+                    Image image = loadImage(imageName);
                     imageView.setImage(image);
-                    setGraphic(imageView);
+                    setGraphic(container);
                 } catch (Exception e) {
                     imageView.setImage(defaultImage);
-                    setGraphic(imageView);
+                    setGraphic(container);
                 }
             }
 
             private Image loadImage(String imageName) {
-                if (imageName.startsWith("http")) {
-                    // Handle URL-based images (Google account)
-                    return new Image(imageName, 40, 40, true, true);
-                } else {
-                    // Handle local files
-                    File imageFile = new File(UPLOAD_DIR + imageName);
-                    return imageFile.exists()
-                            ? new Image(imageFile.toURI().toString(), 40, 40, true, true)
-                            : defaultImage;
+                if (imageName == null || imageName.isEmpty()) {
+                    return defaultImage;
                 }
+
+                try {
+                    if (imageName.startsWith("http")) {
+                        return new Image(imageName,
+                                60, 60, // Load at higher resolution
+                                true,    // Preserve ratio
+                                true,    // Smooth scaling
+                                true     // Background loading
+                        );
+                    } else {
+                        File imageFile = new File(UPLOAD_DIR + imageName);
+                        if (imageFile.exists()) {
+                            return new Image(imageFile.toURI().toString(),
+                                    60, 60, true, true, true
+                            );
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return defaultImage;
             }
         };
     }

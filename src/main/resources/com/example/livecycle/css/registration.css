@@ -147,3 +147,8 @@ GridPane {
      -fx-padding: 10px;
      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
  }
+#captchaError {
+    -fx-text-fill: #d32f2f;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 0;
+}
