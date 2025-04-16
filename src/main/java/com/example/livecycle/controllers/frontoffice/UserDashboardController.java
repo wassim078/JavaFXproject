@@ -219,13 +219,6 @@ public class UserDashboardController {
         setActiveButton(collectBtn);
         loadView("/com/example/livecycle/frontoffice/collect_management.fxml");
     }
-
-<<<<<<< HEAD
-    public void showAnnonceManagement(ActionEvent actionEvent) {
-        refreshCurrentUser();
-        setActiveButton(annonceBtn);
-        loadView("/com/example/livecycle/frontoffice/annonce_management.fxml");
-=======
     public void showAnnouncementShop(ActionEvent event) {
         setActiveButton(annonceBtn);
         try {
@@ -239,7 +232,7 @@ public class UserDashboardController {
         } catch (IOException e) {
             showLoadError("Announcement Shop", e);
         }
->>>>>>> 37ca21e7a53349092c2fe1922d404ab7ad6dbd06
+
     }
 
 
@@ -361,7 +354,7 @@ public class UserDashboardController {
 
 
 
-<<<<<<< HEAD
+
     public void refreshCurrentUser() {
         User freshUser = userService.getUser(currentUser.getId());
         if (freshUser != null) {
@@ -369,7 +362,7 @@ public class UserDashboardController {
         }
     }
 
-=======
+
     public void showMyAnnouncements(ActionEvent event) {
         setActiveButton(annonceBtn);
         try {
@@ -388,7 +381,7 @@ public class UserDashboardController {
 
 
 
->>>>>>> 37ca21e7a53349092c2fe1922d404ab7ad6dbd06
+
 }
 
 
