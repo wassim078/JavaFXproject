@@ -32,7 +32,12 @@
             <!-- Section centrale : Liens -->
             <HBox alignment="CENTER" spacing="40" styleClass="nav-links">
                 <Button fx:id="dashboardBtn" onAction="#showDashboard" styleClass="nav-link" text="Dashboard" />
-                <Button fx:id="annonceBtn" onAction="#showAnnonceManagement" styleClass="nav-link" text="my Announcements" />
+                <MenuButton fx:id="annonceBtn" styleClass="nav-link" text="Announcements">
+                    <items>
+                        <MenuItem onAction="#showMyAnnouncements" styleClass="menu-item" text="My Announcements" />
+                        <MenuItem onAction="#showAnnouncementShop" styleClass="menu-item" text="Announcement Shop" />
+                    </items>
+                </MenuButton>
                 <Button fx:id="collectBtn" onAction="#showCollectManagement" styleClass="nav-link" text="collections" />
                 <MenuButton fx:id="reclamationBtn" styleClass="nav-link" text="Complaints">
                     <items>

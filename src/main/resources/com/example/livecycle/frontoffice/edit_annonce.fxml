@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.frontoffice.EditAnnonceController"
+      spacing="15"
+      style="-fx-padding: 20;">
+    <Label text="Edit Announcement" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+    <TextField fx:id="titleField" promptText="Title"/>
+    <ComboBox fx:id="categoryCombo" promptText="Category"/> <!-- Category Selection -->
+    <TextField fx:id="poidsField" promptText="Weight (kg)"/> <!-- Weight Field -->
+    <TextField fx:id="priceField" promptText="Price"/>
+    <TextField fx:id="quantityField" promptText="Quantity"/>
+    <TextArea fx:id="descriptionField" promptText="Description" wrapText="true"/>
+
+    <!-- Image Section -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <ImageView fx:id="imagePreview" fitWidth="100" fitHeight="100"/>
+        <Button text="Browse Image" onAction="#handleBrowseImage"/>
+    </HBox>
+
+    <Button text="Save Changes" onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+</VBox>

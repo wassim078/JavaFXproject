@@ -25,7 +25,7 @@ import java.util.List;
 public class UserDashboardController {
     @FXML private Button dashboardBtn;
     @FXML private Button collectBtn;
-    @FXML private Button annonceBtn;
+    @FXML private MenuButton annonceBtn;
     @FXML private MenuButton reclamationBtn;
     @FXML private Button commandBtn;
     @FXML private Button forumBtn;
@@ -220,10 +220,26 @@ public class UserDashboardController {
         loadView("/com/example/livecycle/frontoffice/collect_management.fxml");
     }
 
+<<<<<<< HEAD
     public void showAnnonceManagement(ActionEvent actionEvent) {
         refreshCurrentUser();
         setActiveButton(annonceBtn);
         loadView("/com/example/livecycle/frontoffice/annonce_management.fxml");
+=======
+    public void showAnnouncementShop(ActionEvent event) {
+        setActiveButton(annonceBtn);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/annonce_management.fxml"));
+            Parent view = loader.load();
+
+            AnnonceManagementController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            showLoadError("Announcement Shop", e);
+        }
+>>>>>>> 37ca21e7a53349092c2fe1922d404ab7ad6dbd06
     }
 
 
@@ -345,6 +361,7 @@ public class UserDashboardController {
 
 
 
+<<<<<<< HEAD
     public void refreshCurrentUser() {
         User freshUser = userService.getUser(currentUser.getId());
         if (freshUser != null) {
@@ -352,6 +369,26 @@ public class UserDashboardController {
         }
     }
 
+=======
+    public void showMyAnnouncements(ActionEvent event) {
+        setActiveButton(annonceBtn);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/my_announcements.fxml"));
+            Parent view = loader.load();
+
+            MyAnnouncementsController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            showLoadError("My Announcements", e);
+        }
+    }
+
+
+
+
+>>>>>>> 37ca21e7a53349092c2fe1922d404ab7ad6dbd06
 }
 
 
