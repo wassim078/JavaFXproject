@@ -202,3 +202,9 @@ VBox {
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
+#cartCountLabel {
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}

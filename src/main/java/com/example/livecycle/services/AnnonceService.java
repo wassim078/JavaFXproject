@@ -193,4 +193,20 @@ public class AnnonceService implements Service<Annonce> {
         }
         return annonces;
     }
+
+    public Annonce getById(int id) throws SQLException {
+        String query = "SELECT a.*, c.name AS category_name FROM annonce a " +
+                "JOIN categorie_annonce c ON a.categorie_annonce_id = c.id " +
+                "WHERE a.id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, id);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToAnnonce(rs);
+                }
+            }
+        }
+        return null;
+    }
 }

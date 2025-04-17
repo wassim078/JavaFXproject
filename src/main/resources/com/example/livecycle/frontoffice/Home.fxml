@@ -11,6 +11,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.AnchorPane?>
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.frontoffice.UserDashboardController">
 
     <stylesheets>
@@ -56,7 +58,39 @@
                         <MenuItem onAction="#showCreateComplaint" styleClass="menu-item" text="Create Complaint" />
                     </items>
                 </MenuButton>
-                <Button fx:id="commandBtn" onAction="#showCommandManagement" styleClass="nav-link" text="Commandes" />
+
+
+
+                <AnchorPane fx:id="commandStack">
+                    <!-- Commandes button sizes itself to its text -->
+                    <Button fx:id="commandBtn"
+                            onAction="#showCommandManagement"
+                            styleClass="nav-link"
+                            text="Commandes"
+                            AnchorPane.topAnchor="0"
+                            AnchorPane.leftAnchor="0"/>
+
+                    <!-- badge anchored to top‑right -->
+                    <StackPane fx:id="cartBadge"
+                               visible="false"
+                               pickOnBounds="false"
+                               mouseTransparent="true"
+                               AnchorPane.topAnchor="5"
+                               AnchorPane.rightAnchor="8"
+                               prefWidth="16"
+                               prefHeight="16">
+                        <Circle radius="8" style="-fx-fill: #e74c3c;"/>
+                        <Label fx:id="cartCountLabel"
+                               text="0"
+                               style="-fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold;"
+                               alignment="CENTER"/>
+                    </StackPane>
+                </AnchorPane>
+
+
+
+
+
                 <Button fx:id="forumBtn" onAction="#showForumManagement" styleClass="nav-link" text="Forum" />
 
 

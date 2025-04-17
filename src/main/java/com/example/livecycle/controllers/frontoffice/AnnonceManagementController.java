@@ -4,6 +4,7 @@ import com.example.livecycle.entities.Annonce;
 import com.example.livecycle.entities.Category;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.AnnonceService;
+import com.example.livecycle.services.CommandeService;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -33,24 +34,39 @@ public class AnnonceManagementController {
 
     private User currentUser;
     private final AnnonceService annonceService = new AnnonceService();
+    private UserDashboardController dashboardController;
 
+
+    public void setDashboardController(UserDashboardController dash) {
+        this.dashboardController = dash;
+    }
 
     public void initialize() {
     }
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        loadUserAnnonces();
+        loadAllAnnonces();
     }
     private void loadUserAnnonces() {
-        if (currentUser == null) {
-            showError("User not initialized!");
-            return;
-        }
+
         try {
             List<Annonce> annonces = annonceService.getByUserId(currentUser.getId());
             annoncesGrid.getChildren().clear();
 
+            int row = 0;
+            for (Annonce annonce : annonces) {
+                addAnnonceCard(annonce, row);
+                row++;
+            }
+        } catch (SQLException e) {
+            showError("Error loading announcements: " + e.getMessage());
+        }
+    }
+    private void loadAllAnnonces() {
+        try {
+            List<Annonce> annonces = annonceService.recuperer(); // Get ALL
+            annoncesGrid.getChildren().clear();
             int row = 0;
             for (Annonce annonce : annonces) {
                 addAnnonceCard(annonce, row);
@@ -113,22 +129,58 @@ public class AnnonceManagementController {
 
         priceSection.getChildren().addAll(price, quantity);
 
+        HBox buttonContainer = new HBox(10);
+        buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+
+        Button addToCartBtn = new Button("Add to Cart");
+        addToCartBtn.getStyleClass().add("add-to-cart-btn");
+
+
+        // Show button only for enterprise users
+        boolean isEnterprise = currentUser != null &&
+                currentUser.getRoles().contains("ROLE_ENTREPRISE");
+        addToCartBtn.setVisible(isEnterprise);
+
+        // Only add action handler if visible
+        if (isEnterprise) {
+            addToCartBtn.setOnAction(e -> handleAddToCart(annonce));
+        }
+
+        buttonContainer.getChildren().add(addToCartBtn);
+        details.getChildren().add(buttonContainer);
+
         details.getChildren().addAll(title, category, description, priceSection);
         details.setSpacing(15);
 
         content.getChildren().addAll(imageContainer, details);
         content.setSpacing(20);
-        if (annonce.getUserId() != currentUser.getId()) {
-            Button buyBtn = new Button("Buy Now");
-            buyBtn.getStyleClass().add("buy-btn");
-            buyBtn.setOnAction(e -> handleBuyAnnouncement(annonce));
-            details.getChildren().add(buyBtn);
-        }
 
         card.getChildren().add(content);
         annoncesGrid.add(card, 0, row);
 
     }
+
+
+    private void handleAddToCart(Annonce annonce) {
+        try {
+            // 1) persist to your commande table (adds or updates the JSON quantity)
+            new CommandeService()
+                    .addOrUpdateCommande(currentUser.getId(),
+                            annonce.getId(),
+                            1);
+
+            // 2) update the red badge in the dashboard
+            if (dashboardController != null) {
+                dashboardController.incrementCartCount();
+            }
+
+        } catch (SQLException e) {
+            showError("Could not add to cart: " + e.getMessage());
+        }
+    }
+
+
+
 
     private void handleBuyAnnouncement(Annonce annonce) {
         try {

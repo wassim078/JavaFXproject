@@ -2,6 +2,7 @@ package com.example.livecycle.controllers.frontoffice;
 
 import com.example.livecycle.controllers.auth.LoginController;
 import com.example.livecycle.entities.User;
+import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.UserService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +31,11 @@ public class UserDashboardController {
     @FXML private MenuButton reclamationBtn;
     @FXML private Button commandBtn;
     @FXML private Button forumBtn;
+    @FXML private StackPane cartBadge;
+    @FXML private Label cartCountLabel;
+    private int            cartCount = 0;
+
+    private final CommandeService commandeService = new CommandeService();
 
 
     @FXML
@@ -43,13 +50,24 @@ public class UserDashboardController {
     private final UserService userService = new UserService();
 
 
+    private void configureMenuBasedOnRoles() {
+        if (currentUser != null) {
+            boolean isEnterprise = hasRole("ROLE_ENTREPRISE");
 
+            // Hide "My Announcements" menu item
+            annonceBtn.getItems().get(0).setVisible(!isEnterprise); // Index 0 is "My Announcements"
+
+            // Also hide other UI elements if needed
+        }
+    }
     public void initialize() {
         // Set initial active state
         setActiveButton(dashboardBtn);
         loadInitialView();
         setupAvatarClipping();
         createProfileMenu();
+        configureMenuBasedOnRoles();
+        cartBadge.setVisible(false);
     }
 
 
@@ -145,7 +163,28 @@ public class UserDashboardController {
     public void initData(User user) {
         this.currentUser = user;
         loadUserAvatar();
+        loadCartCount();
     }
+
+    void loadCartCount() {
+        try {
+            int total = commandeService.getTotalQuantityByUser(currentUser.getId());
+            updateCartBadge(total);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateCartBadge(int count) {
+        cartCount = count;
+        cartCountLabel.setText(String.valueOf(count));
+        cartBadge.setVisible(count > 0);
+    }
+
+    public void incrementCartCount() {
+        updateCartBadge(cartCount + 1);
+    }
+
 
     private void loadUserAvatar() {
         try {
@@ -258,6 +297,7 @@ public class UserDashboardController {
 
             AnnonceManagementController controller = loader.getController();
             controller.setCurrentUser(currentUser);
+            controller.setDashboardController(this);
 
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
@@ -267,10 +307,23 @@ public class UserDashboardController {
     }
 
 
-    public void showCommandManagement(ActionEvent actionEvent) {
+    public void showCommandManagement(ActionEvent actionEvent) throws IOException {
         refreshCurrentUser();
         setActiveButton(commandBtn);
-        loadView("/com/example/livecycle/frontoffice/commande_management.fxml");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/com/example/livecycle/frontoffice/commande_management.fxml"
+        ));
+
+        Parent cartPane = loader.load();
+
+// ✏️ **Right here, after loader.load():**
+        CommandeManagementController cmc = loader.getController();
+        cmc.initData(currentUser, this/*your dashboard controller*/);
+
+// Now swap it in:
+        contentArea.getChildren().setAll(cartPane);
+
     }
     public void showForumManagement(ActionEvent actionEvent) {
         refreshCurrentUser();
@@ -395,6 +448,15 @@ public class UserDashboardController {
 
 
     public void showMyAnnouncements(ActionEvent event) {
+
+        if (hasRole("ROLE_ENTREPRISE")) {
+            showLoadError("Access Denied", new Exception("Enterprise users cannot access My Announcements"));
+            return;
+        }
+
+
+
+
         setActiveButton(annonceBtn);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/my_announcements.fxml"));
@@ -411,7 +473,11 @@ public class UserDashboardController {
 
 
 
-
+    private boolean hasRole(String role) {
+        return currentUser != null &&
+                currentUser.getRoles() != null &&
+                currentUser.getRoles().contains(role);
+    }
 
 
 

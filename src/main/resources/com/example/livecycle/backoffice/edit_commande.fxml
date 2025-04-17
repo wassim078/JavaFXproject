@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.ButtonBar.ButtonData?>
+<?import javafx.geometry.Insets?>
+
+<DialogPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.backoffice.EditCommandeController"
+            style="-fx-pref-width: 600;">
+
+    <header>
+        <Label text="Modifier la Commande"
+               style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+    </header>
+
+    <content>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <children>
+                <!-- Colonne gauche -->
+                <Label text="Client:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="clientField" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                <Label text="Adresse:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextArea fx:id="adresseField" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2"
+                          style="-fx-pref-height: 80;"/>
+
+                <Label text="Téléphone:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="phoneField" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                <!-- Colonne droite -->
+                <Label text="Méthode paiement:" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                <ComboBox fx:id="detailPaiementCombo" />
+
+                <Label text="État commande:" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+                <ComboBox fx:id="etatCombo" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+
+                <Label text="Date commande:" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+                <DatePicker fx:id="datePicker" GridPane.rowIndex="2" GridPane.columnIndex="4"/>
+
+                <Label text="Total (DH):" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="totalField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            </children>
+        </GridPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType text="Enregistrer" buttonData="OK_DONE"/>
+        <ButtonType text="Annuler" buttonData="CANCEL_CLOSE"/>
+    </buttonTypes>
+</DialogPane>

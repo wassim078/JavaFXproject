@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import com.example.livecycle.entities.Commande?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.livecycle.controllers.backoffice.CommandeManagement"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.backoffice.CommandeManagementController"
+      spacing="15"
+      style="-fx-padding: 25; -fx-background-color: #f8f9fa;">
 
-</AnchorPane>
+    <stylesheets>
+        <URL value="@../css/commande.css" />
+    </stylesheets>
+
+    <Label text="Gestion des Commandes"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+        <TableView fx:id="commandeTableView" prefHeight="450">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" minWidth="50">
+                    <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="clientNameColumn" text="Prénom" prefWidth="150">
+                    <cellValueFactory><PropertyValueFactory property="clientName"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="clientFamilyNameColumn" text="Nom" prefWidth="150">
+                    <cellValueFactory><PropertyValueFactory property="clientFamilyName"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="methodePaiementColumn" text="Paiement" prefWidth="150">
+                    <cellValueFactory><PropertyValueFactory property="methodePaiement"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="dateColumn" text="Date" prefWidth="150">
+                    <cellValueFactory><PropertyValueFactory property="date"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="etatCommandeColumn" text="État" prefWidth="100">
+                    <cellValueFactory><PropertyValueFactory property="etatCommande"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </ScrollPane>
+</VBox>

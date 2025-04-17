@@ -183,7 +183,7 @@ public class UserService implements Service<User> {
             pstmt.setString(1, user.getPrenom());
             pstmt.setString(2, user.getNom());
             pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getPassword()); // This is crucial
+            pstmt.setString(4, user.getPassword());
             pstmt.setString(5, user.getAdresse());
             pstmt.setString(6, user.getTelephone());
             pstmt.setString(7, user.getImage());

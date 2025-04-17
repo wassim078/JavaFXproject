@@ -131,3 +131,49 @@
     -fx-border-radius: 5;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
 }
+.add-to-cart-btn {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 8 20;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+
+.add-to-cart-btn:hover {
+    -fx-background-color: #1976D2;
+}
+/* cart.css */
+
+.cart-itemRow {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-background-radius: 5;
+  -fx-padding: 10;
+}
+
+.cart-thumb {
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+  -fx-border-radius: 3;
+}
+
+.cart-title {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+.cart-unitPrice, .cart-subtotal {
+  -fx-font-size: 12px;
+  -fx-text-fill: #555;
+}
+
+.cart‑qtyBox {
+  -fx-alignment: center;
+}
+
+.cart‑btn {
+  -fx-background-color: #f0f0f0;
+  -fx-border-radius: 3;
+  -fx-background-radius: 3;
+  -fx-padding: 2 6 2 6;
+}
