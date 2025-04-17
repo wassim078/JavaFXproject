@@ -18,6 +18,7 @@ public class CommandeService implements Service<Commande> {
     );
 
     // Default values for cart insertion
+
     private static final String DEFAULT_CLIENT_NAME          = "";
     private static final String DEFAULT_CLIENT_FAMILY_NAME   = "";
     private static final String DEFAULT_CLIENT_ADDRESS       = "";
