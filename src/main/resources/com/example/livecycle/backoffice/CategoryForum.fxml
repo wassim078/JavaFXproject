@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="594.0" prefWidth="859.0" styleClass="form_container" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.backoffice.CategoryForumController">
+<AnchorPane prefHeight="594.0" prefWidth="859.0" styleClass="form_container"  xmlns="http://javafx.com/javafx/20.0.2"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.backoffice.CategoryForumController">
    <children>
       <VBox layoutX="14.0" layoutY="107.0" prefHeight="300.0" prefWidth="300.0" spacing="15.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="110.0">
          <children>

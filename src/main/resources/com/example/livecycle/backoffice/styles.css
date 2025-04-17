@@ -1,98 +1,81 @@
-/* style.css */
-
 /* Style global */
-.form_container {
+.form-container {
     -fx-background-color: #f5f6fa;
+    -fx-padding: 20px;
 }
 
-/* Titre */
-.title {
-    -fx-text-fill: #2d3436;
+/* Titre principal */
+.main-title {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-font-family: 'Segoe UI';
+    -fx-text-fill: #2d3436;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);
 }
 
-/* Conteneur des champs */
-VBox {
+/* Champs de saisie */
+.modern-input {
     -fx-background-color: white;
-    -fx-background-radius: 10px;
-    -fx-padding: 20px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
-}
-
-/* TextFields */
-TextField {
-    -fx-background-color: #f8f9fa;
     -fx-border-color: #dcdde1;
     -fx-border-radius: 5px;
-    -fx-pref-height: 35px;
+    -fx-padding: 8px;
     -fx-font-size: 14px;
 }
 
-/* TableView */
-.table-view {
-    -fx-background-radius: 10px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);
+.input-label {
+    -fx-font-weight: 600;
+    -fx-text-fill: #2d3436;
+    -fx-font-size: 14px;
 }
 
-.table-view .column-header {
-    -fx-background-color: #487eb0;
+/* Tableau */
+.modern-table {
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+.table-column {
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: #3498db;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: #f8f9fa;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: #e3f2fd;
 }
 
 /* Boutons */
-.button-bar {
-    -fx-padding: 15px 0;
-}
-
-.button {
-    -fx-background-radius: 8px;
-    -fx-pref-width: 100px;
-    -fx-pref-height: 40px;
+.primary-btn {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-cursor: hand;
-    -fx-transition: all 0.3s;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
 }
 
-#btnSave {
-    -fx-background-color: #4CAF50;
+.secondary-btn {
+    -fx-background-color: #2ecc71;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
 }
 
-#btnUpdate {
-    -fx-background-color: #2196F3;
-    -fx-text-fill: white;
-}
-
-#btnDelete {
+.danger-btn {
     -fx-background-color: #e74c3c;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
 }
 
-#btnClear {
-    -fx-background-color: #bdc3c7;
-    -fx-text-fill: #2d3436;
+.neutral-btn {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
 }
 
+/* Effets au survol */
 .button:hover {
     -fx-opacity: 0.9;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-}
-
-/* Textes labels */
-Text {
-    -fx-fill: #636e72;
-    -fx-font-size: 14px;
-    -fx-font-family: 'Segoe UI';
+    -fx-cursor: hand;
 }

@@ -15,6 +15,7 @@ module com.example.livecycle {
 
 
     opens com.example.livecycle to javafx.fxml;
+
     exports com.example.livecycle;
     exports com.example.livecycle.entities;
     exports com.example.livecycle.controllers.backoffice;
