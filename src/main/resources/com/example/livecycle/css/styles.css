@@ -37,3 +37,80 @@
     -fx-cursor: hand;
 
 }
+/* Style général */
+.form_container {
+    -fx-background-color: #F8F9FA;
+    -fx-padding: 20px;
+}
+
+/* Titre */
+.title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #2D3436;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 0 0 20px 0;
+}
+
+/* Champs de formulaire */
+TextField {
+    -fx-pref-height: 40px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #DEE2E6;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+Text {
+    -fx-fill: #6C757D;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Tableau */
+TableView {
+    -fx-border-color: #E9ECEF;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 0);
+}
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+}
+
+/* Boutons */
+#btnSave {
+    -fx-background-color: #28A745;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+#btnUpdate {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+#btnDelete {
+    -fx-background-color: #DC3545;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+#btnClear {
+    -fx-background-color: #6C757D;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+ButtonBar {
+    -fx-spacing: 15px;
+    -fx-padding: 20px 0 0 0;
+}
