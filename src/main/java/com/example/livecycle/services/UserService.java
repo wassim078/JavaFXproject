@@ -10,9 +10,18 @@ import java.util.UUID;
 
 
 public class UserService implements Service<User> {
+
+
+
     private static final String UPDATE_USER_SQL = "UPDATE user SET " +
             "prenom = ?, nom = ?, email = ?, password = ?, adresse = ?, telephone = ?, image = ? " +
             "WHERE id = ?";
+
+    private static final String UPDATE_USER_SQL2 = "UPDATE user SET prenom = ?, nom = ?, email = ?, password = ?, adresse = ?, telephone = ?, roles = ?, image = ? WHERE id = ?";
+
+
+
+
 
 
     private static final String INSERT_USER_SQL = "INSERT INTO user " +
@@ -21,13 +30,20 @@ public class UserService implements Service<User> {
 
     private static final String SELECT_USER_BY_ID = "SELECT * FROM user WHERE id = ?";
 
-    private static final String UPDATE_USER_SQL2 = "UPDATE user SET prenom = ?, nom = ?, email = ?, password = ?, adresse = ?, telephone = ?, roles = ?, image = ? WHERE id = ?";
+
 
     private static final String DELETE_USER = "DELETE FROM user WHERE id = ?";
 
     String sql = "SELECT * FROM user WHERE email = ?";
 
     private static final String SELECT_ALL_USERS = "SELECT * FROM user";
+
+
+
+
+
+
+
 
     @Override
     public boolean ajouter(User user) throws SQLException {

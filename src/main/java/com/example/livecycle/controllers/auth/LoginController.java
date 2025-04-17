@@ -210,7 +210,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     @FXML
     private void handleLogin() throws IOException {
         clearErrors();
-        
+
 
         // 2. Validate other fields
         String email = emailField.getText().trim();
