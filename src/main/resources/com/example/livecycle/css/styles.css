@@ -1,0 +1,116 @@
+.title{
+    -fx-font-size: 2em;
+    -fx-text-fill: #016A91;
+    -fx-font-weight: bold;
+
+}
+.form_container{
+    -fx-background-color: #EEEEE;
+}
+.form_container Text{
+    -fx-font-size: 1.2em;
+    -fx-fill: #888888;
+}
+.form_container VBox{
+    -fx-border-width: 0 0 0 1;
+    -fx-border-width: #000000;
+    -fx-padding: 10;
+    -fx-spacing: 15;
+}
+.form_container TextField{
+    -fx-pref-height: 250;
+    -fx-pref-height: 35;
+    -fx-background-color: #FFFFFF;
+    -fx-font-size: 1.3em;
+    -fx-effect: dropshadow(three-pass-box,#AAAAAA,3,0,0,3);
+}
+
+.form_container Button{
+    -fx-background-color: Linear-gradient(to right,#0A3353,#016A91);
+    -fx-effect: dropshadow(three-pass-box,#AAAAAA,3,0,0,3);
+    -fx-pref-width: 100;
+    -fx-font-size: 1.5em;
+    -fx-font-family: "Calibri Light";
+    -fx-text-fill: #FFFFFF;
+}
+.form_container Button:hover{
+    -fx-cursor: hand;
+
+}
+/* Style général */
+.form_container {
+    -fx-background-color: #F8F9FA;
+    -fx-padding: 20px;
+}
+
+/* Titre */
+.title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #2D3436;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 0 0 20px 0;
+}
+
+/* Champs de formulaire */
+TextField {
+    -fx-pref-height: 40px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #DEE2E6;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+Text {
+    -fx-fill: #6C757D;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Tableau */
+TableView {
+    -fx-border-color: #E9ECEF;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 0);
+}
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+}
+
+/* Boutons */
+#btnSave {
+    -fx-background-color: #28A745;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+#btnUpdate {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+#btnDelete {
+    -fx-background-color: #DC3545;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+#btnClear {
+    -fx-background-color: #6C757D;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+}
+
+ButtonBar {
+    -fx-spacing: 15px;
+    -fx-padding: 20px 0 0 0;
+}

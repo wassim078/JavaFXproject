@@ -192,7 +192,7 @@ public class AdminDashboardController {
     }
     @FXML private void showForumManagement(ActionEvent event) {
         setActiveButton((Button) event.getSource());
-        loadContent("/com/example/livecycle/backoffice/commande_management.fxml");
+        loadContent("/com/example/livecycle/backoffice/forum_management.fxml");
         hideProfileMenu();
     }
 

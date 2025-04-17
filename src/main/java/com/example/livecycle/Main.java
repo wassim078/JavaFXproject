@@ -19,6 +19,7 @@ private LoginController loginController;
         hostServices = getHostServices();
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com/example/livecycle/auth/register.fxml"));
+
         Scene scene = new Scene(fxmlLoader.load(),700, 600);
 
         Object controller = fxmlLoader.getController();

@@ -2,8 +2,6 @@ package com.example.livecycle.controllers.frontoffice;
 
 import com.example.livecycle.controllers.auth.LoginController;
 import com.example.livecycle.entities.User;
-import com.example.livecycle.services.CommandeService;
-import com.example.livecycle.services.UserService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,23 +18,16 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 public class UserDashboardController {
     @FXML private Button dashboardBtn;
-    @FXML private MenuButton collectBtn;
-    @FXML private MenuButton annonceBtn;
+    @FXML private Button collectBtn;
+    @FXML private Button annonceBtn;
     @FXML private MenuButton reclamationBtn;
     @FXML private Button commandBtn;
     @FXML private Button forumBtn;
-    @FXML private StackPane cartBadge;
-    @FXML private Label cartCountLabel;
-    private int            cartCount = 0;
-
-    private final CommandeService commandeService = new CommandeService();
-
 
     @FXML
     private ImageView userPhoto;
@@ -47,27 +38,13 @@ public class UserDashboardController {
     private ContextMenu profileMenu;
     private MenuItem editProfileItem;
     private MenuItem notificationsItem;
-    private final UserService userService = new UserService();
 
-
-    private void configureMenuBasedOnRoles() {
-        if (currentUser != null) {
-            boolean isEnterprise = hasRole("ROLE_ENTREPRISE");
-
-            // Hide "My Announcements" menu item
-            annonceBtn.getItems().get(0).setVisible(!isEnterprise); // Index 0 is "My Announcements"
-
-            // Also hide other UI elements if needed
-        }
-    }
     public void initialize() {
         // Set initial active state
         setActiveButton(dashboardBtn);
         loadInitialView();
         setupAvatarClipping();
         createProfileMenu();
-        configureMenuBasedOnRoles();
-        cartBadge.setVisible(false);
     }
 
 
@@ -112,7 +89,6 @@ public class UserDashboardController {
     }
 
     private void showEditProfile() {
-        refreshCurrentUser();
         showEditUser();
         System.out.println("Edit Profile clicked");
     }
@@ -163,28 +139,7 @@ public class UserDashboardController {
     public void initData(User user) {
         this.currentUser = user;
         loadUserAvatar();
-        loadCartCount();
     }
-
-    void loadCartCount() {
-        try {
-            int total = commandeService.getTotalQuantityByUser(currentUser.getId());
-            updateCartBadge(total);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateCartBadge(int count) {
-        cartCount = count;
-        cartCountLabel.setText(String.valueOf(count));
-        cartBadge.setVisible(count > 0);
-    }
-
-    public void incrementCartCount() {
-        updateCartBadge(cartCount + 1);
-    }
-
 
     private void loadUserAvatar() {
         try {
@@ -248,100 +203,36 @@ public class UserDashboardController {
 
     // Méthodes de navigation
     public void showDashboard(ActionEvent actionEvent) {
-        refreshCurrentUser();
         setActiveButton(dashboardBtn);
         loadView("/com/example/livecycle/frontoffice/dashboard.fxml");
     }
 
-
-
-
-    public void showMyCollects(ActionEvent actionEvent) {
-        refreshCurrentUser();
+    public void showCollectManagement(ActionEvent actionEvent) {
         setActiveButton(collectBtn);
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/showMyCollects.fxml"));
-            Parent view = loader.load();
-
-            // Get the controller and set the current user
-            ShowMyCollectsController controller = loader.getController();
-            controller.setCurrentUser(currentUser);
-
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showLoadError("My Collects", e);
-        }
+        loadView("/com/example/livecycle/backoffice/collect_management.fxml");
     }
 
-
-    public void showAllCollects(ActionEvent actionEvent) {
-        refreshCurrentUser();
-        setActiveButton(collectBtn);
-        loadView("/com/example/livecycle/frontoffice/showAllCollects.fxml");
-    }
-
-
-
-
-
-
-
-
-
-    public void showAnnouncementShop(ActionEvent event) {
+    public void showAnnonceManagement(ActionEvent actionEvent) {
         setActiveButton(annonceBtn);
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/annonce_management.fxml"));
-            Parent view = loader.load();
-
-            AnnonceManagementController controller = loader.getController();
-            controller.setCurrentUser(currentUser);
-            controller.setDashboardController(this);
-
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            showLoadError("Announcement Shop", e);
-        }
-
+        loadView("/com/example/livecycle/backoffice/annonce_management.fxml");
     }
 
 
-    public void showCommandManagement(ActionEvent actionEvent) throws IOException {
-        refreshCurrentUser();
+    public void showCommandManagement(ActionEvent actionEvent) {
         setActiveButton(commandBtn);
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/com/example/livecycle/frontoffice/commande_management.fxml"
-        ));
-
-        Parent cartPane = loader.load();
-
-// ✏️ **Right here, after loader.load():**
-        CommandeManagementController cmc = loader.getController();
-        cmc.initData(currentUser, this/*your dashboard controller*/);
-
-// Now swap it in:
-        contentArea.getChildren().setAll(cartPane);
-
+        loadView("/com/example/livecycle/backoffice/commande_management.fxml");
     }
     public void showForumManagement(ActionEvent actionEvent) {
-        refreshCurrentUser();
         setActiveButton(forumBtn);
-        loadView("/com/example/livecycle/frontoffice/forum_management.fxml");
+        loadView("/com/example/livecycle/frontoffice/UserCategoryView.fxml");
     }
     public void showEditUser() {
         deleteActiveButton();
         try {
-            // Always get fresh data before showing edit form
-            refreshCurrentUser();
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/edit_profile.fxml"));
             Parent view = loader.load();
-
             EditProfileController controller = loader.getController();
-            controller.initData(currentUser, this);
-
+            controller.initData(currentUser,this);
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
             showLoadError("Edit Profile", e);
@@ -435,52 +326,6 @@ public class UserDashboardController {
     public void refreshUserAvatar() {
         loadUserAvatar();
     }
-
-
-
-
-    public void refreshCurrentUser() {
-        User freshUser = userService.getUser(currentUser.getId());
-        if (freshUser != null) {
-            this.currentUser = freshUser;
-        }
-    }
-
-
-    public void showMyAnnouncements(ActionEvent event) {
-
-        if (hasRole("ROLE_ENTREPRISE")) {
-            showLoadError("Access Denied", new Exception("Enterprise users cannot access My Announcements"));
-            return;
-        }
-
-
-
-
-        setActiveButton(annonceBtn);
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/my_announcements.fxml"));
-            Parent view = loader.load();
-
-            MyAnnouncementsController controller = loader.getController();
-            controller.setCurrentUser(currentUser);
-
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            showLoadError("My Announcements", e);
-        }
-    }
-
-
-
-    private boolean hasRole(String role) {
-        return currentUser != null &&
-                currentUser.getRoles() != null &&
-                currentUser.getRoles().contains(role);
-    }
-
-
-
 
 }
 
