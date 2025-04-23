@@ -157,10 +157,12 @@
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>24.4.0</version>
+            <version>24.9.0</version> <!-- ou la dernière version -->
         </dependency>
 
     </dependencies>
+
+
 
     <build>
         <resources>

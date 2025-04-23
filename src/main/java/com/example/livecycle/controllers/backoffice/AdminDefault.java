@@ -1,5 +1,6 @@
 package com.example.livecycle.controllers.backoffice;
 
+import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.UserService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,15 +16,90 @@ import java.util.Map;
 public class AdminDefault {
     @FXML private LineChart<String, Number> registrationChart;
     @FXML private ComboBox<String> periodSelector;
+    @FXML private PieChart paymentMethodChart;
+    @FXML private ComboBox<String> commandesPeriodSelector;
+    @FXML private LineChart<String, Number> commandesChart;
     @FXML private VBox chartContainer;
     @FXML private PieChart roleChart;
     private final UserService userService = new UserService();
-
+    private final CommandeService commandeService = new CommandeService();
     @FXML
     public void initialize() {
         setupPeriodSelector();
         loadChart("monthly");
         loadRoleDistribution();
+        setupCommandesPeriodSelector();
+        loadCommandesChart("monthly");
+        loadPaymentMethodDistribution();
+    }
+
+
+    private void loadPaymentMethodDistribution() {
+        Map<String, Integer> paymentData = commandeService.getPaymentMethodDistribution();
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+        Map<String, String> paymentColors = Map.of(
+                "E-paiement", "#4CAF50",
+                "à la livraison", "#2196F3"
+        );
+
+        paymentData.forEach((method, count) -> {
+            PieChart.Data data = new PieChart.Data(
+                    method + " (" + count + ")",
+                    count
+            );
+            pieChartData.add(data);
+
+            data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                if (newNode != null) {
+                    newNode.setStyle("-fx-pie-color: " + paymentColors.get(method) + ";");
+                }
+            });
+        });
+
+        paymentMethodChart.setData(pieChartData);
+    }
+
+
+    private void setupCommandesPeriodSelector() {
+        commandesPeriodSelector.setItems(FXCollections.observableArrayList(
+                "Daily", "Weekly", "Monthly"
+        ));
+        commandesPeriodSelector.getSelectionModel().select("Monthly");
+
+        commandesPeriodSelector.valueProperty().addListener((obs, oldVal, newVal) -> {
+            loadCommandesChart(newVal.toLowerCase());
+        });
+    }
+
+
+    private void loadCommandesChart(String period) {
+        commandesChart.getData().clear();
+        Map<String, Integer> data = commandeService.getCommandesTrend(period);
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Commandes");
+
+        data.forEach((key, value) ->
+                series.getData().add(new XYChart.Data<>(key, value))
+        );
+
+        commandesChart.getData().add(series);
+        applyCommandesChartStyles();
+    }
+
+
+
+    private void applyCommandesChartStyles() {
+        commandesChart.setStyle("-fx-chart-background-color: #f8f9fa;");
+        commandesChart.lookup(".chart-plot-background")
+                .setStyle("-fx-background-color: transparent;");
+
+        // Set line color
+        for (XYChart.Series<String, Number> s : commandesChart.getData()) {
+            s.getNode().lookup(".chart-series-line")
+                    .setStyle("-fx-stroke: #2196F3; -fx-stroke-width: 2px;");
+        }
     }
 
 

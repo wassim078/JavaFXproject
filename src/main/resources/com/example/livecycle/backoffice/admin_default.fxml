@@ -5,30 +5,34 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1"
+<ScrollPane xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.backoffice.AdminDefault"
             stylesheets="@../css/dashboard_default.css"
-            prefHeight="800" prefWidth="1200">
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            prefViewportWidth="1200"
+            prefViewportHeight="800">
 
-    <VBox spacing="20" style="-fx-padding: 20;" AnchorPane.topAnchor="0"
-          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
-
+    <VBox spacing="25" style="-fx-padding: 25;" maxWidth="1200">
         <!-- User Management Section -->
-        <VBox styleClass="module-container" spacing="10">
+        <VBox styleClass="module-container" spacing="15">
             <Label text="User Management Statistics" styleClass="module-title"/>
 
-            <HBox spacing="20" alignment="CENTER_LEFT">
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 0 0 15 0;">
                 <ComboBox fx:id="periodSelector" prefWidth="200" styleClass="chart-control"/>
             </HBox>
 
-            <HBox spacing="30" style="-fx-padding: 10px 0;">
+            <HBox spacing="30" alignment="CENTER_LEFT">
                 <LineChart fx:id="registrationChart" title="Registration Trend"
-                           styleClass="animated-chart" prefWidth="700" prefHeight="400">
+                           styleClass="animated-chart" prefWidth="800" prefHeight="400"
+                           maxWidth="1100" HBox.hgrow="ALWAYS">
                     <xAxis>
                         <CategoryAxis label="Period" />
                     </xAxis>
@@ -38,20 +42,39 @@
                 </LineChart>
 
                 <PieChart fx:id="roleChart" title="Role Distribution"
-                          styleClass="role-chart" prefWidth="400" prefHeight="400"/>
+                          styleClass="role-chart" prefWidth="350" prefHeight="400"
+                          maxWidth="400" HBox.hgrow="ALWAYS"/>
             </HBox>
         </VBox>
 
-        <!-- Other Sections -->
-        <VBox styleClass="module-container" spacing="10">
+        <!-- Commandes Section -->
+        <VBox styleClass="module-container" spacing="15">
             <Label text="Commandes Management Statistics" styleClass="module-title"/>
-            <!-- Teammate content here -->
+
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 0 0 15 0;">
+                <ComboBox fx:id="commandesPeriodSelector" prefWidth="200" styleClass="chart-control"/>
+            </HBox>
+
+            <LineChart fx:id="commandesChart" title="Commandes Trend"
+                       styleClass="animated-chart" prefWidth="1100" prefHeight="400"
+                       maxWidth="1200" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Period" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Number of Commandes" />
+                </yAxis>
+            </LineChart>
+
+            <PieChart fx:id="paymentMethodChart" title="Payment Methods Distribution"
+                      styleClass="payment-chart" prefWidth="400" prefHeight="400"
+                      maxWidth="400" HBox.hgrow="ALWAYS"/>
         </VBox>
 
-        <VBox styleClass="module-container" spacing="10">
+        <!-- Annonces Section -->
+        <VBox styleClass="module-container" spacing="15">
             <Label text="Annonces Management Statistics" styleClass="module-title"/>
-            <!-- Teammate content here -->
+            <!-- Content here -->
         </VBox>
-
     </VBox>
-</AnchorPane>
+</ScrollPane>

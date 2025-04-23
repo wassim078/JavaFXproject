@@ -6,9 +6,7 @@ import org.json.JSONObject;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CommandeService implements Service<Commande> {
     // Constants
@@ -197,4 +195,55 @@ public class CommandeService implements Service<Commande> {
     public static List<String> getOrderStates() {
         return ORDER_STATES;
     }
+
+
+    public Map<String, Integer> getCommandesTrend(String period) {
+        Map<String, Integer> trendData = new LinkedHashMap<>();
+        String sql = "";
+
+        switch (period.toLowerCase()) {
+            case "daily":
+                sql = "SELECT DATE(date) as day, COUNT(*) FROM commande GROUP BY day ORDER BY day";
+                break;
+            case "weekly":
+                sql = "SELECT YEARWEEK(date) as week, COUNT(*) FROM commande GROUP BY week ORDER BY week";
+                break;
+            case "monthly":
+                sql = "SELECT DATE_FORMAT(date, '%Y-%m') as month, COUNT(*) FROM commande GROUP BY month ORDER BY month";
+                break;
+        }
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                trendData.put(rs.getString(1), rs.getInt(2));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return trendData;
+    }
+
+
+    public Map<String, Integer> getPaymentMethodDistribution() {
+        Map<String, Integer> distribution = new HashMap<>();
+        String sql = "SELECT methode_paiement, COUNT(*) FROM commande GROUP BY methode_paiement";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                distribution.put(rs.getString(1), rs.getInt(2));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return distribution;
+    }
+
 }
