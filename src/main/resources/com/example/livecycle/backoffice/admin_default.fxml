@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.backoffice.AdminDefault"
-            prefHeight="400.0" prefWidth="600.0">
+            stylesheets="@../css/dashboard_default.css"
+            prefHeight="600" prefWidth="800">
+
+    <VBox spacing="20" style="-fx-padding: 20;" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 10 0;">
+            <ComboBox fx:id="periodSelector" prefWidth="150" styleClass="chart-control"/>
+        </HBox>
+
+        <LineChart fx:id="registrationChart" title="User Registration Trend"
+                   styleClass="animated-chart" animated="true"
+                   createSymbols="true" alternativeRowFillVisible="false">
+            <xAxis>
+                <CategoryAxis label="Period" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="Registrations" />
+            </yAxis>
+        </LineChart>
+    </VBox>
 
 </AnchorPane>

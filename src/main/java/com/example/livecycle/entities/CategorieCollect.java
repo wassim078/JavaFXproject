@@ -6,49 +6,36 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class CategorieCollect {
-    private int id;
-    private String nom;
-    private String description;
 
-    public int getId() {
-        return id;
-    }
+    private final IntegerProperty id = new SimpleIntegerProperty();
+    private final StringProperty nom = new SimpleStringProperty();
+    private final StringProperty description = new SimpleStringProperty();
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public IntegerProperty idProperty() { return id; }
+    public StringProperty nomProperty() { return nom; }
+    public StringProperty descriptionProperty() { return description; }
 
-    public String getNom() {
-        return nom;
-    }
+    // Regular getters/setters
+    public int getId() { return id.get(); }
+    public void setId(int id) { this.id.set(id); }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+    public String getNom() { return nom.get(); }
+    public void setNom(String nom) { this.nom.set(nom); }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description.get(); }
+    public void setDescription(String description) { this.description.set(description); }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     // Constructeurs
     public CategorieCollect() {}
 
-    public CategorieCollect(int id, String nom, String description) {
-        this.id = id;
-        this.nom = nom;
-        this.description = description;
+    public CategorieCollect(String nom, String description) {
+        this.nom.set(nom);
+        this.description.set(description);
     }
-
-    // Getters/Setters Property
-
-
 
     @Override
     public String toString() {
-        return this.nom;
+        return getNom();  // Properly returns the String value
     }
 }

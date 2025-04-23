@@ -20,15 +20,25 @@ public class CategorieCollectService implements Service<CategorieCollect> {
     }
 
     @Override
-    public boolean modifier(CategorieCollect categorieCollect) throws SQLException {
-        return false;
+    public boolean modifier(CategorieCollect categorie) throws SQLException {
+        String query = "UPDATE categorie_collect SET nom = ?, description = ? WHERE id = ?";
+        try (PreparedStatement ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query)) {
+            ps.setString(1, categorie.getNom());
+            ps.setString(2, categorie.getDescription());
+            ps.setInt(3, categorie.getId());
+            return ps.executeUpdate() > 0;
+        }
     }
+
 
     @Override
     public boolean supprimer(int id) throws SQLException {
-        return false;
+        String query = "DELETE FROM categorie_collect WHERE id = ?";
+        try (PreparedStatement ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        }
     }
-
     @Override
     public List<CategorieCollect> recuperer() throws SQLException {
         List<CategorieCollect> categories = new ArrayList<>();

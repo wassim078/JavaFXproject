@@ -4,9 +4,7 @@ import com.example.livecycle.entities.User;
 import com.example.livecycle.utils.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class UserService implements Service<User> {
@@ -461,7 +459,29 @@ public class UserService implements Service<User> {
         return false;
     }
 
+    public Map<String, Integer> getRegistrationTrend(String period) {
+        Map<String, Integer> trend = new LinkedHashMap<>();
+        String sql = "SELECT DATE_FORMAT(created_at, ?) AS period, COUNT(*) AS count "
+                + "FROM user "
+                + "WHERE created_at >= NOW() - INTERVAL 6 MONTH "  // Only show last 6 months
+                + "GROUP BY period ORDER BY period";
 
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            String dateFormat = period.equals("daily") ? "%Y-%m-%d" : "%Y-%m";
+            pstmt.setString(1, dateFormat);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    trend.put(rs.getString("period"), rs.getInt("count"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trend;
+    }
 
 
 

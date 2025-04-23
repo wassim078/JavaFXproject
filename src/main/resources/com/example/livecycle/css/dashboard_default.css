@@ -1,0 +1,99 @@
+/* Chart Container Styles */
+.anchor-pane {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Chart Title */
+.animated-chart .title {
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 15px 0;
+}
+
+/* Axis Styles */
+.axis {
+    -fx-tick-label-fill: #7f8c8d;
+    -fx-font-size: 12px;
+}
+
+.axis-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #34495e;
+}
+
+/* Chart Lines and Symbols */
+.chart-series-line {
+    -fx-stroke-width: 2px;
+    -fx-stroke: #3498db;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.15), 6, 0.5, 0, 0);
+}
+
+.chart-line-symbol {
+    -fx-background-color: #3498db, #ffffff;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px;
+}
+
+/* Hover Effects */
+.chart-line-symbol:hover {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+    -fx-cursor: hand;
+}
+
+/* ComboBox Styling */
+.chart-control {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 4px;
+    -fx-padding: 6 12 6 12;
+    -fx-font-size: 13px;
+}
+
+.chart-control:hover {
+    -fx-border-color: #3498db;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.15), 8, 0.5, 0, 0);
+}
+
+/* Chart Legend */
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 20 0 0 0;
+}
+
+.chart-legend-item-symbol {
+    -fx-background-radius: 3px;
+}
+
+/* Animation Enhancements */
+.animated-chart {
+    -fx-animated: true;
+    -fx-legend-visible: true;
+    -fx-create-symbols: true;
+}
+
+/* Grid Lines */
+.chart-vertical-grid-lines {
+    -fx-stroke: #ecf0f1;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #ecf0f1;
+}
+
+.chart-legend > .label {
+    visibility: hidden;
+}
+
+/* Fix axis positioning */
+.axis:bottom {
+    -fx-tick-label-rotation: -45;
+    -fx-tick-label-font-size: 11px;
+}
+
+.axis:left {
+    -fx-tick-label-font-size: 12px;
+}
