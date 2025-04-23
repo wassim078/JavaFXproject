@@ -29,7 +29,7 @@ public class CategoryCollectManagement {
         loadCategories();
         categoryTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
-
+//conifgure Table
     private void configureTable() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
