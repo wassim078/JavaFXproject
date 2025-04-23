@@ -480,7 +480,7 @@ private void handleGoogleLogin() {
                     "google-auth", // Dummy password
                     "",
                     "",
-                    "[\"ROLE_USER\"]",
+                    "[\"ROLE_CLIENT\"]",
                     picture
             );
         } catch (InterruptedException e) {
