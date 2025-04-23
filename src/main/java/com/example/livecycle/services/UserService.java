@@ -2,6 +2,7 @@ package com.example.livecycle.services;
 
 import com.example.livecycle.entities.User;
 import com.example.livecycle.utils.DatabaseConnection;
+import org.json.JSONArray;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
 import java.util.*;
@@ -483,6 +484,23 @@ public class UserService implements Service<User> {
         return trend;
     }
 
+    public Map<String, Integer> getRoleDistribution() {
+        Map<String, Integer> roleCounts = new HashMap<>();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT roles FROM user")) {
 
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                JSONArray roles = new JSONArray(rs.getString("roles"));
+                for (int i = 0; i < roles.length(); i++) {
+                    String role = roles.getString(i);
+                    roleCounts.put(role, roleCounts.getOrDefault(role, 0) + 1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roleCounts;
+    }
 
 }

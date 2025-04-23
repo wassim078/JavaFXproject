@@ -1,99 +1,107 @@
-/* Chart Container Styles */
+/* Base Styles */
 .anchor-pane {
     -fx-background-color: #f8f9fa;
 }
 
-/* Chart Title */
-.animated-chart .title {
-    -fx-font-size: 1.2em;
-    -fx-font-weight: bold;
+/* Module Containers */
+.module-container {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0, 0, 3);
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+.module-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
     -fx-text-fill: #2c3e50;
-    -fx-padding: 0 0 15px 0;
+    -fx-padding: 0 0 20px 0;
 }
 
-/* Axis Styles */
-.axis {
-    -fx-tick-label-fill: #7f8c8d;
-    -fx-font-size: 12px;
+/* Chart Containers */
+.animated-chart, .role-chart {
+    -fx-background-color: transparent;
+    -fx-legend-visible: true;
+    -fx-legend-side: bottom;
+    -fx-padding: 15px;
 }
 
-.axis-label {
-    -fx-font-size: 13px;
+/* Line Chart Styling */
+.animated-chart .chart-title {
+    -fx-font-size: 18px;
     -fx-font-weight: 600;
     -fx-text-fill: #34495e;
 }
 
-/* Chart Lines and Symbols */
-.chart-series-line {
-    -fx-stroke-width: 2px;
-    -fx-stroke: #3498db;
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.15), 6, 0.5, 0, 0);
+.animated-chart .axis-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
 }
 
-.chart-line-symbol {
-    -fx-background-color: #3498db, #ffffff;
-    -fx-background-insets: 0, 2;
-    -fx-background-radius: 4px;
-    -fx-padding: 4px;
+.animated-chart .chart-series-line {
+    -fx-stroke-width: 3px;
+    -fx-stroke: #379623;
 }
 
-/* Hover Effects */
-.chart-line-symbol:hover {
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
-    -fx-cursor: hand;
+.animated-chart .chart-line-symbol {
+    -fx-background-color: #379623, #ffffff;
+    -fx-background-insets: 0, 3;
+    -fx-background-radius: 5px;
+    -fx-padding: 6px;
+}
+
+/* Pie Chart Styling */
+.role-chart .chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #34495e;
+}
+
+.role-chart .chart-pie-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-fill: #2c3e50;
+}
+
+.role-chart .chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 15 0 0 0;
+}
+
+.role-chart .chart-legend-item {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
 }
 
 /* ComboBox Styling */
 .chart-control {
     -fx-background-color: #ffffff;
     -fx-border-color: #bdc3c7;
-    -fx-border-radius: 4px;
-    -fx-padding: 6 12 6 12;
-    -fx-font-size: 13px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8 15;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
 }
 
 .chart-control:hover {
-    -fx-border-color: #3498db;
-    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.15), 8, 0.5, 0, 0);
+    -fx-border-color: #379623;
+    -fx-effect: dropshadow(gaussian, rgba(55,150,35,0.15), 8, 0.5, 0, 0);
 }
 
-/* Chart Legend */
-.chart-legend {
-    -fx-background-color: transparent;
-    -fx-padding: 20 0 0 0;
+/* Axis Styling */
+.axis {
+    -fx-tick-label-fill: #7f8c8d;
+    -fx-font-size: 13px;
 }
 
-.chart-legend-item-symbol {
-    -fx-background-radius: 3px;
-}
-
-/* Animation Enhancements */
-.animated-chart {
-    -fx-animated: true;
-    -fx-legend-visible: true;
-    -fx-create-symbols: true;
+.axis:bottom {
+    -fx-tick-label-rotation: -45;
 }
 
 /* Grid Lines */
-.chart-vertical-grid-lines {
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
     -fx-stroke: #ecf0f1;
-}
-
-.chart-horizontal-grid-lines {
-    -fx-stroke: #ecf0f1;
-}
-
-.chart-legend > .label {
-    visibility: hidden;
-}
-
-/* Fix axis positioning */
-.axis:bottom {
-    -fx-tick-label-rotation: -45;
-    -fx-tick-label-font-size: 11px;
-}
-
-.axis:left {
-    -fx-tick-label-font-size: 12px;
+    -fx-stroke-width: 1.5;
 }

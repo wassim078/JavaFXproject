@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;  // This is the crucial import
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -173,13 +174,19 @@ public class AdminDashboardController {
 
 
 
+    @FXML private void showMainDashboard(ActionEvent event) {
+        closeAllSubmenus();
+        setActiveButton((Button) event.getSource());
+        loadContent("/com/example/livecycle/backoffice/admin_dashboard.fxml");
+        hideProfileMenu();
 
+    }
 
 
     // Menu Action Handlers
     @FXML private void showDashboard(ActionEvent event) {
-        closeAllSubmenus();
         setActiveButton((Button) event.getSource());
+        closeAllSubmenus();
         loadContent("/com/example/livecycle/backoffice/admin_default.fxml");
         hideProfileMenu();
 

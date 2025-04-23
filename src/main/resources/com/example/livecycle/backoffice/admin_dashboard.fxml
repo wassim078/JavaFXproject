@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.backoffice.AdminDashboardController">
 
@@ -35,7 +36,7 @@
                 <!-- Profile Dropdown -->
                 <VBox fx:id="profileMenu" style="-fx-background-color: white; -fx-border-color: gray; -fx-spacing: 3; -fx-padding: 10;" styleClass="profile-menu" visible="false">
                     <Button onAction="#handleProfile" styleClass="menu-item" text="Profile" textFill="black" />
-                    <Button onAction="#handleLogout" styleClass="menu-item" text="Logout" textFill="black"/>
+                    <Button onAction="#handleLogout" styleClass="menu-item" text="Logout" textFill="black" />
                 </VBox>
             </StackPane>
         </HBox>
@@ -60,11 +61,11 @@
                 <Button fx:id="categoryManagementButton" onAction="#toggleCategorySubmenu" styleClass="menu-btn" text="Category Management">
 
                     <graphic>
-                        <ImageView fx:id="categoryArrow" fitWidth="12" fitHeight="12" />
+                        <ImageView fx:id="categoryArrow" fitHeight="12" fitWidth="12" />
                     </graphic>
 
                 </Button>
-                <VBox fx:id="categorySubmenu" visible="false" managed="false" styleClass="submenu" mouseTransparent="false">
+                <VBox fx:id="categorySubmenu" managed="false" mouseTransparent="false" styleClass="submenu" visible="false">
                     <Button onAction="#showCategoryForum" styleClass="submenu-btn" text="Category Forum" />
                     <Button onAction="#showCategoryCollect" styleClass="submenu-btn" text="Category Collect" />
                     <Button onAction="#showCategoryAnnonce" styleClass="submenu-btn" text="Category Annonce" />
@@ -83,7 +84,14 @@
 
     <!-- Center Content Area -->
     <center>
-        <StackPane fx:id="contentArea" prefHeight="503.0" prefWidth="725.0" />
+        <StackPane fx:id="contentArea" prefHeight="503.0" prefWidth="725.0">
+            <!-- Default Welcome Content -->
+            <VBox alignment="CENTER" spacing="20" style="-fx-padding: 40;">
+                <Text style="-fx-font-size: 32px; -fx-fill: #2c3e50; -fx-font-weight: bold;" text="Welcome to LiveCycle Admin Dashboard" />
+                <Text style="-fx-font-size: 16px; -fx-fill: #7f8c8d; -fx-text-alignment: center;" text="This is your central hub for managing all aspects of the LiveCycle application. Here you can monitor user activity, manage content categories, handle orders, and oversee community interactions. Use the navigation menu to access different management sections." textAlignment="CENTER" wrappingWidth="600" />
+
+            </VBox>
+        </StackPane>
     </center>
 
     <!-- CSS Styling -->

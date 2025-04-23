@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -11,25 +13,45 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.backoffice.AdminDefault"
             stylesheets="@../css/dashboard_default.css"
-            prefHeight="600" prefWidth="800">
+            prefHeight="800" prefWidth="1200">
 
-    <VBox spacing="20" style="-fx-padding: 20;" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+    <VBox spacing="20" style="-fx-padding: 20;" AnchorPane.topAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
-        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 10 0;">
-            <ComboBox fx:id="periodSelector" prefWidth="150" styleClass="chart-control"/>
-        </HBox>
+        <!-- User Management Section -->
+        <VBox styleClass="module-container" spacing="10">
+            <Label text="User Management Statistics" styleClass="module-title"/>
 
-        <LineChart fx:id="registrationChart" title="User Registration Trend"
-                   styleClass="animated-chart" animated="true"
-                   createSymbols="true" alternativeRowFillVisible="false">
-            <xAxis>
-                <CategoryAxis label="Period" />
-            </xAxis>
-            <yAxis>
-                <NumberAxis label="Registrations" />
-            </yAxis>
-        </LineChart>
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <ComboBox fx:id="periodSelector" prefWidth="200" styleClass="chart-control"/>
+            </HBox>
+
+            <HBox spacing="30" style="-fx-padding: 10px 0;">
+                <LineChart fx:id="registrationChart" title="Registration Trend"
+                           styleClass="animated-chart" prefWidth="700" prefHeight="400">
+                    <xAxis>
+                        <CategoryAxis label="Period" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Registrations" />
+                    </yAxis>
+                </LineChart>
+
+                <PieChart fx:id="roleChart" title="Role Distribution"
+                          styleClass="role-chart" prefWidth="400" prefHeight="400"/>
+            </HBox>
+        </VBox>
+
+        <!-- Other Sections -->
+        <VBox styleClass="module-container" spacing="10">
+            <Label text="Commandes Management Statistics" styleClass="module-title"/>
+            <!-- Teammate content here -->
+        </VBox>
+
+        <VBox styleClass="module-container" spacing="10">
+            <Label text="Annonces Management Statistics" styleClass="module-title"/>
+            <!-- Teammate content here -->
+        </VBox>
+
     </VBox>
-
 </AnchorPane>
