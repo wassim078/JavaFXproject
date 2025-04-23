@@ -1,0 +1,141 @@
+/* Base Styles */
+.root {
+    -fx-background-color: #F5F5F5;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* Shop Title */
+.shop-title {
+    -fx-font-size: 32px;
+    -fx-fill: #2F4F4F;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 0, 2, 0, 1);
+}
+
+/* Announcement Card */
+.annonce-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 2, 4);
+    -fx-padding: 15px;
+    -fx-spacing: 12px;
+    -fx-min-width: 360px;
+    -fx-max-width: 360px;
+    -fx-min-height: 400px; /* Adjust based on your content */
+    -fx-max-height: 400px;
+    -fx-transition: all 0.2s;
+    -fx-cursor: hand;
+}
+
+.annonce-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 4, 6);
+    -fx-translate-y: -2px;
+}
+
+/* Image Section */
+.annonce-image-container {
+    -fx-background-radius: 8px;
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-min-width: 320px;
+    -fx-max-width: 320px;
+    -fx-min-height: 200px;
+    -fx-max-height: 200px;
+}
+
+.annonce-image {
+    -fx-background-radius: 6px;
+    -fx-min-width: 320px;
+    -fx-max-width: 320px;
+    -fx-min-height: 200px;
+    -fx-max-height: 200px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 1, 2);
+    -fx-preserve-ratio: true;
+}
+
+/* Details Section */
+.detail-section {
+    -fx-spacing: 12px;
+    -fx-padding: 15px 0 0 20px;
+}
+
+.annonce-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-fill: #2d3436;
+    -fx-wrap-text: true;
+    -fx-max-width: 320px;
+}
+
+.price-section {
+    -fx-spacing: 8px;
+    -fx-padding: 0 0 0 20px;
+}
+
+.price-text {
+    -fx-font-size: 20px;
+    -fx-fill: #4CAF50;
+    -fx-font-weight: 800;
+}
+
+.quantity-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #757575;
+    -fx-font-style: italic;
+}
+
+/* Cart Icon Container */
+.cart-icon-container {
+    -fx-alignment: center-left;
+    -fx-padding: 8px 0;
+}
+
+.cart-icon-container:hover {
+    -fx-background-color: #45a049; /* Darker green on hover */
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0.2, 0, 2);
+}
+
+
+.cart-icon {
+    -fx-fit-width: 35px;
+    -fx-fit-height: 40px;
+    -fx-background-color: #6acc6d;
+    -fx-background-radius: 20px;
+    -fx-padding: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.1, 0, 1);
+    -fx-transition: all 0.2s ease-in-out;
+    -fx-translate-x: -10px;
+}
+
+
+
+.cart-icon:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+.cart-icon .image-view {
+    -fx-effect: innershadow(gaussian, rgba(255,255,255,0.2), 0, 0, 2, 2);
+}
+
+.success-message {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 15px 30px;
+    -fx-background-radius: 25px;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0.1, 0, 2);
+    -fx-opacity: 0.95;
+}
+
+.error-message {
+     -fx-background-color: #ff4444; /* Red background */
+     -fx-text-fill: white;
+     -fx-padding: 10px 20px;
+     -fx-background-radius: 5px;
+     -fx-font-weight: bold;
+ }

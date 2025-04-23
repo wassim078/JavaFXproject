@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.backoffice.EditComplaintController"
+      spacing="15"
+      style="-fx-padding: 25; -fx-background-color: #f8f9fa;">
+
+    <Label text="Edit Complaint" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Subject:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="subjectField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextArea fx:id="descriptionField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="typeComboBox" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="etatComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <Label text="Attachment:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <Hyperlink fx:id="fileLink" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Save" onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Cancel" onAction="#handleCancel" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

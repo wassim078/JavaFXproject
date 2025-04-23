@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx/17.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.frontoffice.CheckoutController"
+      styleClass="main-container">
+
+    <GridPane hgap="15" vgap="15" styleClass="form-grid">
+        <padding><Insets top="30" right="40" bottom="30" left="40"/></padding>
+
+        <!-- Personal Information -->
+        <Label text="Personal Information" styleClass="section-header"
+               GridPane.columnSpan="2" GridPane.rowIndex="0"/>
+
+        <Label text="First Name:" styleClass="field-label"
+               GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="firstNameField" styleClass="text-field"
+                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Last Name:" styleClass="field-label"
+               GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="lastNameField" styleClass="text-field"
+                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Address:" styleClass="field-label"
+               GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="addressField" styleClass="text-field"
+                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Phone:" styleClass="field-label"
+               GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="phoneField" styleClass="text-field"
+                   GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- Payment Section -->
+        <Label text="Payment Method" styleClass="section-header"
+               GridPane.rowIndex="5" GridPane.columnSpan="2"/>
+
+        <ChoiceBox fx:id="paymentMethodChoice" styleClass="choice-box"
+                   GridPane.rowIndex="6" GridPane.columnSpan="2"/>
+
+        <!-- Special Instructions -->
+        <Label text="Special Instructions:" styleClass="field-label"
+               GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <TextArea fx:id="instructionsArea" styleClass="text-area"
+                  GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+        <!-- Buttons -->
+        <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container"
+              GridPane.rowIndex="8" GridPane.columnSpan="2">
+            <Button text="Cancel" styleClass="cancel-button" onAction="#handleCancel"/>
+            <Button text="Submit Order" fx:id="submitButton"
+                    styleClass="submit-button" onAction="#handleSubmit"/>
+        </HBox>
+    </GridPane>
+
+    <stylesheets>
+        <URL value="@../css/checkout.css"/>
+    </stylesheets>
+</VBox>
