@@ -251,6 +251,11 @@ public class UserService implements Service<User> {
 
             if (rs.next()) {
                 String storedHash = rs.getString("password");
+                // Normalize BCrypt version prefixes
+                if (storedHash.startsWith("$2y$")) {
+                    storedHash = "$2a$" + storedHash.substring(4);
+                }
+
                 if (BCrypt.checkpw(password, storedHash)) {
                     User user = mapUserFromResultSet(rs);
                     user.setEnabled(rs.getBoolean("enabled"));
@@ -432,6 +437,9 @@ public class UserService implements Service<User> {
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             String hashedPw = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            if (hashedPw.startsWith("$2a$")) {
+                hashedPw = "$2y$" + hashedPw.substring(4);
+            }
             pstmt.setString(1, hashedPw);
             pstmt.setString(2, token);
             return pstmt.executeUpdate() > 0;
