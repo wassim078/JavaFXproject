@@ -6,6 +6,7 @@ import com.example.livecycle.controllers.frontoffice.EditProfileController;
 import com.example.livecycle.controllers.frontoffice.UserDashboardController;
 import com.example.livecycle.services.UserService;
 import com.example.livecycle.entities.User;
+import com.example.livecycle.utils.SessionManager;
 import com.example.livecycle.utils.ValidationUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -224,11 +225,23 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         }
 
         // 3. Proceed with authentication
-        User user = userService.authenticateUser(email, password);
-        if (user != null) {
-            handleSuccessfulLogin(user);
-        } else {
-            passwordError.setText("Invalid credentials");
+        try {
+            // Attempt authentication
+            User user = userService.authenticateUser(email, password);
+
+            if (user != null) {
+                handleSuccessfulLogin(user);
+            } else {
+                passwordError.setText("Invalid credentials");
+            }
+        } catch (UserService.AuthenticationException e) {
+            // Handle banned user case
+            if (e.getMessage().equals("This account has been banned")) {
+                showAlertInfo("Account Banned", "Your account has been suspended. Please contact support.");
+            } else {
+                // Handle other authentication errors
+                passwordError.setText("Authentication failed: " + e.getMessage());
+            }
         }
     }
 
@@ -241,7 +254,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         // Clear CAPTCHA state
         captchaToken = null;
         captchaWebView.getEngine().reload();
-
+        SessionManager.saveSession(user.getId());
         redirectBasedOnRole(user);
     }
 
@@ -505,6 +518,7 @@ private void handleGoogleLogin() {
             User authenticatedUser = userService.authenticateGoogleUser(googleUser.getEmail());
             if (authenticatedUser != null) {
                 authenticatedUser.setEnabled(true); // Ensure local object reflects the enabled status
+                SessionManager.saveSession(authenticatedUser.getId());
                 redirectBasedOnRole(authenticatedUser);
             } else {
                 showAlert("Error", "Failed to authenticate after Google login");

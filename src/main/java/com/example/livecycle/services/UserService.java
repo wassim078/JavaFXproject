@@ -2,6 +2,7 @@ package com.example.livecycle.services;
 
 import com.example.livecycle.entities.User;
 import com.example.livecycle.utils.DatabaseConnection;
+import com.example.livecycle.utils.SessionManager;
 import org.json.JSONArray;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
@@ -299,7 +300,11 @@ public class UserService implements Service<User> {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return mapUserFromResultSet(rs); // Use the mapper that includes enabled status
+                    User user = mapUserFromResultSet(rs); // Use the mapper that includes enabled status
+                    if (user.isBanned()) {
+                        SessionManager.clearSession();
+                    }
+                    return user;
                 }
             }
         } catch (SQLException e) {

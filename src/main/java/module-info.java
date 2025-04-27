@@ -14,6 +14,7 @@ module com.example.livecycle {
     requires jdk.jsobject;
     requires java.desktop;
     requires stripe.java;
+    requires java.prefs;
 
 
     opens com.example.livecycle to javafx.fxml;

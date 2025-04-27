@@ -6,6 +6,7 @@ import com.example.livecycle.entities.User;
 import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.PanierService;
 import com.example.livecycle.services.UserService;
+import com.example.livecycle.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,8 +75,29 @@ public class UserDashboardController {
         createProfileMenu();
         configureMenuBasedOnRoles();
         cartBadge.setVisible(false);
+        configureSessionPersistence();
+
 
     }
+
+
+
+
+    private void configureSessionPersistence() {
+        try {
+            Stage stage = (Stage) userPhoto.getScene().getWindow();
+            stage.setOnCloseRequest(event -> {
+                // Maintain existing session handling
+                SessionManager.saveSession(currentUser.getId());
+                // Add any other window close logic here
+            });
+        } catch (Exception e) {
+            System.err.println("Error configuring session persistence: " + e.getMessage());
+        }
+    }
+
+
+
 
 
     @FXML
@@ -407,7 +429,7 @@ public class UserDashboardController {
     }
 
     public void handleLogout(ActionEvent actionEvent) {
-
+        SessionManager.clearSession();
         LoginController.stopCallbackServer();
         try {
             // Load the login screen
