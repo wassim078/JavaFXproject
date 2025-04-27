@@ -1,6 +1,7 @@
 package com.example.livecycle.controllers.auth;
 
 import com.example.livecycle.Main;
+import com.example.livecycle.controllers.RefreshableController;
 import com.example.livecycle.controllers.backoffice.AdminDashboardController;
 import com.example.livecycle.controllers.frontoffice.EditProfileController;
 import com.example.livecycle.controllers.frontoffice.UserDashboardController;
@@ -58,7 +59,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     private static final String RECAPTCHA_SECRET_KEY = "6LfiKRsrAAAAAF2zFH8zW7e009I4jjl1nuNOfOjy";
     private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
     private static HttpServer staticContentServer;
-
+    private RefreshableController currentDashboardController;
     private final UserService userService = new UserService();
 
     // GOOGLE AUTHENTICATION
@@ -79,6 +80,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         startStaticContentServer();  // ← start serving /recaptcha.html
         setupRecaptcha();            // ← *then* load it into the WebView
         startVerificationServer();
+
     }
 
     private void startVerificationServer() {
@@ -123,17 +125,16 @@ public class LoginController implements Main.HostServicesAware, Initializable {
             if (userService.verifyUser(token)) {
                 User verifiedUser = userService.getUserByVerificationToken(token);
                 if (verifiedUser != null) {
-                    // Force reload all user data
                     verifiedUser = userService.getUser(verifiedUser.getId());
                     notifyEditProfileController(verifiedUser.getId());
+
+                    Platform.runLater(() -> {
+                        if (currentDashboardController != null) {
+                            currentDashboardController.refreshVerificationStatus();
+                        }
+                    });
                 }
                 sendResponse(exchange, 200, "Email verified successfully! You can now login.");
-                Platform.runLater(() ->
-                        showAlertInfo("Verification Success",
-                                "Email verified! You can now login with your credentials.")
-                );
-            } else {
-                sendResponse(exchange, 400, "Invalid or expired verification token.");
             }
         } finally {
             exchange.close();
@@ -246,10 +247,6 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     }
 
     private void handleSuccessfulLogin(User user) throws IOException {
-        if (!user.isEnabled()) {
-            showAlertInfo("Account Not Verified", "Verify your email first");
-            return;
-        }
 
         // Clear CAPTCHA state
         captchaToken = null;
@@ -279,9 +276,11 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         if (roles.contains("ROLE_ADMIN")) {
             AdminDashboardController controller = loader.getController();
             controller.initData(user);
+            currentDashboardController = (RefreshableController) controller;
         } else {
             UserDashboardController controller = loader.getController();
             controller.initData(user);  // Make sure this method exists in UserDashboardController
+            currentDashboardController = (RefreshableController) controller;
         }
 
         Stage stage = (Stage) emailField.getScene().getWindow();

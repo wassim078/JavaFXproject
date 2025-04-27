@@ -7,6 +7,7 @@ import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.PanierService;
 import com.example.livecycle.services.UserService;
 import com.example.livecycle.utils.SessionManager;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,14 +22,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.json.JSONObject;
-
+import com.example.livecycle.controllers.RefreshableController;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class UserDashboardController {
+public class UserDashboardController implements RefreshableController{
     @FXML private Button dashboardBtn;
     @FXML private MenuButton collectBtn;
     @FXML
@@ -39,11 +40,16 @@ public class UserDashboardController {
     @FXML private StackPane cartBadge;
     @FXML private Label cartCountLabel;
     @FXML private Button commandeBtn;
+    @FXML private StackPane notificationBadge;
+    @FXML private Label notificationCountLabel;
+
+
 
     private int            cartCount = 0;
 
     private final CommandeService commandeService = new CommandeService();
     private final PanierService panierService = new PanierService();
+    private NotificationController activeNotificationController;
 
     @FXML
     private ImageView userPhoto;
@@ -84,16 +90,21 @@ public class UserDashboardController {
 
 
     private void configureSessionPersistence() {
-        try {
-            Stage stage = (Stage) userPhoto.getScene().getWindow();
-            stage.setOnCloseRequest(event -> {
-                // Maintain existing session handling
-                SessionManager.saveSession(currentUser.getId());
-                // Add any other window close logic here
-            });
-        } catch (Exception e) {
-            System.err.println("Error configuring session persistence: " + e.getMessage());
-        }
+        Platform.runLater(() -> {
+            try {
+                if (userPhoto.getScene() != null) {
+                    Stage stage = (Stage) userPhoto.getScene().getWindow();
+                    stage.setOnCloseRequest(event -> {
+                        // Only save session if user is logged in
+                        if (currentUser != null) {
+                            SessionManager.saveSession(currentUser.getId());
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                System.err.println("Error configuring session persistence: " + e.getMessage());
+            }
+        });
     }
 
 
@@ -138,7 +149,44 @@ public class UserDashboardController {
         separator.getStyleClass().add("menu-separator");
 
         profileMenu.getItems().addAll(editProfileItem, separator, notificationsItem);
+
+        notificationsItem.setOnAction(e -> showNotifications());
+        setupNotificationBadge();
     }
+
+
+    private void setupNotificationBadge() {
+        notificationBadge.setVisible(false);
+        notificationCountLabel.setText("");
+    }
+
+    private void updateVerificationNotification() {
+        if (currentUser != null && !currentUser.isEnabled()) {
+            notificationBadge.setVisible(true);
+            notificationCountLabel.setText("1");
+        } else {
+            notificationBadge.setVisible(false);
+            notificationCountLabel.setText("");
+        }
+    }
+
+
+
+
+    @Override
+    public void refreshVerificationStatus() {
+        refreshCurrentUser();
+        updateVerificationNotification();
+
+        if (activeNotificationController != null) {
+            activeNotificationController.updateVerificationStatus(currentUser);
+        }
+    }
+
+
+
+
+
 
     private void showEditProfile() {
         refreshCurrentUser();
@@ -146,9 +194,20 @@ public class UserDashboardController {
         System.out.println("Edit Profile clicked");
     }
     private void showNotifications() {
-        // Implement notifications logic
-        System.out.println("Notifications clicked");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/notification.fxml"));
+            Parent view = loader.load();
+
+            activeNotificationController = loader.getController();
+            activeNotificationController.updateVerificationStatus(currentUser);
+
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            showLoadError("Notifications", e);
+        }
     }
+
+
 
     private void loadInitialView() {
         setActiveButton(dashboardBtn);
@@ -193,6 +252,7 @@ public class UserDashboardController {
         this.currentUser = user;
         loadUserAvatar();
         loadCartCount();
+        updateVerificationNotification();
     }
 
     void loadCartCount() {
