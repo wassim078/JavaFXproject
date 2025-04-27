@@ -18,7 +18,7 @@ public class User {
     private SimpleStringProperty image = new SimpleStringProperty();
     private SimpleBooleanProperty enabled = new SimpleBooleanProperty(false);
     private SimpleStringProperty verificationToken = new SimpleStringProperty();
-
+    private SimpleBooleanProperty isBanned = new SimpleBooleanProperty(false);
 
     private static final String UPLOADS_DIR = System.getProperty("user.dir") + "/uploads/";
     private static final String DEFAULT_AVATAR = "/com/example/livecycle/images/default-avatar.png";
@@ -114,4 +114,11 @@ public class User {
             return "User";
         }
     }
+
+
+
+
+    public boolean isBanned() { return isBanned.get(); }
+    public void setBanned(boolean banned) { isBanned.set(banned); }
+    public SimpleBooleanProperty bannedProperty() { return isBanned; }
 }

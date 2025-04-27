@@ -99,6 +99,7 @@ public class UserService implements Service<User> {
                         rs.getString("image")   // Verify this column exists
                 );
                 user.setId(rs.getInt("id"));
+                user.setBanned(rs.getBoolean("is_banned"));
                 users.add(user);
             }
             System.out.println("Total users loaded: " + users.size());
@@ -242,7 +243,7 @@ public class UserService implements Service<User> {
         }
     }
 
-    public User authenticateUser(String email, String password) {
+    public User authenticateUser(String email, String password) throws AuthenticationException {
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -250,8 +251,12 @@ public class UserService implements Service<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                // Check if banned first
+                if (rs.getBoolean("is_banned")) {
+                    throw new AuthenticationException("This account has been banned");
+                }
+
                 String storedHash = rs.getString("password");
-                // Normalize BCrypt version prefixes
                 if (storedHash.startsWith("$2y$")) {
                     storedHash = "$2a$" + storedHash.substring(4);
                 }
@@ -263,7 +268,7 @@ public class UserService implements Service<User> {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AuthenticationException("Database error during authentication");
         }
         return null;
     }
@@ -324,7 +329,7 @@ public class UserService implements Service<User> {
 
     //GOOGLE AUTHENTICATION
 
-    public User authenticateGoogleUser(String email) {
+    public User authenticateGoogleUser(String email) throws AuthenticationException {
         String sql = "SELECT * FROM user WHERE email = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -333,6 +338,11 @@ public class UserService implements Service<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                // Check banned status
+                if (rs.getBoolean("is_banned")) {
+                    throw new AuthenticationException("This account has been banned");
+                }
+
                 User user = new User(
                         rs.getString("prenom"),
                         rs.getString("nom"),
@@ -343,12 +353,12 @@ public class UserService implements Service<User> {
                         rs.getString("roles"),
                         rs.getString("image")
                 );
-                // ADD THIS LINE
                 user.setId(rs.getInt("id"));
+                user.setBanned(rs.getBoolean("is_banned"));
                 return user;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AuthenticationException("Database error during Google authentication");
         }
         return null;
     }
@@ -412,6 +422,7 @@ public class UserService implements Service<User> {
                 rs.getString("roles"),
                 rs.getString("image")
         );
+        user.setBanned(rs.getBoolean("is_banned"));
         user.setId(rs.getInt("id"));
         user.setEnabled(rs.getBoolean("enabled"));
         user.setVerificationToken(rs.getString("verification_token"));
@@ -509,6 +520,36 @@ public class UserService implements Service<User> {
             e.printStackTrace();
         }
         return roleCounts;
+    }
+
+
+
+
+    //Ban UNBAN
+
+
+    public boolean banUser(int userId) throws SQLException {
+        String sql = "UPDATE user SET is_banned = true WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean unbanUser(int userId) throws SQLException {
+        String sql = "UPDATE user SET is_banned = false WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public class AuthenticationException extends Exception {
+        public AuthenticationException(String message) {
+            super(message);
+        }
     }
 
 }

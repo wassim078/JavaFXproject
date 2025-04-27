@@ -208,7 +208,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
 
 
     @FXML
-    private void handleLogin() throws IOException {
+    private void handleLogin() throws IOException, UserService.AuthenticationException {
         clearErrors();
 
 
