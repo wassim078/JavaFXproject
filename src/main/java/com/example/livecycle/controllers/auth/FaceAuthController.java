@@ -44,6 +44,7 @@ public class FaceAuthController {
     private boolean isRegistration = false;
     private final AtomicBoolean isAuthenticating = new AtomicBoolean(false);
     private final AtomicBoolean isAuthenticated = new AtomicBoolean(false);
+    private final AtomicBoolean isAuthenticationFailed = new AtomicBoolean(false); // New flag for failed authentication
     private Thread cameraThread;
 
     public void initialize() {
@@ -123,7 +124,7 @@ public class FaceAuthController {
     }
 
     private void processFrame(Mat frame) {
-        if (faceDetector == null || isAuthenticated.get()) return;
+        if (faceDetector == null || isAuthenticated.get() || isAuthenticationFailed.get()) return;
 
         MatOfRect faceDetections = new MatOfRect();
         faceDetector.detectMultiScale(frame, faceDetections, 1.05, 2, 0, new Size(20, 20), new Size());
@@ -184,7 +185,7 @@ public class FaceAuthController {
     }
 
     private void handleFaceLogin() {
-        if (isAuthenticating.get() || capturedEncoding == null || isAuthenticated.get()) return;
+        if (isAuthenticating.get() || capturedEncoding == null || isAuthenticated.get() || isAuthenticationFailed.get()) return;
 
         isAuthenticating.set(true);
         Platform.runLater(() -> statusLabel.setText("Authenticating..."));
@@ -208,7 +209,10 @@ public class FaceAuthController {
             } else {
                 Platform.runLater(() -> {
                     statusLabel.setText("Authentication failed");
-                    showAlert("Error", "Face not recognized");
+                    isAuthenticationFailed.set(true); // Mark as failed
+                    showAlert("Error", "No matching face found");
+                    shutdown(); // Stop camera
+                    closeWindow(); // Close the window
                 });
             }
         });
@@ -218,7 +222,10 @@ public class FaceAuthController {
             Throwable e = authTask.getException();
             Platform.runLater(() -> {
                 statusLabel.setText("Error: " + e.getMessage());
+                isAuthenticationFailed.set(true); // Mark as failed
                 showAlert("Error", e.getMessage());
+                shutdown(); // Stop camera
+                closeWindow(); // Close the window
             });
         });
 
@@ -243,6 +250,8 @@ public class FaceAuthController {
             Platform.runLater(() -> {
                 statusLabel.setText("Registration successful!");
                 showAlert("Success", "Face registered successfully");
+                shutdown(); // Stop camera
+                closeWindow(); // Close window after successful registration
             });
         } catch (Exception e) {
             Platform.runLater(() -> {
@@ -255,7 +264,7 @@ public class FaceAuthController {
     private void handleSuccessfulLogin(User user) {
         SessionManager.saveSession(user.getId());
         shutdown();
-        closeWindowAndRedirect(user); // Pass the user to closeWindowAndRedirect
+        closeWindowAndRedirect(user);
     }
 
     private void closeWindowAndRedirect(User user) {
@@ -272,6 +281,11 @@ public class FaceAuthController {
         } catch (IOException e) {
             Platform.runLater(() -> showAlert("Navigation Error", "Could not load dashboard: " + e.getMessage()));
         }
+    }
+
+    private void closeWindow() {
+        Stage currentStage = (Stage) cameraView.getScene().getWindow();
+        currentStage.close();
     }
 
     private void showAlert(String title, String message) {
@@ -292,8 +306,6 @@ public class FaceAuthController {
             cameraThread.interrupt();
         }
     }
-
-    
 
     @FXML
     private void handleCancel() {
