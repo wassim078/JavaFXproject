@@ -1,5 +1,8 @@
 package com.example.livecycle.utils;
 
+import com.example.livecycle.entities.User;
+import com.example.livecycle.services.UserService;
+
 import java.util.prefs.Preferences;
 
 public class SessionManager {
@@ -23,5 +26,16 @@ public class SessionManager {
     public static void clearSession() {
         prefs.remove(SESSION_USER_ID);
         prefs.remove(SESSION_EXPIRY);
+    }
+
+    public static User getCurrentUser() {
+        int userId = getCurrentUserId();
+        if (userId != -1) {
+            return new UserService().getUser(userId);
+        }
+        return null;
+    }
+    public static boolean isLoggedIn() {
+        return getCurrentUserId() != -1; // Simple ID existence check
     }
 }

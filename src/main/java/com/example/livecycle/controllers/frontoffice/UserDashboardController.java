@@ -1,5 +1,6 @@
 package com.example.livecycle.controllers.frontoffice;
 
+import com.example.livecycle.controllers.auth.FaceAuthController;
 import com.example.livecycle.controllers.auth.LoginController;
 import com.example.livecycle.entities.Panier;
 import com.example.livecycle.entities.User;
@@ -50,7 +51,7 @@ public class UserDashboardController implements RefreshableController{
     private final CommandeService commandeService = new CommandeService();
     private final PanierService panierService = new PanierService();
     private NotificationController activeNotificationController;
-
+    private MenuItem faceRegistrationItem;
     @FXML
     private ImageView userPhoto;
 
@@ -134,25 +135,63 @@ public class UserDashboardController implements RefreshableController{
         profileMenu = new ContextMenu();
         profileMenu.getStyleClass().add("profile-menu");
 
-        // Edit Profile Item
+        // Existing items
         editProfileItem = new MenuItem("Edit Profile");
-        editProfileItem.getStyleClass().add("profile-menu-item");
-        editProfileItem.setOnAction(e -> showEditProfile());
-
-        // Notifications Item
         notificationsItem = new MenuItem("Notifications");
+        faceRegistrationItem = new MenuItem("Register with Face"); // New item
+
+        SeparatorMenuItem separator1 = new SeparatorMenuItem();
+        SeparatorMenuItem separator2 = new SeparatorMenuItem();
+
+        // Style classes
+        editProfileItem.getStyleClass().add("profile-menu-item");
         notificationsItem.getStyleClass().add("profile-menu-item");
+        faceRegistrationItem.getStyleClass().add("profile-menu-item"); // Style new item
+
+        // Add items in order: Edit -> Sep -> Notif -> Sep -> Face Reg
+        profileMenu.getItems().addAll(
+                editProfileItem,
+                separator1,
+                notificationsItem,
+                separator2,
+                faceRegistrationItem
+        );
+
+        // Set actions
+        editProfileItem.setOnAction(e -> showEditProfile());
         notificationsItem.setOnAction(e -> showNotifications());
-
-        // Separator
-        SeparatorMenuItem separator = new SeparatorMenuItem();
-        separator.getStyleClass().add("menu-separator");
-
-        profileMenu.getItems().addAll(editProfileItem, separator, notificationsItem);
-
-        notificationsItem.setOnAction(e -> showNotifications());
-        setupNotificationBadge();
+        faceRegistrationItem.setOnAction(e -> handleFaceRegistration()); // New handler
     }
+
+
+
+
+    @FXML
+    private void handleFaceRegistration() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/livecycle/auth/face_auth.fxml")
+            );
+            Parent root = loader.load();
+
+            FaceAuthController controller = loader.getController();
+            controller.setRegistrationMode(true);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Face Registration");
+            stage.show();
+
+        } catch (IOException e) {
+            showLoadError("Face Registration", e);
+        }
+    }
+
+
+
+
+
+
 
 
     private void setupNotificationBadge() {

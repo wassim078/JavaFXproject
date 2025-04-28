@@ -1,5 +1,5 @@
 package com.example.livecycle.controllers.auth;
-
+import com.example.livecycle.controllers.auth.FaceAuthController;
 import com.example.livecycle.Main;
 import com.example.livecycle.controllers.RefreshableController;
 import com.example.livecycle.controllers.backoffice.AdminDashboardController;
@@ -630,8 +630,49 @@ private void handleGoogleLogin() {
     }
 
 
+    @FXML
+    private void handleFaceLogin() {
+        try {
+            URL fxmlUrl = getClass().getResource("/com/example/livecycle/auth/face_auth.fxml");
+            System.out.println("face_auth.fxml → " + fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
+            FaceAuthController controller = loader.getController();
 
+            Stage faceAuthStage = new Stage();
+            faceAuthStage.setScene(new Scene(root));
+            faceAuthStage.setTitle("Face Authentication");
+            faceAuthStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not start face authentication");
+        }
+    }
+    @FXML
+    private void handleFaceRegisterNav() {
+        if (!SessionManager.isLoggedIn()) {
+            showAlert("Error", "You must login first before registering face");
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/livecycle/auth/face_auth.fxml")
+            );
+            Parent root = loader.load();
+            FaceAuthController controller = loader.getController();
+            controller.setRegistrationMode(true);
+
+            Stage stage = new Stage();
+            stage.setOnHidden(e -> controller.shutdown());
+            stage.setScene(new Scene(root));
+            stage.setTitle("Face Registration");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Could not start face registration: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
 
