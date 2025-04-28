@@ -157,7 +157,7 @@ public class FaceAuthController {
     private byte[] extractFaceEmbedding(Mat face) {
         Mat resizedFace = new Mat();
         Imgproc.resize(face, resizedFace, new Size(64, 128));
-        Imgproc.cvtColor(resizedFace, resizedFace, Imgproc.COLOR_BGR2RGB);
+        Imgproc.cvtColor(resizedFace, resizedFace, Imgproc.COLOR_BGR2GRAY);
 
         HOGDescriptor hog = new HOGDescriptor(
                 new Size(64, 128), new Size(16, 16), new Size(8, 8), new Size(8, 8), 9

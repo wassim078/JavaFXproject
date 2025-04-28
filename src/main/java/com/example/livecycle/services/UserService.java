@@ -576,7 +576,7 @@ public class UserService implements Service<User> {
                 byte[] stored = rs.getBytes("face_encoding");
                 if (stored == null) continue;
                 double distance = calculateFaceDistance(faceData, stored);
-                if (distance < 0.8 && distance < minDistance) {
+                if (distance < 0.6 && distance < minDistance) {
                     minDistance = distance;
                     bestUserId = rs.getInt("id");
                 }
@@ -638,8 +638,9 @@ public class UserService implements Service<User> {
 
     // In UserService.java
     public void storeFaceEncoding(int userId, byte[] encoding) {
-        if (encoding == null || encoding.length < 128) {
-            throw new IllegalArgumentException("Invalid face encoding");
+        int expectedLength = 3780 * 4; // 3780 floats * 4 bytes
+        if (encoding == null || encoding.length != expectedLength) {
+            throw new IllegalArgumentException("Invalid face encoding length");
         }
 
         String sql = "UPDATE user SET face_encoding = ?, face_registered_at = NOW() WHERE id = ?";
