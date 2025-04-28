@@ -160,6 +160,17 @@
             <version>24.9.0</version> <!-- ou la dernière version -->
         </dependency>
 
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.5.1-2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>17.0.2</version> <!-- Match your JavaFX version -->
+        </dependency>
+
     </dependencies>
 
 
@@ -176,6 +187,7 @@
                     <include>**/*.css</include>
                     <include>**/*.html</include>
                     <include>**/*.png</include>
+                    <include>**/*.xml</include>
                 </includes>
             </resource>
         </resources>

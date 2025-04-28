@@ -1,6 +1,7 @@
 package com.example.livecycle.controllers.backoffice;
 
 import com.example.livecycle.entities.User;
+import com.example.livecycle.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +38,25 @@ public class AdminDashboardController {
     private User currentUser;
     private Button activeButton = null;
 
+
+
+    public void initialize() {
+        // Existing initialization code
+        configureSessionPersistence();
+    }
+
+    private void configureSessionPersistence() {
+        try {
+            Stage stage = (Stage) userPhoto.getScene().getWindow();
+            stage.setOnCloseRequest(event -> {
+                // Maintain existing cleanup code
+                SessionManager.saveSession(currentUser.getId());
+                // Add any other cleanup you need here
+            });
+        } catch (Exception e) {
+            System.err.println("Error configuring session persistence: " + e.getMessage());
+        }
+    }
 
 
     private void setActiveButton(Button clickedButton) {
@@ -157,6 +177,7 @@ public class AdminDashboardController {
 
     @FXML
     private void handleLogout() {
+        SessionManager.clearSession();
         profileMenu.setVisible(false);
         // Add logout logic
         System.out.println("Logout clicked");

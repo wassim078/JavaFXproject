@@ -1,9 +1,6 @@
 package com.example.livecycle.entities;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import org.json.JSONArray;
 
 public class User {
@@ -18,8 +15,8 @@ public class User {
     private SimpleStringProperty image = new SimpleStringProperty();
     private SimpleBooleanProperty enabled = new SimpleBooleanProperty(false);
     private SimpleStringProperty verificationToken = new SimpleStringProperty();
-
-
+    private SimpleBooleanProperty isBanned = new SimpleBooleanProperty(false);
+    private SimpleObjectProperty<byte[]> faceEncoding = new SimpleObjectProperty<>();
     private static final String UPLOADS_DIR = System.getProperty("user.dir") + "/uploads/";
     private static final String DEFAULT_AVATAR = "/com/example/livecycle/images/default-avatar.png";
 
@@ -59,6 +56,7 @@ public class User {
         this.image.set(image);
         this.enabled.set(false);
         this.verificationToken.set("");
+        this.faceEncoding.set(null);
     }
     // Add property getters
     public StringProperty prenomProperty() { return prenom; }
@@ -114,4 +112,26 @@ public class User {
             return "User";
         }
     }
+
+
+
+
+    public boolean isBanned() { return isBanned.get(); }
+    public void setBanned(boolean banned) { isBanned.set(banned); }
+    public SimpleBooleanProperty bannedProperty() { return isBanned; }
+
+
+
+    public byte[] getFaceEncoding() {
+        return faceEncoding.get();
+    }
+
+    public void setFaceEncoding(byte[] faceEncoding) {
+        this.faceEncoding.set(faceEncoding);
+    }
+
+    public SimpleObjectProperty<byte[]> faceEncodingProperty() {
+        return faceEncoding;
+    }
+
 }

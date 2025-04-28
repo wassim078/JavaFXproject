@@ -152,3 +152,36 @@ GridPane {
     -fx-font-size: 12px;
     -fx-padding: 5px 0;
 }
+.face-login-btn {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-alignment: center;
+    -fx-graphic-text-gap: 10;
+}
+
+.face-login-btn:hover {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #388E3C;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+}
+
+.face-login-btn:pressed {
+    -fx-background-color: #388E3C;
+    -fx-border-color: #2E7D32;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 1);
+}
+
+/* Ensure the button text is properly styled */
+.face-login-btn .text {
+    -fx-font-weight: bold;
+}

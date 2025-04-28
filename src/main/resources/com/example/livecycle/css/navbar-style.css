@@ -208,3 +208,16 @@ VBox {
     -fx-font-weight: bold;
     -fx-alignment: center;
 }
+.notification-badge {
+    -fx-background-color: transparent;
+}
+
+.notification-badge Circle {
+    -fx-fill: #e74c3c;
+}
+
+.notification-badge Label {
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}

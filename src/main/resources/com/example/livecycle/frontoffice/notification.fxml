@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.frontoffice.NotificationController"
+      spacing="20"
+      style="-fx-padding: 30; -fx-background-color: white;"
+      alignment="TOP_CENTER"
+      maxWidth="Infinity"
+      maxHeight="Infinity">
+
+    <!-- Notification Header with Icon -->
+    <HBox alignment="CENTER" spacing="10" style="-fx-padding: 0 0 20 0;">
+        <ImageView fitWidth="60" fitHeight="60" preserveRatio="true">
+            <Image url="@../images/bell-icon.png" />
+        </ImageView>
+        <Label text="Notifications"
+               style="-fx-font-size: 32px;
+                      -fx-font-weight: bold;
+                      -fx-font-family: 'Arial';
+                      -fx-text-fill: #2c3e50;
+                      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);"/>
+    </HBox>
+
+    <!-- Status Label -->
+    <Label fx:id="verificationStatus"
+           styleClass="status-label"
+           style="-fx-font-size: 40px;
+                  -fx-font-weight: bolder;
+                  -fx-font-family: 'Arial';
+                  -fx-alignment: center;
+                  -fx-text-alignment: center;
+                  -fx-padding: 30px;
+                  -fx-wrap-text: true;"
+           wrapText="true"
+           maxWidth="600"/>
+</VBox>

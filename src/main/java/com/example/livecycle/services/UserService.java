@@ -2,8 +2,13 @@ package com.example.livecycle.services;
 
 import com.example.livecycle.entities.User;
 import com.example.livecycle.utils.DatabaseConnection;
+import com.example.livecycle.utils.SessionManager;
 import org.json.JSONArray;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.sql.*;
 import java.util.*;
 
@@ -11,7 +16,7 @@ import java.util.*;
 public class UserService implements Service<User> {
 
 
-
+    private byte[] faceEncoding;
     private static final String UPDATE_USER_SQL = "UPDATE user SET " +
             "prenom = ?, nom = ?, email = ?, password = ?, adresse = ?, telephone = ?, image = ? " +
             "WHERE id = ?";
@@ -99,6 +104,7 @@ public class UserService implements Service<User> {
                         rs.getString("image")   // Verify this column exists
                 );
                 user.setId(rs.getInt("id"));
+                user.setBanned(rs.getBoolean("is_banned"));
                 users.add(user);
             }
             System.out.println("Total users loaded: " + users.size());
@@ -242,7 +248,7 @@ public class UserService implements Service<User> {
         }
     }
 
-    public User authenticateUser(String email, String password) {
+    public User authenticateUser(String email, String password) throws AuthenticationException {
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -250,7 +256,16 @@ public class UserService implements Service<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                // Check if banned first
+                if (rs.getBoolean("is_banned")) {
+                    throw new AuthenticationException("This account has been banned");
+                }
+
                 String storedHash = rs.getString("password");
+                if (storedHash.startsWith("$2y$")) {
+                    storedHash = "$2a$" + storedHash.substring(4);
+                }
+
                 if (BCrypt.checkpw(password, storedHash)) {
                     User user = mapUserFromResultSet(rs);
                     user.setEnabled(rs.getBoolean("enabled"));
@@ -258,7 +273,7 @@ public class UserService implements Service<User> {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AuthenticationException("Database error during authentication");
         }
         return null;
     }
@@ -289,7 +304,11 @@ public class UserService implements Service<User> {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return mapUserFromResultSet(rs); // Use the mapper that includes enabled status
+                    User user = mapUserFromResultSet(rs); // Use the mapper that includes enabled status
+                    if (user.isBanned()) {
+                        SessionManager.clearSession();
+                    }
+                    return user;
                 }
             }
         } catch (SQLException e) {
@@ -319,7 +338,7 @@ public class UserService implements Service<User> {
 
     //GOOGLE AUTHENTICATION
 
-    public User authenticateGoogleUser(String email) {
+    public User authenticateGoogleUser(String email) throws AuthenticationException {
         String sql = "SELECT * FROM user WHERE email = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -328,6 +347,11 @@ public class UserService implements Service<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                // Check banned status
+                if (rs.getBoolean("is_banned")) {
+                    throw new AuthenticationException("This account has been banned");
+                }
+
                 User user = new User(
                         rs.getString("prenom"),
                         rs.getString("nom"),
@@ -338,12 +362,12 @@ public class UserService implements Service<User> {
                         rs.getString("roles"),
                         rs.getString("image")
                 );
-                // ADD THIS LINE
                 user.setId(rs.getInt("id"));
+                user.setBanned(rs.getBoolean("is_banned"));
                 return user;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new AuthenticationException("Database error during Google authentication");
         }
         return null;
     }
@@ -407,6 +431,7 @@ public class UserService implements Service<User> {
                 rs.getString("roles"),
                 rs.getString("image")
         );
+        user.setBanned(rs.getBoolean("is_banned"));
         user.setId(rs.getInt("id"));
         user.setEnabled(rs.getBoolean("enabled"));
         user.setVerificationToken(rs.getString("verification_token"));
@@ -432,6 +457,9 @@ public class UserService implements Service<User> {
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             String hashedPw = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            if (hashedPw.startsWith("$2a$")) {
+                hashedPw = "$2y$" + hashedPw.substring(4);
+            }
             pstmt.setString(1, hashedPw);
             pstmt.setString(2, token);
             return pstmt.executeUpdate() > 0;
@@ -502,5 +530,171 @@ public class UserService implements Service<User> {
         }
         return roleCounts;
     }
+
+
+
+
+    //Ban UNBAN
+
+
+    public boolean banUser(int userId) throws SQLException {
+        String sql = "UPDATE user SET is_banned = true WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean unbanUser(int userId) throws SQLException {
+        String sql = "UPDATE user SET is_banned = false WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public class AuthenticationException extends Exception {
+        public AuthenticationException(String message) {
+            super(message);
+        }
+    }
+
+
+
+    public User authenticateByFace(byte[] faceData) throws AuthenticationException {
+        String sql = "SELECT id, face_encoding FROM user WHERE face_encoding IS NOT NULL";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            int bestUserId = -1;
+            double minDistance = Double.MAX_VALUE;
+
+            // Step 1: Iterate over ResultSet to find the best match ID
+            while (rs.next()) {
+                byte[] stored = rs.getBytes("face_encoding");
+                if (stored == null) continue;
+                double distance = calculateFaceDistance(faceData, stored);
+                if (distance < 0.8 && distance < minDistance) {
+                    minDistance = distance;
+                    bestUserId = rs.getInt("id");
+                }
+            }
+
+            // Step 2: Fetch user details only if a match is found, after the ResultSet is done
+            if (bestUserId != -1) {
+                return getUser(bestUserId); // Called outside the loop
+            }
+            throw new AuthenticationException("No matching face found");
+        } catch (SQLException e) {
+            throw new AuthenticationException("Database error: " + e.getMessage());
+        }
+    }
+
+    private double calculateFaceDistance(byte[] capturedData, byte[] storedData) {
+        // Convert byte arrays to float arrays
+        float[] capturedEmbedding = bytesToFloats(capturedData);
+        float[] storedEmbedding = bytesToFloats(storedData);
+
+        // Normalize vectors
+        capturedEmbedding = normalizeVector(capturedEmbedding);
+        storedEmbedding = normalizeVector(storedEmbedding);
+
+        // Calculate Euclidean distance
+        double sum = 0.0;
+        for (int i = 0; i < capturedEmbedding.length; i++) {
+            double diff = capturedEmbedding[i] - storedEmbedding[i];
+            sum += diff * diff;
+        }
+        return Math.sqrt(sum);
+    }
+
+    private float[] normalizeVector(float[] vector) {
+        double norm = 0.0;
+        for (float v : vector) {
+            norm += v * v;
+        }
+        norm = Math.sqrt(norm);
+        if (norm > 0) {
+            for (int i = 0; i < vector.length; i++) {
+                vector[i] /= norm;
+            }
+        }
+        return vector;
+    }
+
+
+
+    private float[] bytesToFloats(byte[] bytes) {
+        FloatBuffer buffer = ByteBuffer.wrap(bytes)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .asFloatBuffer();
+        float[] floats = new float[buffer.remaining()];
+        buffer.get(floats);
+        return floats;
+    }
+
+
+    // In UserService.java
+    public void storeFaceEncoding(int userId, byte[] encoding) {
+        if (encoding == null || encoding.length < 128) {
+            throw new IllegalArgumentException("Invalid face encoding");
+        }
+
+        String sql = "UPDATE user SET face_encoding = ?, face_registered_at = NOW() WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            System.out.println("Storing encoding for user " + userId + ", length: " + encoding.length);
+            pstmt.setBytes(1, encoding);
+            pstmt.setInt(2, userId);
+
+            int updated = pstmt.executeUpdate();
+            System.out.println("Updated rows: " + updated);
+            if (updated == 0) {
+                throw new SQLException("User not found or face already registered");
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error: " + e.getMessage());
+            throw new RuntimeException("Database error: " + e.getMessage());
+        }
+    }
+
+
+    public boolean hasFaceEncoding(int userId) {
+        String sql = "SELECT face_encoding FROM user WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBytes("face_encoding") != null;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking face encoding: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean verifyFaceQuality(byte[] encoding) {
+        if (encoding == null || encoding.length < 1024) {
+            throw new IllegalArgumentException("Face encoding is too small");
+        }
+
+        try {
+            float[] embeddings = bytesToFloats(encoding);
+            if (embeddings.length < 128) { // Minimum expected features
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 
 }

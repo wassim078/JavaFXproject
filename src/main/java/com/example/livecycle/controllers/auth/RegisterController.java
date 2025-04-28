@@ -75,6 +75,8 @@ public class RegisterController {
             System.err.println("Error initializing default avatar: " + e.getMessage());
         }
     }
+
+
     @FXML
     private void handleImageUpload(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();

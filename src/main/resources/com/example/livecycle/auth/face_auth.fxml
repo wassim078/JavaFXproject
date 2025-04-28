@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.auth.FaceAuthController"
+      alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+
+    <ImageView fx:id="cameraView"
+               fitWidth="640" fitHeight="480"
+               style="-fx-border-color: red; -fx-background-color: black;"/>
+
+    <Label fx:id="statusLabel" style="-fx-text-fill: white; -fx-font-size: 16;"/>
+
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="actionButton" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+        <Button text="Cancel" onAction="#handleCancel" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

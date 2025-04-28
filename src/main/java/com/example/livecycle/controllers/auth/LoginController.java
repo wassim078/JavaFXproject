@@ -1,11 +1,13 @@
 package com.example.livecycle.controllers.auth;
-
+import com.example.livecycle.controllers.auth.FaceAuthController;
 import com.example.livecycle.Main;
+import com.example.livecycle.controllers.RefreshableController;
 import com.example.livecycle.controllers.backoffice.AdminDashboardController;
 import com.example.livecycle.controllers.frontoffice.EditProfileController;
 import com.example.livecycle.controllers.frontoffice.UserDashboardController;
 import com.example.livecycle.services.UserService;
 import com.example.livecycle.entities.User;
+import com.example.livecycle.utils.SessionManager;
 import com.example.livecycle.utils.ValidationUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -57,7 +59,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
     private static final String RECAPTCHA_SECRET_KEY = "6LfiKRsrAAAAAF2zFH8zW7e009I4jjl1nuNOfOjy";
     private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
     private static HttpServer staticContentServer;
-
+    private RefreshableController currentDashboardController;
     private final UserService userService = new UserService();
 
     // GOOGLE AUTHENTICATION
@@ -78,6 +80,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         startStaticContentServer();  // ← start serving /recaptcha.html
         setupRecaptcha();            // ← *then* load it into the WebView
         startVerificationServer();
+
     }
 
     private void startVerificationServer() {
@@ -122,17 +125,16 @@ public class LoginController implements Main.HostServicesAware, Initializable {
             if (userService.verifyUser(token)) {
                 User verifiedUser = userService.getUserByVerificationToken(token);
                 if (verifiedUser != null) {
-                    // Force reload all user data
                     verifiedUser = userService.getUser(verifiedUser.getId());
                     notifyEditProfileController(verifiedUser.getId());
+
+                    Platform.runLater(() -> {
+                        if (currentDashboardController != null) {
+                            currentDashboardController.refreshVerificationStatus();
+                        }
+                    });
                 }
                 sendResponse(exchange, 200, "Email verified successfully! You can now login.");
-                Platform.runLater(() ->
-                        showAlertInfo("Verification Success",
-                                "Email verified! You can now login with your credentials.")
-                );
-            } else {
-                sendResponse(exchange, 400, "Invalid or expired verification token.");
             }
         } finally {
             exchange.close();
@@ -208,7 +210,7 @@ public class LoginController implements Main.HostServicesAware, Initializable {
 
 
     @FXML
-    private void handleLogin() throws IOException {
+    private void handleLogin() throws IOException, UserService.AuthenticationException {
         clearErrors();
 
 
@@ -224,24 +226,32 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         }
 
         // 3. Proceed with authentication
-        User user = userService.authenticateUser(email, password);
-        if (user != null) {
-            handleSuccessfulLogin(user);
-        } else {
-            passwordError.setText("Invalid credentials");
+        try {
+            // Attempt authentication
+            User user = userService.authenticateUser(email, password);
+
+            if (user != null) {
+                handleSuccessfulLogin(user);
+            } else {
+                passwordError.setText("Invalid credentials");
+            }
+        } catch (UserService.AuthenticationException e) {
+            // Handle banned user case
+            if (e.getMessage().equals("This account has been banned")) {
+                showAlertInfo("Account Banned", "Your account has been suspended. Please contact support.");
+            } else {
+                // Handle other authentication errors
+                passwordError.setText("Authentication failed: " + e.getMessage());
+            }
         }
     }
 
     private void handleSuccessfulLogin(User user) throws IOException {
-        if (!user.isEnabled()) {
-            showAlertInfo("Account Not Verified", "Verify your email first");
-            return;
-        }
 
         // Clear CAPTCHA state
         captchaToken = null;
         captchaWebView.getEngine().reload();
-
+        SessionManager.saveSession(user.getId());
         redirectBasedOnRole(user);
     }
 
@@ -266,9 +276,11 @@ public class LoginController implements Main.HostServicesAware, Initializable {
         if (roles.contains("ROLE_ADMIN")) {
             AdminDashboardController controller = loader.getController();
             controller.initData(user);
+            currentDashboardController = (RefreshableController) controller;
         } else {
             UserDashboardController controller = loader.getController();
             controller.initData(user);  // Make sure this method exists in UserDashboardController
+            currentDashboardController = (RefreshableController) controller;
         }
 
         Stage stage = (Stage) emailField.getScene().getWindow();
@@ -480,7 +492,7 @@ private void handleGoogleLogin() {
                     "google-auth", // Dummy password
                     "",
                     "",
-                    "[\"ROLE_USER\"]",
+                    "[\"ROLE_CLIENT\"]",
                     picture
             );
         } catch (InterruptedException e) {
@@ -505,6 +517,7 @@ private void handleGoogleLogin() {
             User authenticatedUser = userService.authenticateGoogleUser(googleUser.getEmail());
             if (authenticatedUser != null) {
                 authenticatedUser.setEnabled(true); // Ensure local object reflects the enabled status
+                SessionManager.saveSession(authenticatedUser.getId());
                 redirectBasedOnRole(authenticatedUser);
             } else {
                 showAlert("Error", "Failed to authenticate after Google login");
@@ -617,8 +630,49 @@ private void handleGoogleLogin() {
     }
 
 
+    @FXML
+    private void handleFaceLogin() {
+        try {
+            URL fxmlUrl = getClass().getResource("/com/example/livecycle/auth/face_auth.fxml");
+            System.out.println("face_auth.fxml → " + fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
+            FaceAuthController controller = loader.getController();
 
+            Stage faceAuthStage = new Stage();
+            faceAuthStage.setScene(new Scene(root));
+            faceAuthStage.setTitle("Face Authentication");
+            faceAuthStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not start face authentication");
+        }
+    }
+    @FXML
+    private void handleFaceRegisterNav() {
+        if (!SessionManager.isLoggedIn()) {
+            showAlert("Error", "You must login first before registering face");
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/livecycle/auth/face_auth.fxml")
+            );
+            Parent root = loader.load();
+            FaceAuthController controller = loader.getController();
+            controller.setRegistrationMode(true);
+
+            Stage stage = new Stage();
+            stage.setOnHidden(e -> controller.shutdown());
+            stage.setScene(new Scene(root));
+            stage.setTitle("Face Registration");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Could not start face registration: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
 
