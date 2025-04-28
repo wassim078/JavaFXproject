@@ -59,8 +59,9 @@ public class CommandeService implements Service<Commande> {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+             PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
+            // Set parameters
             pst.setInt(1, commande.getUserId());
             pst.setString(2, commande.getClientName());
             pst.setString(3, commande.getClientFamilyName());
@@ -73,7 +74,22 @@ public class CommandeService implements Service<Commande> {
             pst.setString(10, commande.getInstructionSpeciale());
             pst.setDouble(11, commande.getPrixTotal());
 
-            return pst.executeUpdate() > 0;
+            // Execute insert
+            int affectedRows = pst.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating commande failed, no rows affected.");
+            }
+
+            // Retrieve generated ID
+            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    commande.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Creating commande failed, no ID obtained.");
+                }
+            }
+
+            return true;
         }
     }
 
