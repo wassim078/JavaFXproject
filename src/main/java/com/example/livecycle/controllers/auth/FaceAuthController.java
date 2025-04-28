@@ -276,7 +276,7 @@ public class FaceAuthController {
 
     private void showAlert(String title, String message) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setContentText(message);
@@ -292,6 +292,8 @@ public class FaceAuthController {
             cameraThread.interrupt();
         }
     }
+
+    
 
     @FXML
     private void handleCancel() {
