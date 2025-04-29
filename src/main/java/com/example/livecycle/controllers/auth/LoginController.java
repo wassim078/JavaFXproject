@@ -18,6 +18,7 @@
     import javafx.application.HostServices;
     import javafx.application.Platform;
     import javafx.concurrent.Worker;
+    import javafx.event.ActionEvent;
     import javafx.fxml.FXML;
     import javafx.fxml.FXMLLoader;
     import javafx.fxml.Initializable;
@@ -27,6 +28,7 @@
     import javafx.scene.web.WebEngine;
     import javafx.scene.web.WebView;
     import javafx.stage.Stage;
+    import netscape.javascript.JSException;
     import netscape.javascript.JSObject;
 
     import java.io.IOException;
@@ -55,12 +57,15 @@
         @FXML private Button loginButton;
 
         private String captchaToken;
-        private static final String RECAPTCHA_SITE_KEY = "6LfiKRsrAAAAAPACnY4E9YRaZGDGP5Z_4capkh4w";
-        private static final String RECAPTCHA_SECRET_KEY = "6LfiKRsrAAAAAF2zFH8zW7e009I4jjl1nuNOfOjy";
+        private static final String RECAPTCHA_SITE_KEY = "6LdK5icrAAAAABmjiOyfWcvO4lPA8LdCUN4cc5qZ";
+        private static final String RECAPTCHA_SECRET_KEY = "6LdK5icrAAAAALXYnywuruGfz9upbXYjHiW_JgNd";
         private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
         private static HttpServer staticContentServer;
         private RefreshableController currentDashboardController;
         private final UserService userService = new UserService();
+        private boolean recaptchaInitialized = false;
+
+
 
         // GOOGLE AUTHENTICATION
         private final Gson gson = new Gson();
@@ -78,8 +83,8 @@
         @Override
         public void initialize(URL location, ResourceBundle resources) {
             startStaticContentServer();  // ← start serving /recaptcha.html
-            setupRecaptcha();            // ← *then* load it into the WebView
             startVerificationServer();
+            System.out.println("[INIT] Current working directory: " + System.getProperty("user.dir"));
 
         }
 
@@ -99,21 +104,32 @@
             try {
                 staticContentServer = HttpServer.create(new InetSocketAddress(8085), 0);
                 staticContentServer.createContext("/recaptcha.html", exchange -> {
-                    InputStream is = getClass().getResourceAsStream("/com/example/livecycle/html/recaptcha.html");
-                    if (is == null) {
-                        exchange.sendResponseHeaders(404, -1);
-                        return;
-                    }
-                    byte[] content = is.readAllBytes();
-                    exchange.getResponseHeaders().set("Content-Type", "text/html");
-                    exchange.sendResponseHeaders(200, content.length);
-                    try (OutputStream os = exchange.getResponseBody()) {
-                        os.write(content);
+                    // Add debug logging
+                    System.out.println("[SERVER] Handling request for recaptcha.html");
+
+                    try (InputStream is = getClass().getResourceAsStream("/com/example/livecycle/html/recaptcha.html")) {
+                        if (is == null) {
+                            System.err.println("[SERVER] File not found in resources!");
+                            exchange.sendResponseHeaders(404, -1);
+                            return;
+                        }
+
+                        byte[] content = is.readAllBytes();
+                        System.out.println("[SERVER] File size: " + content.length + " bytes");
+
+                        exchange.getResponseHeaders().set("Content-Type", "text/html");
+                        exchange.sendResponseHeaders(200, content.length);
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(content);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("[SERVER] Error serving file: " + e.getMessage());
                     }
                 });
                 staticContentServer.start();
+                System.out.println("[SERVER] Static content server started on port 8085");
             } catch (IOException ex) {
-                System.err.println("Could not start static content server: " + ex.getMessage());
+                System.err.println("[SERVER] Could not start server: " + ex.getMessage());
             }
         }
 
@@ -210,47 +226,61 @@
 
 
         @FXML
-        private void handleLogin() throws IOException, UserService.AuthenticationException {
-            clearErrors();
+        private void handleLogin(ActionEvent event) {
+            // 1) Clear previous errors
+            emailError.setVisible(false);
+            passwordError.setVisible(false);
 
-
-            // 2. Validate other fields
-            String email = emailField.getText().trim();
-            String password = passwordField.getText().trim();
-            Map<String, String> errors = ValidationUtils.validateLogin(email, password);
-
-            if (!errors.isEmpty()) {
-                emailError.setText(errors.getOrDefault("email", ""));
-                passwordError.setText(errors.getOrDefault("password", ""));
+            // 2) Validate inputs
+            if (emailField.getText().isEmpty()) {
+                emailError.setText("Email is required");
+                emailError.setVisible(true);
+                return;
+            }
+            if (passwordField.getText().isEmpty()) {
+                passwordError.setText("Password is required");
+                passwordError.setVisible(true);
                 return;
             }
 
-            // 3. Proceed with authentication
-            try {
-                // Attempt authentication
-                User user = userService.authenticateUser(email, password);
+            // 3) Disable button
+            loginButton.setDisable(true);
 
-                if (user != null) {
-                    handleSuccessfulLogin(user);
-                } else {
-                    passwordError.setText("Invalid credentials");
+            // 4) Authenticate off the FX thread
+            new Thread(() -> {
+                try {
+                    User user = userService.authenticateUser(
+                            emailField.getText(),
+                            passwordField.getText()
+                    );
+
+                    Platform.runLater(() -> {
+                        if (user != null) {
+                            try {
+                                // ← use handleSuccessfulLogin, not handleActualLogin
+                                handleSuccessfulLogin(user);
+                            } catch (IOException e) {
+                                showAlert("Navigation Error", e.getMessage());
+                            }
+                        } else {
+                            showAlert("Login Failed", "Invalid credentials");
+                            loginButton.setDisable(false);
+                        }
+                    });
+                } catch (Exception ex) {
+                    Platform.runLater(() -> {
+                        showAlert("Error", "Login error: " + ex.getMessage());
+                        loginButton.setDisable(false);
+                    });
                 }
-            } catch (UserService.AuthenticationException e) {
-                // Handle banned user case
-                if (e.getMessage().equals("This account has been banned")) {
-                    showAlertInfo("Account Banned", "Your account has been suspended. Please contact support.");
-                } else {
-                    // Handle other authentication errors
-                    passwordError.setText("Authentication failed: " + e.getMessage());
-                }
-            }
+            }).start();
         }
+
+
+
 
         private void handleSuccessfulLogin(User user) throws IOException {
 
-            // Clear CAPTCHA state
-            captchaToken = null;
-            captchaWebView.getEngine().reload();
             SessionManager.saveSession(user.getId());
             redirectBasedOnRole(user);
         }
@@ -538,96 +568,63 @@
 
 
 
-    //RECAPTCHA
 
+        private void handleActualLogin() {
+            System.out.println("[DEBUG] Starting actual login process");
 
-
-
-        private void setupRecaptcha() {
-            WebEngine webEngine = captchaWebView.getEngine();
-            webEngine.setJavaScriptEnabled(true);
-            webEngine.setUserAgent(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                            "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                            "Chrome/115.0.0.0 Safari/537.36"
-            );
-
-
-            webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-                if (newState == Worker.State.SUCCEEDED) {
-                    // Inject Java connector when page loads
-                    JSObject window = (JSObject) webEngine.executeScript("window");
-                    window.setMember("javaConnector", new JavaConnector());
-                }
-            });
-
-            String url = "http://localhost:8085/recaptcha.html?t=" + System.currentTimeMillis();
-            webEngine.load(url);
-        }
-
-        public class JavaConnector {
-            public boolean isInitialized() { return true; }
-
-            public void onCaptchaSuccess(String token) {
-                Platform.runLater(() -> {
-                    captchaToken = token;
-                    captchaError.setVisible(false);
-                });
-
-                new Thread(() -> {
-                    boolean isValid = verifyCaptcha(token);
-                    Platform.runLater(() -> {
-                        if (!isValid) {
-                            captchaToken = null;
-                            loginButton.setDisable(true);
-                            captchaError.setText("CAPTCHA verification failed");
-                            captchaError.setVisible(true);
-                            resetCaptchaWidget();
-                        }
-                    });
-                }).start();
-            }
-
-            public void onCaptchaExpired() {
-                Platform.runLater(() -> {
-                    captchaToken = null;
-                    loginButton.setDisable(true);
-                    captchaError.setText("CAPTCHA expired - please complete it again");
-                    captchaError.setVisible(true);
-                    resetCaptchaWidget();
-                });
-            }
-
-            private void resetCaptchaWidget() {
-                Platform.runLater(() -> {
-                    captchaWebView.getEngine().executeScript(
-                            "if(typeof grecaptcha !== 'undefined') grecaptcha.reset()"
-                    );
-                });
-            }
-        }
-
-        private boolean verifyCaptcha(String token) {
             try {
-                HttpClient client = HttpClient.newHttpClient();
-                String params = "secret=" + URLEncoder.encode(RECAPTCHA_SECRET_KEY, StandardCharsets.UTF_8) +
-                        "&response=" + URLEncoder.encode(token, StandardCharsets.UTF_8);
+                // Add your real login logic here
+                User user = userService.authenticateUser(
+                        emailField.getText(),
+                        passwordField.getText()
+                );
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(VERIFY_URL))
-                        .header("Content-Type", "application/x-www-form-urlencoded")
-                        .POST(HttpRequest.BodyPublishers.ofString(params))
-                        .build();
-
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                JsonObject json = new Gson().fromJson(response.body(), JsonObject.class);
-
-                return json.get("success").getAsBoolean();
+                if (user != null) {
+                    handleSuccessfulLogin(user);
+                } else {
+                    Platform.runLater(() -> {
+                        showAlert("Login Failed", "Invalid credentials");
+                        loginButton.setDisable(false);
+                    });
+                }
             } catch (Exception e) {
-                System.err.println("reCAPTCHA Verification Error: " + e.getMessage());
-                return false;
+                Platform.runLater(() -> {
+                    showAlert("Error", "Login failed: " + e.getMessage());
+                    loginButton.setDisable(false);
+                });
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         @FXML

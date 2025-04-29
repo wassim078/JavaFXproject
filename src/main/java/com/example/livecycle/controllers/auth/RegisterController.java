@@ -226,7 +226,7 @@ public class RegisterController {
 
             // Get the current stage from the event source and set the new scene
             Stage stage = (Stage) ((Control) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 700, 700);
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Login");
             stage.centerOnScreen();

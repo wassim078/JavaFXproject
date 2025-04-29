@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.web.WebView?>
 
 <BorderPane prefWidth="600" stylesheets="@../css/registration.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.auth.LoginController">
 
@@ -33,7 +32,7 @@
                 <VBox alignment="CENTER" spacing="25" style="-fx-max-width: 800;">
                     <GridPane hgap="15" prefHeight="306.0" prefWidth="598.0" styleClass="form-container" vgap="10">
                         <VBox.margin>
-                            <Insets top="20" />
+                            <Insets left="30.0" right="30.0" top="20.0" />
                         </VBox.margin>
                         <columnConstraints>
                             <ColumnConstraints hgrow="NEVER" percentWidth="20.0" />
@@ -52,51 +51,66 @@
                         <!-- Row 3: Password Error -->
                         <Label fx:id="passwordError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                        <!-- Row 4: reCAPTCHA -->
-                        <WebView fx:id="captchaWebView" minHeight="120.0" prefHeight="71.0" prefWidth="335.0" style="-fx-border-color: red;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                        <!-- Row 5: CAPTCHA Error -->
-                        <Label fx:id="captchaError" styleClass="error-label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Button fx:id="loginButton" onAction="#handleLogin" styleClass="submit-button" text="Sign In" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                            <VBox.margin>
+                                <Insets bottom="10" />
+                            </VBox.margin>
+                     <GridPane.margin>
+                        <Insets left="35.0" />
+                     </GridPane.margin>
+                        </Button>
 
                         <rowConstraints>
                             <RowConstraints />
                             <RowConstraints />
                             <RowConstraints />
                             <RowConstraints />
-                            <RowConstraints />
-                            <RowConstraints />
+                     <RowConstraints />
                         </rowConstraints>
                     </GridPane>
+<HBox spacing="40.0">
 
-                    <Button fx:id="loginButton" onAction="#handleLogin" styleClass="submit-button" text="Sign In">
-                        <VBox.margin>
-                            <Insets bottom="10" />
-                        </VBox.margin>
-                    </Button>
 
-                    <Button fx:id="googleLoginButton" onAction="#handleGoogleLogin" styleClass="google-login-btn">
-                        <graphic>
-                            <ImageView fitHeight="24" fitWidth="24">
-                                <Image url="@../images/google-icon.png" />
-                            </ImageView>
-                        </graphic>
-                        <text>Sign in with Google</text>
-                        <VBox.margin>
-                            <Insets bottom="10" />
-                        </VBox.margin>
-                    </Button>
 
-                    <Button fx:id="faceLoginButton" onAction="#handleFaceLogin" styleClass="face-login-btn">
-                        <graphic>
-                            <ImageView fitHeight="24" fitWidth="24">
-                                <Image url="@../images/face-icon.png" />
-                            </ImageView>
-                        </graphic>
-                        <text>Sign in with Face</text>
-                        <VBox.margin>
-                            <Insets bottom="30" />
-                        </VBox.margin>
-                    </Button>
+
+    <Button fx:id="googleLoginButton" onAction="#handleGoogleLogin" styleClass="google-login-btn">
+        <graphic>
+            <ImageView fitHeight="24" fitWidth="24">
+                <Image url="@../images/google-icon.png" />
+            </ImageView>
+        </graphic>
+        <text>Sign in with Google</text>
+        <VBox.margin>
+            <Insets bottom="10" />
+        </VBox.margin>
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+    </Button>
+
+    <Button fx:id="faceLoginButton" onAction="#handleFaceLogin" styleClass="face-login-btn">
+        <graphic>
+            <ImageView fitHeight="24" fitWidth="24">
+                <Image url="@../images/face-icon.png" />
+            </ImageView>
+        </graphic>
+        <text>Sign in with Face</text>
+        <VBox.margin>
+            <Insets bottom="30" />
+        </VBox.margin>
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+    </Button>
+                  <VBox.margin>
+                     <Insets bottom="60.0" right="10.0" />
+                  </VBox.margin>
+
+
+
+</HBox>
+
 
                 </VBox>
             </VBox>
