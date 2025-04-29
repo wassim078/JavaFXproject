@@ -154,3 +154,17 @@
 .payment-chart #slice-à-la-livraison {
     -fx-pie-color: #2196F3;
 }
+.chart-bar {
+    -fx-background-radius: 3 3 0 0;
+}
+
+.filter-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 5px 0;
+}
+
+#userCollectChart .chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}

@@ -10,6 +10,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
 <ScrollPane xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.backoffice.AdminDefault"
@@ -75,6 +78,43 @@
         <VBox styleClass="module-container" spacing="15">
             <Label text="Annonces Management Statistics" styleClass="module-title"/>
             <!-- Content here -->
+        </VBox>
+
+        <!-- Collect Section -->
+        <VBox styleClass="module-container" spacing="15">
+            <Label text="Collect Management Statistics" styleClass="module-title"/>
+
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 0 0 15 0;">
+                <ComboBox fx:id="collectPeriodSelector" prefWidth="200" styleClass="chart-control"/>
+            </HBox>
+
+            <LineChart fx:id="collectChart" title="Collects Over Time"
+                       styleClass="animated-chart" prefWidth="1100" prefHeight="400"
+                       maxWidth="1200" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Period" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Number of Collects" />
+                </yAxis>
+            </LineChart>
+
+            <BarChart fx:id="userCollectChart" title="Collects per User"
+                      styleClass="animated-chart" prefWidth="600" prefHeight="400">
+                <xAxis>
+                    <CategoryAxis label="Users" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Number of Collects" />
+                </yAxis>
+            </BarChart>
+
+            <VBox spacing="10" style="-fx-padding: 0 0 0 20;">
+                <Label text="Filter Options" styleClass="filter-title"/>
+                <ComboBox fx:id="userCollectSort" prefWidth="150" promptText="Sort by"/>
+                <TextField fx:id="maxUsers" promptText="Max users to show" prefWidth="150"/>
+                <Button text="Apply" onAction="#updateUserCollectChart" styleClass="chart-control"/>
+            </VBox>
         </VBox>
     </VBox>
 </ScrollPane>

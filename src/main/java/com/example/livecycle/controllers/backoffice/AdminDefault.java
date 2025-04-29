@@ -1,15 +1,16 @@
 package com.example.livecycle.controllers.backoffice;
 
+import com.example.livecycle.services.CollectService;
 import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.UserService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.Node;
+import javafx.scene.chart.*;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import java.util.Map;
 
@@ -21,8 +22,24 @@ public class AdminDefault {
     @FXML private LineChart<String, Number> commandesChart;
     @FXML private VBox chartContainer;
     @FXML private PieChart roleChart;
+    @FXML private ComboBox<String> collectPeriodSelector;
+    @FXML private LineChart<String, Number> collectChart;
+    @FXML private BarChart<String, Number> userCollectChart;
+    @FXML private ComboBox<String> userCollectSort;
+    @FXML private TextField maxUsers;
+
     private final UserService userService = new UserService();
     private final CommandeService commandeService = new CommandeService();
+
+
+
+
+
+
+
+
+
+
     @FXML
     public void initialize() {
         setupPeriodSelector();
@@ -31,6 +48,10 @@ public class AdminDefault {
         setupCommandesPeriodSelector();
         loadCommandesChart("monthly");
         loadPaymentMethodDistribution();
+        setupCollectPeriodSelector();
+        loadCollectChart("monthly");
+        setupUserCollectChart();
+
     }
 
 
@@ -164,4 +185,100 @@ public class AdminDefault {
         registrationChart.lookup(".chart-plot-background")
                 .setStyle("-fx-background-color: transparent;");
     }
+
+    private void setupCollectPeriodSelector() {
+        collectPeriodSelector.setItems(FXCollections.observableArrayList(
+                "Daily", "Weekly", "Monthly"
+        ));
+        collectPeriodSelector.getSelectionModel().select("Monthly");
+
+        collectPeriodSelector.valueProperty().addListener((obs, oldVal, newVal) -> {
+            loadCollectChart(newVal.toLowerCase());
+        });
+    }
+    private void loadCollectChart(String period) {
+        collectChart.getData().clear();
+        Map<String, Integer> data = new CollectService().getCollectTrend(period);
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Collects");
+
+        data.forEach((key, value) ->
+                series.getData().add(new XYChart.Data<>(key, value))
+        );
+
+        collectChart.getData().add(series);
+        applyCollectChartStyles();
+    }
+
+
+    private void applyCollectChartStyles() {
+        collectChart.setStyle("-fx-chart-background-color: #f8f9fa;");
+        collectChart.lookup(".chart-plot-background")
+                .setStyle("-fx-background-color: transparent;");
+
+        for (XYChart.Series<String, Number> s : collectChart.getData()) {
+            s.getNode().lookup(".chart-series-line")
+                    .setStyle("-fx-stroke: #4CAF50; -fx-stroke-width: 2px;");
+        }
+    }
+
+
+    private void setupUserCollectChart() {
+        userCollectSort.setItems(FXCollections.observableArrayList(
+                "Most Collects", "Least Collects", "Alphabetical"
+        ));
+        userCollectSort.getSelectionModel().selectFirst();
+        updateUserCollectChart();
+    }
+
+    private void styleUserCollectChart() {
+        userCollectChart.setStyle("-fx-chart-background-color: #f8f9fa;");
+        userCollectChart.lookup(".chart-plot-background")
+                .setStyle("-fx-background-color: transparent;");
+
+        if (!userCollectChart.getData().isEmpty()) {
+            for (XYChart.Data<String, Number> data : userCollectChart.getData().get(0).getData()) {
+                Node node = data.getNode();
+
+                // Optional: if you want every bar a single custom color, uncomment this:
+                // node.setStyle("-fx-bar-fill: #4CAF50;");
+
+                // attach tooltip
+                Tooltip.install(node, new Tooltip(
+                        data.getXValue() + "\nCollects: " + data.getYValue()
+                ));
+            }
+        }
+    }
+
+
+
+    @FXML
+    private void updateUserCollectChart() {
+        userCollectChart.getData().clear();
+
+        String sortOrder = userCollectSort.getValue();
+        int limit = parseLimit(maxUsers.getText());
+
+        Map<String, Integer> data = new CollectService().getCollectsPerUser(sortOrder, limit);
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Collects");
+
+        data.forEach((key, value) ->
+                series.getData().add(new XYChart.Data<>(key, value))
+        );
+
+        userCollectChart.getData().add(series);
+        styleUserCollectChart();
+    }
+    private int parseLimit(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 10; // default value
+        }
+    }
+
 }

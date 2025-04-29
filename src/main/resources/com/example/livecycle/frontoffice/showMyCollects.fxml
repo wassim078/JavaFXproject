@@ -12,8 +12,6 @@
             fx:controller="com.example.livecycle.controllers.frontoffice.ShowMyCollectsController"
             style="-fx-background-color: #f0f7f4;"
             prefHeight="600.0" prefWidth="800.0">
-
-    <!-- Create Button -->
     <HBox spacing="10" style="-fx-padding: 10;"
           AnchorPane.topAnchor="10"
           AnchorPane.leftAnchor="10"
@@ -21,6 +19,9 @@
         <Button text="Create New Collect"
                 style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;"
                 onAction="#handleCreateCollect"/>
+        <Button text="Generate PDF"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;"
+                onAction="#handleGeneratePDF"/>
     </HBox>
 
     <!-- Table View -->

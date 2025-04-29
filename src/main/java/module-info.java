@@ -17,6 +17,7 @@ module com.example.livecycle {
     requires java.prefs;
     requires opencv;
     requires javafx.swing;
+    requires itextpdf;
 
     opens com.example.livecycle to javafx.fxml;
 
