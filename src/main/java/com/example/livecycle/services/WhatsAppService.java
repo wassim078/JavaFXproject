@@ -1,58 +1,100 @@
 package com.example.livecycle.services;
 
-import okhttp3.OkHttpClient;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 public class WhatsAppService {
+    private static final String BASE_URL = "https://38q3kv.api.infobip.com";
+    private static final String API_KEY = "App 5a0454133ba1777c49e082aeabb01cef-9590c0af-5efa-4a5a-ba55-81ca0e20db00";
+    private static final String FROM_NUMBER = "447860099299"; // Verified Infobip sender number
 
-    private static final String TEMPLATE_URL = "https://38q3kv.api.infobip.com/whatsapp/1/message/template";
-    private static final String API_KEY = "5a0454133ba1777c49e082aeabb01cef-9590c0af-5efa-4a5a-ba55-81ca0e20db00";
-    private static final String SENDER_PHONE = "447860099299"; // Numéro autorisé Infobip
+    public static void sendWhatsAppMessage(String toPhoneNumber, String message) {
+        new Thread(() -> {
+            try {
+                // Clean and format Tunisian number
+                String formattedTo = toPhoneNumber.replaceAll("[^0-9]", "");
+                if (formattedTo.length() == 8) {
+                    formattedTo = "216" + formattedTo;
+                } else if (formattedTo.startsWith("0")) {
+                    formattedTo = "216" + formattedTo.substring(1);
+                }
+                String messageId = java.util.UUID.randomUUID().toString();
+                String safeMessage = message
+                        .replace("\\", "\\\\")
+                        .replace("\"", "\\\"")
+                        .replace("\r\n", "\\n")
+                        .replace("\n",   "\\n");
+                // Create JSON payload
+                String jsonPayload = String.format(
+                        "{"
+                                + "\"from\":\"%s\","
+                                + "\"to\":\"%s\","
+                                + "\"messageId\":\"%s\","
+                                + "\"content\":{\"text\":\"%s\"},"
+                                + "\"callbackData\":\"reclamation-update\""
+                                + "}",
+                        FROM_NUMBER,
+                        formattedTo,
+                        messageId,
+                        safeMessage
+                );
 
-    public static void sendWhatsAppTemplate(String toNumber, String userName) {
-        OkHttpClient client = new OkHttpClient();
+                // Configure API request
+                URL url = new URL(BASE_URL + "/whatsapp/1/message/text");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
 
-        String jsonBody = String.format(
-                "{ \"messages\": [ { " +
-                        "\"from\": \"%s\", " +
-                        "\"to\": \"%s\", " +
-                        "\"messageId\": \"3ef29bb9-d855-4cc9-b175-6207303aa2ee\", " +
-                        "\"content\": { " +
-                        "\"templateName\": \"test_whatsapp_template_en\", " +
-                        "\"templateData\": { \"body\": { \"placeholders\": [ \"%s\" ] } }, " +
-                        "\"language\": \"en\" " +
-                        "} } ] }",
-                SENDER_PHONE,
-                toNumber.startsWith("+") ? toNumber : "+" + toNumber,
-                userName
-        );
+                // ✅ EXPLICIT HEADERS
+                conn.setRequestProperty("Authorization", API_KEY);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
 
-        RequestBody body = RequestBody.create(
-                jsonBody,
-                MediaType.parse("application/json")
-        );
+                // Log request details
+                System.out.println("\n=== WhatsApp API Request ===");
+                System.out.println("URL: " + url);
+                System.out.println("Headers: " + conn.getRequestProperties());
+                System.out.println("Payload: " + jsonPayload);
 
-        Request request = new Request.Builder()
-                .url(TEMPLATE_URL)
-                .post(body)
-                .addHeader("Authorization", "App " + API_KEY)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
+                // Send payload
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+                    os.write(input, 0, input.length);
+                }
 
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                System.out.println("Message template envoyé avec succès : " + response.body().string());
-            } else {
-                System.err.println("Erreur envoi template. Code: " + response.code()
-                        + " Réponse: " + response.body().string());
+                // Get response
+                int responseCode = conn.getResponseCode();
+                String responseBody = readResponseBody(conn, responseCode);
+
+                // Log response details
+                System.out.println("\n=== WhatsApp API Response ===");
+                System.out.println("Status Code: " + responseCode);
+                System.out.println("Response Body: " + responseBody);
+
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    System.err.println("Failed to send WhatsApp message. Server response: " + responseBody);
+                }
+
+            } catch (Exception e) {
+                System.err.println("Critical error in WhatsAppService: " + e.getMessage());
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            System.err.println("Erreur WhatsApp (template): " + e.getMessage());
-            e.printStackTrace();
+        }).start();
+    }
+
+    private static String readResponseBody(HttpURLConnection conn, int responseCode) throws IOException {
+        try (InputStream inputStream = responseCode >= 400 ?
+                conn.getErrorStream() : conn.getInputStream()) {
+
+            if (inputStream == null) return "No response body";
+
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                return reader.lines().collect(Collectors.joining("\n"));
+            }
         }
     }
 }

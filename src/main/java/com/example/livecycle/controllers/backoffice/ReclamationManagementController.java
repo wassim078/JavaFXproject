@@ -150,15 +150,21 @@ public class ReclamationManagementController {
                 reclamationTable.refresh();
                 showAlert("Succès", "État mis à jour avec succès", Alert.AlertType.INFORMATION);
 
-                // Send WhatsApp instead of SMS
+                // Récupération du numéro de téléphone de l'utilisateur
                 String userPhone = reclamation.getUser().getTelephone();
                 String userName = reclamation.getUser().getNom();
 
                 if (userPhone != null && !userPhone.isEmpty()) {
-                    // WhatsAppService.sendWhatsAppMessage(userPhone, message); // message texte classique
+                    // Création du message à envoyer
+                    String message = String.format(
+                            "Bonjour %s,\nVotre réclamation \"%s\" a été mise à jour.\nNouveau statut : %s.",
+                            userName,
+                            reclamation.getSujet(),
+                            reclamation.getEtat()
+                    );
 
-                    // Nouveau : message template
-                    WhatsAppService.sendWhatsAppTemplate(userPhone, userName);
+                    // Envoi du message WhatsApp
+                    WhatsAppService.sendWhatsAppMessage(userPhone, message);
                 } else {
                     System.out.println("Aucun numéro WhatsApp valide.");
                 }
@@ -170,6 +176,7 @@ public class ReclamationManagementController {
             showAlert("Erreur", "Erreur lors de la mise à jour: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
     public void setCurrentUser(User user) {
         this.currentUser = user;
         loadReclamations();
