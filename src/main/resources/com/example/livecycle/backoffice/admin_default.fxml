@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.chart.BarChart?>
 <ScrollPane xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.backoffice.AdminDefault"
@@ -53,6 +54,7 @@
 
             <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 0 0 15 0;">
                 <ComboBox fx:id="commandesPeriodSelector" prefWidth="200" styleClass="chart-control"/>
+
             </HBox>
 
             <LineChart fx:id="commandesChart" title="Commandes Trend"
@@ -65,16 +67,50 @@
                     <NumberAxis label="Number of Commandes" />
                 </yAxis>
             </LineChart>
+            <ComboBox fx:id="frequencyPeriodSelector" prefWidth="200" styleClass="chart-control"/>
+            <HBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
 
-            <PieChart fx:id="paymentMethodChart" title="Payment Methods Distribution"
-                      styleClass="payment-chart" prefWidth="400" prefHeight="400"
-                      maxWidth="400" HBox.hgrow="ALWAYS"/>
+                <BarChart fx:id="leastOrderedChart" title="Least Frequent Orders"
+                          styleClass="frequency-chart" legendVisible="false"
+                          prefWidth="500" prefHeight="400" HBox.hgrow="ALWAYS">
+                    <xAxis>
+                        <CategoryAxis label="Product ID" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Number of Orders" />
+                    </yAxis>
+                </BarChart>
+
+                <PieChart fx:id="paymentMethodChart" title="Payment Methods Distribution"
+                          styleClass="payment-chart" prefWidth="400" prefHeight="400"
+                          maxWidth="400" HBox.hgrow="ALWAYS"/>
+            </HBox>
         </VBox>
 
         <!-- Annonces Section -->
         <VBox styleClass="module-container" spacing="15">
             <Label text="Annonces Management Statistics" styleClass="module-title"/>
             <!-- Content here -->
+        </VBox>
+        <!-- Reclamations Section -->
+        <VBox styleClass="module-container" spacing="15">
+            <Label text="Reclamation Management Statistics" styleClass="module-title"/>
+
+            <!-- Period Selector -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label  styleClass="chart-label"/>
+                <ComboBox fx:id="reclamationPeriodSelector" styleClass="chart-control"/>
+            </HBox>
+
+            <!-- Bar Chart -->
+            <BarChart fx:id="reclamationChart" styleClass="reclamation-chart" title="Reclamation Statistics">
+                <xAxis>
+                    <CategoryAxis label="Period" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Number of Reclamations" />
+                </yAxis>
+            </BarChart>
         </VBox>
     </VBox>
 </ScrollPane>

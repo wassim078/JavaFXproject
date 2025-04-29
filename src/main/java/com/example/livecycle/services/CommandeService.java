@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandeService implements Service<Commande> {
     // Constants
@@ -261,5 +262,36 @@ public class CommandeService implements Service<Commande> {
 
         return distribution;
     }
+    public Map<String, Integer> getLeastFrequentAnnonces(int limit) {
+        Map<String, Integer> frequencyMap = new HashMap<>();
+        String sql = "SELECT annonce_quantities FROM commande";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                JSONObject quantities = new JSONObject(rs.getString("annonce_quantities"));
+                for (String annonceId : quantities.keySet()) {
+                    int count = quantities.getInt(annonceId);
+                    frequencyMap.put(annonceId, frequencyMap.getOrDefault(annonceId, 0) + count);
+                }
+            }
+
+            return frequencyMap.entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .limit(limit)
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            LinkedHashMap::new));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+
 
 }

@@ -2,6 +2,8 @@ package com.example.livecycle.controllers.backoffice;
 
 import com.example.livecycle.services.ReclamationDAO;
 import com.example.livecycle.entities.Reclamation;
+
+import com.example.livecycle.services.WhatsAppService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -141,13 +143,26 @@ public class ReclamationManagementController {
 
     private void updateReclamationFromDialog(Reclamation reclamation) {
         try {
-            // Only update the status
             String newStatus = editEtatComboBox.getValue();
             reclamation.setEtat(newStatus);
 
             if (reclamationDAO.updateReclamation(reclamation)) {
                 reclamationTable.refresh();
                 showAlert("Succès", "État mis à jour avec succès", Alert.AlertType.INFORMATION);
+
+                // Send WhatsApp instead of SMS
+                String userPhone = reclamation.getUser().getTelephone();
+                String userName = reclamation.getUser().getNom();
+
+                if (userPhone != null && !userPhone.isEmpty()) {
+                    // WhatsAppService.sendWhatsAppMessage(userPhone, message); // message texte classique
+
+                    // Nouveau : message template
+                    WhatsAppService.sendWhatsAppTemplate(userPhone, userName);
+                } else {
+                    System.out.println("Aucun numéro WhatsApp valide.");
+                }
+
             } else {
                 showAlert("Erreur", "Échec de la mise à jour", Alert.AlertType.ERROR);
             }
@@ -155,7 +170,6 @@ public class ReclamationManagementController {
             showAlert("Erreur", "Erreur lors de la mise à jour: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
     public void setCurrentUser(User user) {
         this.currentUser = user;
         loadReclamations();

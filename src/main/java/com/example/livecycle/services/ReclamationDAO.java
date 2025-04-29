@@ -7,7 +7,9 @@ import com.example.livecycle.utils.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReclamationDAO {
 
@@ -183,5 +185,32 @@ public class ReclamationDAO {
         reclamation.setUser(user);
 
         return reclamation;
+    }
+    public Map<String, Integer> getReclamationStats(String period) {
+        Map<String, Integer> stats = new LinkedHashMap<>();
+        String formatPattern = switch (period.toLowerCase()) {
+            case "daily" -> "%Y-%m-%d";
+            case "monthly" -> "%Y-%m";
+            case "yearly" -> "%Y";
+            default -> "%Y-%m";
+        };
+
+        String query = "SELECT DATE_FORMAT(date, ?) as period, COUNT(*) as count "
+                + "FROM reclamation "
+                + "GROUP BY DATE_FORMAT(date, ?) "
+                + "ORDER BY date DESC LIMIT 12";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, formatPattern);
+            stmt.setString(2, formatPattern);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                stats.put(rs.getString("period"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stats;
     }
 }

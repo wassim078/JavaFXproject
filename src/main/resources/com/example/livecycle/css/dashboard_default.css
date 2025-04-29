@@ -145,6 +145,22 @@
 .payment-chart .chart-legend-item {
     -fx-font-size: 14px;
 }
+/* Reclamation Chart */
+.reclamation-chart .chart-bar {
+    -fx-bar-fill: #e74c3c;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 2);
+}
+
+.reclamation-chart.daily .chart-bar { -fx-bar-fill: #3498db; }
+.reclamation-chart.monthly .chart-bar { -fx-bar-fill: #2ecc71; }
+.reclamation-chart.yearly .chart-bar { -fx-bar-fill: #9b59b6; }
+
+.chart-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: 500;
+}
 
 /* Payment Method Colors */
 .payment-chart #slice-E-paiement {
@@ -153,4 +169,15 @@
 
 .payment-chart #slice-à-la-livraison {
     -fx-pie-color: #2196F3;
+}
+.frequency-chart {
+    -fx-background-color: #fff;
+    -fx-padding: 15;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.frequency-chart .chart-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2c3e50;
 }
