@@ -83,7 +83,19 @@ public class User {
     public void setEmail(String email) { this.email.set(email); }
     public void setPassword(String password) { this.password.set(password); }
     public void setAdresse(String adresse) { this.adresse.set(adresse); }
-    public void setTelephone(String telephone) { this.telephone.set(telephone); }
+    public void setTelephone(String telephone) {
+        // Remove all non-digits
+        String cleaned = telephone.replaceAll("[^0-9]", "");
+
+        // Handle Tunisian numbers
+        if (cleaned.length() == 8) { // Local format (e.g., 23189557)
+            cleaned = "216" + cleaned; // ➡️ Becomes 21623189557
+        } else if (cleaned.startsWith("0")) { // Local format with leading 0 (e.g., 023189557)
+            cleaned = "216" + cleaned.substring(1); // ➡️ 21623189557
+        }
+
+        this.telephone.set(cleaned);
+    }
     public void setRoles(String roles) { this.roles.set(roles); }
     public void setImage(String image) { this.image.set(image); }
 

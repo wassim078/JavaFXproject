@@ -168,3 +168,14 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
+.frequency-chart {
+    -fx-background-color: #fff;
+    -fx-padding: 15;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.frequency-chart .chart-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2c3e50;
+}

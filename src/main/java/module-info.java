@@ -19,6 +19,10 @@ module com.example.livecycle {
     requires javafx.swing;
     requires itextpdf;
 
+    requires okhttp3;
+
+
+
     opens com.example.livecycle to javafx.fxml;
 
     exports com.example.livecycle;
