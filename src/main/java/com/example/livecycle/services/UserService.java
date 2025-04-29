@@ -576,7 +576,7 @@ public class UserService implements Service<User> {
                 byte[] stored = rs.getBytes("face_encoding");
                 if (stored == null) continue;
                 double distance = calculateFaceDistance(faceData, stored);
-                if (distance < 0.6 && distance < minDistance) {
+                if (distance < 0.4 && distance < minDistance) {
                     minDistance = distance;
                     bestUserId = rs.getInt("id");
                 }

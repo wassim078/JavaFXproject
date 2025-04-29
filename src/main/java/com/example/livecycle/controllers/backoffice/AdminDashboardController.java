@@ -1,5 +1,6 @@
 package com.example.livecycle.controllers.backoffice;
 
+import com.example.livecycle.controllers.RefreshableController;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class AdminDashboardController {
+public class AdminDashboardController implements RefreshableController {
     @FXML private VBox sidebarMenu;
     @FXML private StackPane contentArea;
     @FXML private ImageView userPhoto;
@@ -43,6 +44,11 @@ public class AdminDashboardController {
     public void initialize() {
         // Existing initialization code
         configureSessionPersistence();
+        userPhoto.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                configureSessionPersistence();
+            }
+        });
     }
 
     private void configureSessionPersistence() {
@@ -321,6 +327,10 @@ public class AdminDashboardController {
 
     // Update existing show methods to close submenus
 
-
+    @Override
+    public void refreshVerificationStatus() {
+        // Implement refresh logic if needed
+        // Can leave empty if not used for admin
+    }
 
 }
