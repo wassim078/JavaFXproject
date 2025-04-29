@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.frontoffice.CreateComplaintController"
+            stylesheets="@../css/forms.css">
+
+    <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+               AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <VBox alignment="TOP_CENTER" spacing="20" styleClass="form-container">
+            <Label text="New Complaint" styleClass="form-title"/>
+
+            <GridPane hgap="20" vgap="5" styleClass="form-grid">
+                <padding><Insets top="15" right="25" bottom="15" left="25"/></padding>
+
+                <!-- Subject -->
+                <Label text="Subject" styleClass="form-label"
+                       GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="3">
+                    <TextField fx:id="subjectField" styleClass="form-input"/>
+                    <Label fx:id="subjectError" styleClass="error-label" visible="false"/>
+                </VBox>
+
+                <!-- Description -->
+                <Label text="Description" styleClass="form-label"
+                       GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="3">
+                    <TextArea fx:id="descriptionField" styleClass="form-textarea"/>
+                    <Label fx:id="descriptionError" styleClass="error-label" visible="false"/>
+                </VBox>
+
+                <!-- Type -->
+                <Label text="Type" styleClass="form-label"
+                       GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="typeComboBox" styleClass="form-combo"
+                          GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                <!-- File Upload -->
+                <Label text="Attachment" styleClass="form-label"
+                       GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                <HBox spacing="15" alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <Button text="Choose File" onAction="#handleFileBrowse"
+                            styleClass="file-button"/>
+                    <Label fx:id="fileNameLabel" styleClass="file-label"/>
+                </HBox>
+            </GridPane>
+
+            <Button text="Submit Complaint" onAction="#handleSubmit"
+                    styleClass="submit-button"/>
+        </VBox>
+
+    </StackPane>
+</AnchorPane>
