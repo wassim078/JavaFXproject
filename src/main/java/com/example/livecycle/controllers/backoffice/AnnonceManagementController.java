@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +27,6 @@ import java.sql.SQLException;
 public class AnnonceManagementController {
 
     @FXML private TableView<Annonce> annoncesTable;
-    @FXML private TableColumn<Annonce, Integer> idColumn;
     @FXML private TableColumn<Annonce, String> titleColumn;
     @FXML private TableColumn<Annonce, String> descriptionColumn;
     @FXML private TableColumn<Annonce, Category> categoryColumn;
@@ -35,19 +35,23 @@ public class AnnonceManagementController {
     @FXML private TableColumn<Annonce, Integer> quantityColumn;
     @FXML private TableColumn<Annonce, String> userEmailColumn;
     @FXML private TableColumn<Annonce, String> imageColumn;
-    @FXML private TableColumn<Annonce, Void> actionsColumn; // Added missing column declaration
+    @FXML private TableColumn<Annonce, Void> actionsColumn;
 
     private final AnnonceService annonceService = new AnnonceService();
+    private final UserService userService = new UserService();
     private ObservableList<Annonce> annoncesData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         setupTableColumns();
         loadAnnouncements();
+        
+        // Apply modern styling to the table
+        annoncesTable.getStyleClass().add("modern-table");
     }
 
     private void setupTableColumns() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        // Configure cell value factories
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("titre"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("categorieAnnonce"));
@@ -61,13 +65,28 @@ public class AnnonceManagementController {
             @Override
             protected void updateItem(Category item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? "" : item.getName());
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Label label = new Label(item.getName());
+                    label.setStyle("-fx-background-color: #e8f5e9; -fx-padding: 5 10; -fx-background-radius: 4; -fx-text-fill: #2e7d32;");
+                    setGraphic(label);
+                    setAlignment(Pos.CENTER);
+                }
             }
         });
 
-        // Image column
+        // Image column with improved styling
         imageColumn.setCellFactory(column -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
+
+            {
+                imageView.setFitHeight(60);
+                imageView.setFitWidth(80);
+                imageView.setPreserveRatio(true);
+                imageView.getStyleClass().add("image-view");
+            }
 
             @Override
             protected void updateItem(String imagePath, boolean empty) {
@@ -77,37 +96,42 @@ public class AnnonceManagementController {
                 } else {
                     try {
                         File file = new File(imagePath);
+                        Image image;
                         if (file.exists()) {
-                            Image image = new Image(file.toURI().toString());
-                            imageView.setImage(image);
+                            image = new Image(file.toURI().toString(), 80, 60, true, true);
                         } else {
-                            // Load default image from resources
-                            Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-annonce.png"));
-                            imageView.setImage(defaultImage);
+                            image = new Image(getClass().getResourceAsStream("/com/example/livecycle/images/default-annonce.png"),
+                                    80, 60, true, true);
                         }
-                        imageView.setFitWidth(100);
-                        imageView.setFitHeight(80);
-                        imageView.setPreserveRatio(true);
+                        imageView.setImage(image);
                         setGraphic(imageView);
+                        getStyleClass().add("image-cell");
+                        setAlignment(Pos.CENTER);
                     } catch (Exception e) {
-                        // Log error and set default image
                         System.err.println("Error loading image: " + e.getMessage());
-                        imageView.setImage(new Image(getClass().getResourceAsStream("/images/default-annonce.png")));
-                        setGraphic(imageView);
+                        try {
+                            Image defaultImage = new Image(getClass().getResourceAsStream("/com/example/livecycle/images/default-annonce.png"),
+                                    80, 60, true, true);
+                            imageView.setImage(defaultImage);
+                            setGraphic(imageView);
+                        } catch (Exception ex) {
+                            setGraphic(null);
+                        }
                     }
                 }
             }
         });
 
-        // Actions column
+        // Actions column with styled buttons
         actionsColumn.setCellFactory(column -> new TableCell<>() {
             private final Button editBtn = new Button("Edit");
             private final Button deleteBtn = new Button("Delete");
             private final HBox buttons = new HBox(10, editBtn, deleteBtn);
 
             {
-                editBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                deleteBtn.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white;");
+                editBtn.getStyleClass().addAll("button", "edit-button");
+                deleteBtn.getStyleClass().addAll("button", "delete-button");
+                buttons.setAlignment(Pos.CENTER);
 
                 editBtn.setOnAction(e -> {
                     Annonce annonce = getTableView().getItems().get(getIndex());
@@ -124,7 +148,24 @@ public class AnnonceManagementController {
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : buttons);
+                setAlignment(Pos.CENTER);
             }
+        });
+
+        // Add hover effect to rows
+        annoncesTable.setRowFactory(tv -> {
+            TableRow<Annonce> row = new TableRow<>();
+            row.setOnMouseEntered(event -> {
+                if (!row.isEmpty()) {
+                    row.setStyle("-fx-background-color: #f8f9fa;");
+                }
+            });
+            row.setOnMouseExited(event -> {
+                if (!row.isEmpty()) {
+                    row.setStyle("");
+                }
+            });
+            return row;
         });
     }
 
@@ -140,12 +181,18 @@ public class AnnonceManagementController {
     private void handleDelete(Annonce annonce) {
         if (annonce != null) {
             Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmation.setContentText("Delete this announcement?");
+            confirmation.setTitle("Confirm Deletion");
+            confirmation.setHeaderText("Delete Announcement");
+            confirmation.setContentText("Are you sure you want to delete this announcement?");
+            confirmation.getDialogPane().setStyle("-fx-background-color: white;");
 
             confirmation.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     try {
                         if (annonceService.supprimer(annonce.getId())) {
+                            // Send notification to the user
+                            String notificationMessage = "Your announcement '" + annonce.getTitre() + "' has been deleted by an administrator.";
+                            userService.addNotification(annonce.getUserId(), notificationMessage);
                             loadAnnouncements();
                         }
                     } catch (SQLException e) {
@@ -166,7 +213,8 @@ public class AnnonceManagementController {
 
             Stage stage = new Stage();
             stage.setTitle("Edit Announcement");
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             showAlert("Error", "Failed to load edit form: " + e.getMessage());
@@ -178,6 +226,7 @@ public class AnnonceManagementController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setStyle("-fx-background-color: white;");
         alert.showAndWait();
     }
 }

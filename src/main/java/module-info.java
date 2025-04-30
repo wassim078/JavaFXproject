@@ -21,6 +21,7 @@ module com.example.livecycle {
 
     requires okhttp3;
 
+    requires twilio;
 
 
     opens com.example.livecycle to javafx.fxml;

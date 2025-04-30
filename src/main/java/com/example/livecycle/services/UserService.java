@@ -362,6 +362,7 @@ public class UserService implements Service<User> {
                         rs.getString("roles"),
                         rs.getString("image")
                 );
+                // ADD THIS LINE
                 user.setId(rs.getInt("id"));
                 user.setBanned(rs.getBoolean("is_banned"));
                 return user;
@@ -529,6 +530,57 @@ public class UserService implements Service<User> {
             e.printStackTrace();
         }
         return roleCounts;
+    }
+
+    public void addNotification(int userId, String message) throws SQLException {
+        String query = "UPDATE user SET notifications = JSON_ARRAY_APPEND(COALESCE(notifications, '[]'), '$', ?) WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setString(1, message);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        }
+    }
+
+    public List<String> getNotifications(int userId) throws SQLException {
+        String query = "SELECT notifications FROM user WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, userId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String notificationsJson = rs.getString("notifications");
+                    if (notificationsJson != null) {
+                        JSONArray jsonArray = new JSONArray(notificationsJson);
+                        List<String> notifications = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            notifications.add(jsonArray.getString(i));
+                        }
+                        return notifications;
+                    }
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public void clearNotifications(int userId) throws SQLException {
+        String query = "UPDATE user SET notifications = '[]' WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, userId);
+            pst.executeUpdate();
+        }
+    }
+
+    public void removeNotification(int userId, String notification) throws SQLException {
+        String query = "UPDATE user SET notifications = JSON_REMOVE(notifications, JSON_UNQUOTE(JSON_SEARCH(notifications, 'one', ?))) WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setString(1, notification);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        }
     }
 
 

@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="rootStackPane" stylesheets="@../css/shop_annonce.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.frontoffice.AnnonceManagementController">
-    <BorderPane>
-        <top>
-            <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20 20 40 20;">
-                <Text styleClass="shop-title" text="Announcement Shop 🛒" />
-            </VBox>
-        </top>
-        <center>
-            <ScrollPane fitToWidth="true" style="-fx-background: #F5F5F5;">
-                <GridPane fx:id="annoncesGrid" hgap="20" style="-fx-padding: 20; -fx-max-width: 1200px;" vgap="20">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" percentWidth="33.3" />
-                        <ColumnConstraints halignment="CENTER" percentWidth="33.3" />
-                        <ColumnConstraints halignment="CENTER" percentWidth="33.3" />
-                    </columnConstraints>
-                </GridPane>
-                <BorderPane.margin>
-                    <Insets left="150.0" />
-                </BorderPane.margin>
+<BorderPane stylesheets="@../css/shop_annonce.css"
+           xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.livecycle.controllers.frontoffice.AnnonceManagementController">
+
+    <top>
+        <VBox spacing="15" styleClass="header-section">
+            <Text styleClass="shop-title" text="Announcement Shop 🛒" />
+            
+            <!-- Search and Filter Section -->
+            <HBox spacing="15" alignment="CENTER">
+                <TextField fx:id="searchField" promptText="Search announcements..." styleClass="search-field" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="categoryFilter" promptText="Category" styleClass="filter-combo" />
+                <ComboBox fx:id="priceFilter" promptText="Price Range" styleClass="filter-combo" />
+                <ComboBox fx:id="weightFilter" promptText="Weight Range" styleClass="filter-combo" />
+                <Button fx:id="resetFilters" text="Reset" styleClass="reset-button" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="10">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+            
+            <ScrollPane fitToWidth="true" styleClass="modern-scroll-pane">
+                <GridPane fx:id="annoncesGrid" 
+                         alignment="CENTER" 
+                         hgap="15" vgap="15" 
+                         styleClass="announcements-grid"/>
             </ScrollPane>
-        </center>
-    </BorderPane>
-</StackPane>
+            
+            <Pagination fx:id="pagination" 
+                       styleClass="modern-pagination"
+                       maxPageIndicatorCount="5"/>
+        </VBox>
+    </center>
+
+    <StackPane fx:id="rootStackPane" visible="false" managed="false"/>
+</BorderPane>

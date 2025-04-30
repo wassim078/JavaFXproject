@@ -1,7 +1,9 @@
 package com.example.livecycle.controllers.backoffice;
 
+import com.example.livecycle.services.AnnonceService;
 import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.UserService;
+import com.example.livecycle.services.CategoryAnnonceService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,10 +13,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Map;
 
 public class AdminDefault {
@@ -23,13 +28,21 @@ public class AdminDefault {
 
     @FXML private ComboBox<String> reclamationPeriodSelector;
     @FXML private LineChart<String, Number> registrationChart;
-    @FXML private ComboBox<String> periodSelector;
-    @FXML private PieChart paymentMethodChart;
-    @FXML private ComboBox<String> commandesPeriodSelector;
     @FXML private LineChart<String, Number> commandesChart;
+    @FXML private LineChart<String, Number> annoncesTrendChart;
     @FXML private BarChart<String, Number> reclamationChart;
     @FXML private VBox chartContainer;
     @FXML private PieChart roleChart;
+    @FXML private PieChart paymentMethodChart;
+    @FXML private PieChart categoryDistributionChart;
+    @FXML private ComboBox<String> periodSelector;
+    @FXML private ComboBox<String> commandesPeriodSelector;
+    @FXML private ComboBox<String> annoncesPeriodSelector;
+    @FXML private Label totalAnnoncesLabel;
+    @FXML private Label activeAnnoncesLabel;
+    @FXML private Label avgPriceLabel;
+    @FXML private Label totalCategoriesLabel;
+
     @FXML private ComboBox<String> collectPeriodSelector;
     @FXML private LineChart<String, Number> collectChart;
     @FXML private BarChart<String, Number> userCollectChart;
@@ -39,12 +52,48 @@ public class AdminDefault {
 
     private final UserService userService = new UserService();
     private final CommandeService commandeService = new CommandeService();
+    private final AnnonceService annonceService = new AnnonceService();
+    private final CategoryAnnonceService categoryService = new CategoryAnnonceService();
+    private final DecimalFormat priceFormat = new DecimalFormat("#,##0.00 TND");
+
     @FXML
     public void initialize() {
-        setupPeriodSelector();
+        setupPeriodSelectors();
+        loadAllCharts();
+        loadAnnonceStats();
+    }
+
+    private void setupPeriodSelectors() {
+        periodSelector.setItems(FXCollections.observableArrayList(
+                "Daily", "Weekly", "Monthly"
+        ));
+        periodSelector.getSelectionModel().select("Monthly");
+
+        periodSelector.valueProperty().addListener((obs, oldVal, newVal) -> {
+            loadChart(newVal.toLowerCase());
+        });
+
+        commandesPeriodSelector.setItems(FXCollections.observableArrayList(
+                "Daily", "Weekly", "Monthly"
+        ));
+        commandesPeriodSelector.getSelectionModel().select("Monthly");
+
+        commandesPeriodSelector.valueProperty().addListener((obs, oldVal, newVal) -> {
+            loadCommandesChart(newVal.toLowerCase());
+        });
+
+        annoncesPeriodSelector.setItems(FXCollections.observableArrayList(
+                "Daily", "Weekly", "Monthly"
+        ));
+        annoncesPeriodSelector.setValue("Monthly");
+        annoncesPeriodSelector.setOnAction(e -> loadAnnoncesTrendChart(
+                annoncesPeriodSelector.getValue().toLowerCase()
+        ));
+    }
+
+    private void loadAllCharts() {
         loadChart("monthly");
         loadRoleDistribution();
-        setupCommandesPeriodSelector();
         loadCommandesChart("monthly");
         loadPaymentMethodDistribution();
         setupCollectPeriodSelector();
@@ -70,8 +119,75 @@ public class AdminDefault {
     }
 
     private void loadLeastOrderedChart() {
+        loadAnnoncesTrendChart("monthly");
+        loadCategoryDistribution();
     }
 
+    private void loadAnnonceStats() {
+        try {
+            Map<String, Object> stats = annonceService.getGeneralStats();
+            totalAnnoncesLabel.setText(String.valueOf(stats.get("total")));
+            activeAnnoncesLabel.setText(String.valueOf(stats.get("active")));
+            avgPriceLabel.setText(priceFormat.format(stats.get("avgPrice")));
+
+            int categoriesCount = categoryService.recuperer().size();
+            totalCategoriesLabel.setText(String.valueOf(categoriesCount));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error appropriately
+        }
+    }
+
+    private void loadAnnoncesTrendChart(String period) {
+        try {
+            annoncesTrendChart.getData().clear();
+            Map<String, Integer> data = annonceService.getAnnoncesTrend(period);
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Annonces");
+
+            data.forEach((key, value) ->
+                    series.getData().add(new XYChart.Data<>(key, value))
+            );
+
+            annoncesTrendChart.getData().add(series);
+            annoncesTrendChart.getStyleClass().add("annonces-trend");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error appropriately
+        }
+    }
+
+    private void loadCategoryDistribution() {
+        try {
+            Map<String, Integer> distribution = annonceService.getCategoryDistribution();
+            ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+            int colorIndex = 0;
+            for (Map.Entry<String, Integer> entry : distribution.entrySet()) {
+                PieChart.Data slice = new PieChart.Data(
+                        entry.getKey() + " (" + entry.getValue() + ")",
+                        entry.getValue()
+                );
+
+                // Apply color class
+                String colorClass = "category-" + (colorIndex % 6);
+                slice.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                    if (newNode != null) {
+                        newNode.getStyleClass().add(colorClass);
+                    }
+                });
+
+                pieChartData.add(slice);
+                colorIndex++;
+            }
+
+            categoryDistributionChart.setData(pieChartData);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error appropriately
+        }
+    }
 
     private void loadPaymentMethodDistribution() {
         Map<String, Integer> paymentData = commandeService.getPaymentMethodDistribution();

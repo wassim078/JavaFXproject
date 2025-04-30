@@ -17,6 +17,9 @@ public class User {
     private SimpleStringProperty verificationToken = new SimpleStringProperty();
     private SimpleBooleanProperty isBanned = new SimpleBooleanProperty(false);
     private SimpleObjectProperty<byte[]> faceEncoding = new SimpleObjectProperty<>();
+    private SimpleStringProperty notifications = new SimpleStringProperty("[]");
+
+
     private static final String UPLOADS_DIR = System.getProperty("user.dir") + "/uploads/";
     private static final String DEFAULT_AVATAR = "/com/example/livecycle/images/default-avatar.png";
 
@@ -56,7 +59,6 @@ public class User {
         this.image.set(image);
         this.enabled.set(false);
         this.verificationToken.set("");
-        this.faceEncoding.set(null);
     }
     // Add property getters
     public StringProperty prenomProperty() { return prenom; }
@@ -107,8 +109,9 @@ public class User {
     public String getVerificationToken() { return verificationToken.get(); }
     public void setVerificationToken(String token) { verificationToken.set(token); }
 
-
-
+    public String getNotifications() { return notifications.get(); }
+    public void setNotifications(String notifications) { this.notifications.set(notifications); }
+    public StringProperty notificationsProperty() { return notifications; }
 
     public String getFormattedRoles() {
         try {
