@@ -18,6 +18,7 @@ public class User {
     private SimpleStringProperty image = new SimpleStringProperty();
     private SimpleBooleanProperty enabled = new SimpleBooleanProperty(false);
     private SimpleStringProperty verificationToken = new SimpleStringProperty();
+    private SimpleStringProperty notifications = new SimpleStringProperty("[]");
 
 
     private static final String UPLOADS_DIR = System.getProperty("user.dir") + "/uploads/";
@@ -97,8 +98,9 @@ public class User {
     public String getVerificationToken() { return verificationToken.get(); }
     public void setVerificationToken(String token) { verificationToken.set(token); }
 
-
-
+    public String getNotifications() { return notifications.get(); }
+    public void setNotifications(String notifications) { this.notifications.set(notifications); }
+    public StringProperty notificationsProperty() { return notifications; }
 
     public String getFormattedRoles() {
         try {

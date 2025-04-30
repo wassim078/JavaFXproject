@@ -78,6 +78,7 @@ public class CategoryAnnonceManagement implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     private void handleCreate() {
         TextInputDialog dialog = new TextInputDialog();
@@ -98,6 +99,7 @@ public class CategoryAnnonceManagement implements Initializable {
             }
         });
     }
+
     private void handleEdit(Category category) {
         TextInputDialog dialog = new TextInputDialog(category.getName());
         dialog.setTitle("Edit Category");
@@ -134,5 +136,4 @@ public class CategoryAnnonceManagement implements Initializable {
             }
         }
     }
-
 }

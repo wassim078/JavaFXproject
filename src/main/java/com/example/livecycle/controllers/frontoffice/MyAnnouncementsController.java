@@ -3,49 +3,100 @@ package com.example.livecycle.controllers.frontoffice;
 import com.example.livecycle.entities.Annonce;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.AnnonceService;
+import com.example.livecycle.services.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class MyAnnouncementsController {
+public class MyAnnouncementsController implements Initializable {
     @FXML private GridPane annoncesGrid;
     private User currentUser;
     private final AnnonceService annonceService = new AnnonceService();
+    private final UserService userService = new UserService();
     private Runnable refreshCallback;
     @FXML private Button createBtn;
     private UserDashboardController dashboardController;
     @FXML private BorderPane root; // Reference to the root BorderPane
     @FXML private HBox topSection; // Reference to the top HBox
     @FXML private ScrollPane mainScrollPane; // Reference to the center ScrollPane
+    @FXML private VBox notificationsBox;
+    @FXML private Button notificationBtn;
+    private List<String> allNotifications = new ArrayList<>();
 
-    // Add this method
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Initialize notifications when the user is set
+    }
+
+    private void setupNotifications() {
+        if (currentUser == null) return; // Don't setup notifications if no user is set
+        
+        try {
+            List<String> notifications = userService.getNotifications(currentUser.getId());
+            notificationsBox.getChildren().clear();
+            
+            for (String notification : notifications) {
+                HBox notificationBox = new HBox();
+                notificationBox.getStyleClass().add("notification-box");
+                notificationBox.setSpacing(10);
+                notificationBox.setPadding(new Insets(10));
+                
+                Label messageLabel = new Label(notification);
+                messageLabel.getStyleClass().add("notification-message");
+                
+                Button clearBtn = new Button("Clear");
+                clearBtn.getStyleClass().add("clear-notification-btn");
+                clearBtn.setOnAction(e -> {
+                    try {
+                        // Remove only this specific notification
+                        userService.removeNotification(currentUser.getId(), notification);
+                        // Refresh the notifications display
+                        setupNotifications();
+                    } catch (SQLException ex) {
+                        showError("Error clearing notification: " + ex.getMessage());
+                    }
+                });
+                
+                notificationBox.getChildren().addAll(messageLabel, clearBtn);
+                notificationsBox.getChildren().add(notificationBox);
+            }
+        } catch (SQLException e) {
+            showError("Error loading notifications: " + e.getMessage());
+        }
+    }
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
         loadUserAnnouncements();
+        setupNotifications();
     }
 
     public void setDashboardController(UserDashboardController controller) {
         this.dashboardController = controller;
     }
-
-
-
 
     private void loadUserAnnouncements() {
         try {
@@ -201,5 +252,69 @@ public class MyAnnouncementsController {
 
     private void showSuccess(String message) {
         new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK).show();
+    }
+
+    @FXML
+    private void showNotificationHistory() {
+        try {
+            allNotifications = userService.getNotifications(currentUser.getId());
+            
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Notification History");
+            dialog.setHeaderText("All Notifications");
+            
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.getStyleClass().add("notification-history");
+            dialogPane.getButtonTypes().add(ButtonType.CLOSE);
+            
+            VBox content = new VBox(10);
+            content.getStyleClass().add("list");
+            
+            // Add a clear all button
+            Button clearAllBtn = new Button("Clear All Notifications");
+            clearAllBtn.getStyleClass().add("clear-all-btn");
+            clearAllBtn.setOnAction(e -> {
+                try {
+                    userService.clearNotifications(currentUser.getId());
+                    allNotifications.clear();
+                    setupNotifications();
+                    dialog.close();
+                } catch (SQLException ex) {
+                    showError("Error clearing notifications: " + ex.getMessage());
+                }
+            });
+            
+            // Add notifications in reverse chronological order
+            for (int i = allNotifications.size() - 1; i >= 0; i--) {
+                String notification = allNotifications.get(i);
+                VBox notificationItem = new VBox(5);
+                notificationItem.getStyleClass().add("list-item");
+                
+                TextFlow message = new TextFlow();
+                Text text = new Text(notification);
+                message.getChildren().add(text);
+                
+                // Add timestamp
+                LocalDateTime now = LocalDateTime.now();
+                String timestamp = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                Text timeText = new Text("\n" + timestamp);
+                timeText.getStyleClass().add("timestamp");
+                message.getChildren().add(timeText);
+                
+                notificationItem.getChildren().add(message);
+                content.getChildren().add(notificationItem);
+            }
+            
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(400);
+            
+            VBox mainContent = new VBox(10, clearAllBtn, scrollPane);
+            dialogPane.setContent(mainContent);
+            
+            dialog.showAndWait();
+        } catch (SQLException e) {
+            showError("Error loading notification history: " + e.getMessage());
+        }
     }
 }

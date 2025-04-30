@@ -12,6 +12,7 @@ public class Annonce {
     private final StringProperty image = new SimpleStringProperty();
     private final IntegerProperty quantite = new SimpleIntegerProperty();
     private final ObjectProperty<Category> categorieAnnonce = new SimpleObjectProperty<>();
+    private final BooleanProperty favori = new SimpleBooleanProperty(false);
     private transient String userEmail;
 
 
@@ -69,5 +70,10 @@ public class Annonce {
 
     public String getUserEmail() { return userEmail; }
     public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
+
+    // Nouveau getter/setter pour favori
+    public BooleanProperty favoriProperty() { return favori; }
+    public boolean isFavori() { return favori.get(); }
+    public void setFavori(boolean favori) { this.favori.set(favori); }
 
 }

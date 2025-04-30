@@ -3,6 +3,7 @@ package com.example.livecycle.services;
 import com.example.livecycle.entities.Annonce;
 import com.example.livecycle.entities.Category;
 import com.example.livecycle.utils.DatabaseConnection;
+import com.example.livecycle.utils.sms;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,9 @@ import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 public class AnnonceService implements Service<Annonce> {
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + File.separator + "uploads" + File.separator;
@@ -77,10 +81,22 @@ public class AnnonceService implements Service<Annonce> {
         String query = "DELETE FROM annonce WHERE id = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement pst = conn.prepareStatement(query)) {
+
             pst.setInt(1, id);
-            return pst.executeUpdate() > 0;
+            boolean isDeleted = pst.executeUpdate() > 0;
+
+            if (isDeleted) {
+                // Envoi de SMS après suppression réussie
+                sms smsSender = new sms();
+                String adminPhoneNumber = "55017213"; // Numéro à remplacer par le tien ou celui d’un admin
+                String message = "L'annonce avec l'ID " + id + " a été supprimée du système.";
+                smsSender.envoyerSms(adminPhoneNumber, message);
+            }
+
+            return isDeleted;
         }
     }
+
 
     @Override
     public List<Annonce> recuperer() throws SQLException {
@@ -135,6 +151,13 @@ public class AnnonceService implements Service<Annonce> {
         category.setId(rs.getInt("categorie_annonce_id"));
         category.setName(rs.getString("category_name"));
         annonce.setCategorieAnnonce(category);
+
+        try {
+            annonce.setFavori(rs.getBoolean("is_favori"));
+        } catch (SQLException e) {
+            // Si la colonne n'existe pas dans le ResultSet, on ignore
+            annonce.setFavori(false);
+        }
 
         return annonce;
     }
@@ -208,5 +231,150 @@ public class AnnonceService implements Service<Annonce> {
             }
         }
         return null;
+    }
+
+    public List<Annonce> recupererPaginated(int offset, int limit) throws SQLException {
+        String query = "SELECT a.*, c.name AS category_name FROM annonce a " +
+                "JOIN categorie_annonce c ON a.categorie_annonce_id = c.id " +
+                "ORDER BY a.id DESC " +
+                "LIMIT ? OFFSET ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, limit);
+            pst.setInt(2, offset);
+            return getByQuery(pst);
+        }
+    }
+
+    public int getTotalAnnoncesCount() throws SQLException {
+        String query = "SELECT COUNT(*) FROM annonce";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    public boolean toggleFavori(int userId, int annonceId) throws SQLException {
+        String checkQuery = "SELECT * FROM annonce_favoris WHERE user_id = ? AND annonce_id = ?";
+        String insertQuery = "INSERT INTO annonce_favoris (user_id, annonce_id) VALUES (?, ?)";
+        String deleteQuery = "DELETE FROM annonce_favoris WHERE user_id = ? AND annonce_id = ?";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement checkPst = conn.prepareStatement(checkQuery)) {
+            
+            checkPst.setInt(1, userId);
+            checkPst.setInt(2, annonceId);
+            
+            try (ResultSet rs = checkPst.executeQuery()) {
+                if (rs.next()) {
+                    // Si existe, supprimer des favoris
+                    try (PreparedStatement deletePst = conn.prepareStatement(deleteQuery)) {
+                        deletePst.setInt(1, userId);
+                        deletePst.setInt(2, annonceId);
+                        return deletePst.executeUpdate() > 0;
+                    }
+                } else {
+                    // Si n'existe pas, ajouter aux favoris
+                    try (PreparedStatement insertPst = conn.prepareStatement(insertQuery)) {
+                        insertPst.setInt(1, userId);
+                        insertPst.setInt(2, annonceId);
+                        return insertPst.executeUpdate() > 0;
+                    }
+                }
+            }
+        }
+    }
+
+    public List<Annonce> recupererAvecFavoris(int userId) throws SQLException {
+        String query = "SELECT a.*, c.name AS category_name, " +
+                      "CASE WHEN af.user_id IS NOT NULL THEN TRUE ELSE FALSE END as is_favori " +
+                      "FROM annonce a " +
+                      "JOIN categorie_annonce c ON a.categorie_annonce_id = c.id " +
+                      "LEFT JOIN annonce_favoris af ON a.id = af.annonce_id AND af.user_id = ? " +
+                      "ORDER BY is_favori DESC, a.id DESC";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            
+            pst.setInt(1, userId);
+            List<Annonce> annonces = new ArrayList<>();
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Annonce annonce = mapResultSetToAnnonce(rs);
+                    annonce.setFavori(rs.getBoolean("is_favori"));
+                    annonces.add(annonce);
+                }
+            }
+            return annonces;
+        }
+    }
+
+    public Map<String, Integer> getAnnoncesTrend(String period) throws SQLException {
+        String query = switch (period.toLowerCase()) {
+            case "daily" -> "SELECT DATE(NOW() - INTERVAL (a.id % 7) DAY) as period, COUNT(*) as count " +
+                           "FROM annonce a " +
+                           "GROUP BY DATE(NOW() - INTERVAL (a.id % 7) DAY) " +
+                           "ORDER BY period";
+            case "weekly" -> "SELECT DATE_FORMAT(NOW() - INTERVAL (a.id % 8) WEEK, '%Y-%u') as period, COUNT(*) as count " +
+                           "FROM annonce a " +
+                           "GROUP BY DATE_FORMAT(NOW() - INTERVAL (a.id % 8) WEEK, '%Y-%u') " +
+                           "ORDER BY period";
+            default -> "SELECT DATE_FORMAT(NOW() - INTERVAL (a.id % 6) MONTH, '%Y-%m') as period, COUNT(*) as count " +
+                      "FROM annonce a " +
+                      "GROUP BY DATE_FORMAT(NOW() - INTERVAL (a.id % 6) MONTH, '%Y-%m') " +
+                      "ORDER BY period";
+        };
+
+        Map<String, Integer> trend = new LinkedHashMap<>();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+            
+            while (rs.next()) {
+                trend.put(rs.getString("period"), rs.getInt("count"));
+            }
+        }
+        return trend;
+    }
+
+    public Map<String, Integer> getCategoryDistribution() throws SQLException {
+        String query = "SELECT c.name, COUNT(a.id) as count " +
+                      "FROM categorie_annonce c " +
+                      "LEFT JOIN annonce a ON c.id = a.categorie_annonce_id " +
+                      "GROUP BY c.id, c.name";
+
+        Map<String, Integer> distribution = new LinkedHashMap<>();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+            
+            while (rs.next()) {
+                distribution.put(rs.getString("name"), rs.getInt("count"));
+            }
+        }
+        return distribution;
+    }
+
+    public Map<String, Object> getGeneralStats() throws SQLException {
+        String query = "SELECT " +
+                      "COUNT(*) as total, " +
+                      "COUNT(CASE WHEN quantite > 0 THEN 1 END) as active, " +
+                      "AVG(prix) as avg_price " +
+                      "FROM annonce";
+
+        Map<String, Object> stats = new HashMap<>();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+            
+            if (rs.next()) {
+                stats.put("total", rs.getInt("total"));
+                stats.put("active", rs.getInt("active"));
+                stats.put("avgPrice", rs.getDouble("avg_price"));
+            }
+        }
+        return stats;
     }
 }

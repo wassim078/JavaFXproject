@@ -4,6 +4,7 @@ import com.example.livecycle.entities.Annonce;
 import com.example.livecycle.entities.Category;
 import com.example.livecycle.services.AnnonceService;
 import com.example.livecycle.services.CategoryAnnonceService;
+import com.example.livecycle.services.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -26,6 +27,7 @@ public class EditAnnonceController {
     private Runnable refreshCallback;
     private final AnnonceService annonceService = new AnnonceService();
     private final CategoryAnnonceService categoryAnnonceService = new CategoryAnnonceService();
+    private final UserService userService = new UserService();
     private File selectedImageFile;
 
     // Updated method to accept both annonce and callback
@@ -76,42 +78,99 @@ public class EditAnnonceController {
 
     @FXML
     private void handleSave() {
-        try {
-            annonce.setTitre(titleField.getText());
-            annonce.setDescription(descriptionField.getText());
-            annonce.setPoids(Double.parseDouble(weightField.getText()));
-            annonce.setPrix(Double.parseDouble(priceField.getText()));
-            annonce.setQuantite(Integer.parseInt(quantityField.getText()));
+        if (validateInputs()) {
+            try {
+                // Track changes
+                StringBuilder changes = new StringBuilder();
+                
+                if (!annonce.getTitre().equals(titleField.getText())) {
+                    changes.append("Title: ").append(annonce.getTitre()).append(" → ").append(titleField.getText()).append("\n");
+                }
+                if (!annonce.getDescription().equals(descriptionField.getText())) {
+                    changes.append("Description: Modified\n");
+                }
+                if (annonce.getPoids() != Double.parseDouble(weightField.getText())) {
+                    changes.append("Weight: ").append(annonce.getPoids()).append(" → ").append(weightField.getText()).append("\n");
+                }
+                if (annonce.getPrix() != Double.parseDouble(priceField.getText())) {
+                    changes.append("Price: ").append(annonce.getPrix()).append(" → ").append(priceField.getText()).append("\n");
+                }
+                if (annonce.getQuantite() != Integer.parseInt(quantityField.getText())) {
+                    changes.append("Quantity: ").append(annonce.getQuantite()).append(" → ").append(quantityField.getText()).append("\n");
+                }
+                if (annonce.getCategorieAnnonce().getId() != categoryCombo.getValue().getId()) {
+                    changes.append("Category: ").append(annonce.getCategorieAnnonce().getName())
+                            .append(" → ").append(categoryCombo.getValue().getName()).append("\n");
+                }
+                if (selectedImageFile != null) {
+                    changes.append("Image: Updated\n");
+                }
 
-            // Update image only if a new one was selected
-            if (selectedImageFile != null) {
-                annonce.setImage(selectedImageFile.getAbsolutePath());
-            }
+                // Update announcement
+                annonce.setTitre(titleField.getText());
+                annonce.setDescription(descriptionField.getText());
+                annonce.setPoids(Double.parseDouble(weightField.getText()));
+                annonce.setPrix(Double.parseDouble(priceField.getText()));
+                annonce.setQuantite(Integer.parseInt(quantityField.getText()));
+                
+                Category selectedCategory = categoryCombo.getValue();
+                if (selectedCategory != null) {
+                    annonce.setCategorieAnnonce(selectedCategory);
+                }
 
-            if (annonceService.modifier(annonce)) {
-                refreshCallback.run();
-                closeWindow();
+                if (selectedImageFile != null) {
+                    annonce.setImage(selectedImageFile.getAbsolutePath());
+                }
+
+                if (annonceService.modifier(annonce)) {
+                    // Send notification if there were changes
+                    if (changes.length() > 0) {
+                        String notificationMessage = "Your announcement '" + annonce.getTitre() + "' has been modified by an administrator.\nChanges:\n" + changes.toString();
+                        userService.addNotification(annonce.getUserId(), notificationMessage);
+                    }
+                    
+                    if (refreshCallback != null) {
+                        refreshCallback.run();
+                    }
+                    closeWindow();
+                }
+            } catch (SQLException | IllegalArgumentException e) {
+                showAlert("Save Error", "Failed to save announcement: " + e.getMessage());
             }
-        } catch (SQLException | NumberFormatException e) {
-            showAlert("Error", "Check input values: " + e.getMessage());
         }
     }
 
-
-    private void validateInputs() throws IllegalArgumentException {
-        if (titleField.getText().trim().isEmpty() ||
-                descriptionField.getText().trim().isEmpty() ||
-                categoryCombo.getValue() == null) {
-            throw new IllegalArgumentException("All required fields must be filled");
+    private boolean validateInputs() throws IllegalArgumentException {
+        if (titleField.getText().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title is required");
+        }
+        if (descriptionField.getText().trim().isEmpty()) {
+            throw new IllegalArgumentException("Description is required");
+        }
+        if (categoryCombo.getValue() == null) {
+            throw new IllegalArgumentException("Category is required");
         }
 
         try {
-            Double.parseDouble(weightField.getText());
-            Double.parseDouble(priceField.getText());
-            Integer.parseInt(quantityField.getText());
+            double weight = Double.parseDouble(weightField.getText());
+            if (weight <= 0) {
+                throw new IllegalArgumentException("Weight must be greater than 0");
+            }
+            
+            double price = Double.parseDouble(priceField.getText());
+            if (price <= 0) {
+                throw new IllegalArgumentException("Price must be greater than 0");
+            }
+            
+            int quantity = Integer.parseInt(quantityField.getText());
+            if (quantity < 0) {
+                throw new IllegalArgumentException("Quantity cannot be negative");
+            }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid numeric values");
         }
+
+        return true;
     }
 
     private void showAlert(String title, String message) {
