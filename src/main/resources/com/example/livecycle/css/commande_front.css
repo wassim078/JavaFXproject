@@ -1,0 +1,112 @@
+/*--------------------------------------
+  Main container
+---------------------------------------*/
+.main-container {
+    -fx-background-color: #f5f5f5;
+}
+
+/*--------------------------------------
+  Order card
+---------------------------------------*/
+.commande-card {
+    -fx-background-color: #ffffff;
+    -fx-padding: 10px;
+    -fx-spacing: 8px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}
+
+/*--------------------------------------
+  Headings & placeholders
+---------------------------------------*/
+.header-label {
+    -fx-text-fill: #2c3e50;
+}
+.empty-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 16px;
+}
+
+/*--------------------------------------
+  Delete button
+---------------------------------------*/
+.delete-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+    -fx-padding: 3px 6px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+.delete-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+/*--------------------------------------
+  Status timeline container
+---------------------------------------*/
+.status-timeline {
+    -fx-spacing: 8px;           /* gap between icon–line–icon */
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 6px 0;
+}
+
+/*--------------------------------------
+  Each status step
+---------------------------------------*/
+.status-item {
+    -fx-alignment: CENTER;
+    -fx-spacing: 4px;
+}
+
+/*--------------------------------------
+  Icon sizing (forced small)
+---------------------------------------*/
+.status-icon {
+    -fx-fit-width: 24px;        /* 24×24 px icons */
+    -fx-fit-height: 24px;
+    -fx-preserve-ratio: true;
+}
+
+/*--------------------------------------
+  Connector line between icons
+---------------------------------------*/
+.status-line {
+    -fx-stroke: #cccccc;
+    -fx-stroke-width: 2px;
+    -fx-translate-y: 0.5em;     /* center vertically on icon */
+}
+
+/*--------------------------------------
+  Label under each icon
+---------------------------------------*/
+.status-item .status-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #666666;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-max-width: 50px;
+    -fx-padding: 2px 0 0 0;
+}
+
+/*--------------------------------------
+  Completed / Current / Cancelled states
+---------------------------------------*/
+/* completed steps get a green connector */
+.status-item.completed + .status-line {
+    -fx-stroke: #2ecc71;
+}
+
+/* highlight the current step’s icon */
+.status-item.current .status-icon {
+    -fx-effect: dropshadow(three-pass-box, rgba(46,204,113,0.6), 6, 0, 0, 0);
+}
+
+/* fade out cancelled steps */
+.status-item.cancelled .status-icon,
+.status-item.cancelled .status-label {
+    -fx-opacity: 0.4;
+}

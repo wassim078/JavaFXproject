@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.frontoffice.MyComplaintsController"
+            stylesheets="@../css/complaints.css">
+
+    <VBox spacing="20" style="-fx-padding: 30;" AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <!-- Header -->
+        <Label text="My Complaints" styleClass="header-label"/>
+
+        <!-- Complaints Table -->
+        <TableView fx:id="complaintsTable" styleClass="complaints-table">
+            <columns>
+                <TableColumn text="Subject" fx:id="subjectCol" styleClass="table-column" prefWidth="200"/>
+                <TableColumn text="Description" fx:id="descriptionCol" styleClass="table-column" prefWidth="300"/>
+                <TableColumn text="Type" fx:id="typeCol" styleClass="table-column" prefWidth="150"/>
+                <TableColumn text="Status" fx:id="statusCol" styleClass="table-column" prefWidth="120"/>
+                <TableColumn text="Date" fx:id="dateCol" styleClass="table-column" prefWidth="180"/>
+                <TableColumn text="Actions" fx:id="actionCol" styleClass="table-column" prefWidth="120"/>
+            </columns>
+            <placeholder>
+                <Label text="No Complaints Found" styleClass="empty-label"/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+</AnchorPane>

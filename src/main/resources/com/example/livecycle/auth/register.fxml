@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefWidth="600" stylesheets="@../css/registration.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.auth.RegisterController">
+
+   <top>
+      <VBox alignment="CENTER" spacing="15" style="-fx-padding: 40 0 20 0;">
+         <Label styleClass="title-label" text="LiveCycle Registration" />
+         <Text styleClass="subtitle-text" text="Join Our Green Community" />
+      </VBox>
+   </top>
+
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true">
+         <VBox alignment="CENTER" spacing="25" style="-fx-padding: 0 10%;">
+            <VBox alignment="CENTER" spacing="25" style="-fx-max-width: 800;">
+               <GridPane hgap="15" prefHeight="692.0" prefWidth="598.0" styleClass="form-container" vgap="10">
+                  <VBox.margin>
+                     <Insets top="20" />
+                  </VBox.margin>
+                  <columnConstraints>
+                     <!-- Use percentage-based widths for responsiveness -->
+                     <ColumnConstraints hgrow="NEVER" percentWidth="30" />
+                     <ColumnConstraints hgrow="ALWAYS" maxWidth="300" percentWidth="70" />
+                  </columnConstraints>
+
+                  <!-- Row 0: First Name Label & Field -->
+                  <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="firstNameField" promptText="John" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <!-- Row 1: First Name Error -->
+                  <Label fx:id="firstNameError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                  <!-- Row 2: Last Name Label & Field -->
+                  <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <TextField fx:id="lastNameField" promptText="Doe" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <!-- Row 3: Last Name Error -->
+                  <Label fx:id="lastNameError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                  <!-- Row 4: Email Label & Field -->
+                  <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <TextField fx:id="emailField" promptText="example@mail.com" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <!-- Row 5: Email Error -->
+                  <Label fx:id="emailError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                  <!-- Row 6: Password Label & Field -->
+                  <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                  <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <!-- Row 7: Password Error -->
+                  <Label fx:id="passwordError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                  <!-- Row 8: Confirm Password Label & Field -->
+                  <Label text="Confirm Password:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                  <PasswordField fx:id="confirmPasswordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <!-- Row 9: Confirm Password Error -->
+                  <Label fx:id="confirmPasswordError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+
+                  <!-- Row 10: Address Label & Field -->
+                  <Label text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                  <TextField fx:id="addressField" promptText="Street, City" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                  <!-- Row 11: Address Error -->
+                  <Label fx:id="addressError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+
+                  <!-- Row 12: Phone Label & Field -->
+                  <Label text="Phone Number:" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                  <TextField fx:id="phoneField" promptText="+216 23 567 890" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                  <!-- Row 13: Phone Error -->
+                  <Label fx:id="phoneError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                  <!-- Row 14: Role Selection -->
+                  <Label text="Account Type:" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                  <ComboBox fx:id="roleComboBox" promptText="Select your role" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                  <!-- Row 15: Role Error -->
+                  <Label fx:id="roleError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+
+                  <!-- Row 15: Image Upload -->
+                  <!-- Row 16: Image Upload -->
+                  <Label text="Profile Image:" GridPane.columnIndex="0" GridPane.rowIndex="16" />
+                  <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="16">
+                     <TextField fx:id="imagePathField" disable="true" promptText="Image path" style="-fx-pref-width: 200;" />
+                     <Button onAction="#handleImageUpload" styleClass="browse-button" text="Browse" />
+                  </HBox>
+                  <!-- Row 17: Image Error -->
+                  <Label fx:id="imageError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+
+               </GridPane>
+
+               <Button onAction="#handleRegister" styleClass="submit-button" text="Create Account" GridPane.halignment="CENTER">
+                  <VBox.margin>
+                     <Insets bottom="20" />
+                  </VBox.margin>
+               </Button>
+
+
+            </VBox>
+
+         </VBox>
+
+      </ScrollPane>
+
+   </center>
+
+   <bottom>
+      <HBox alignment="CENTER" spacing="5" style="-fx-padding: 20;" styleClass="footer">
+         <Label styleClass="footer-text" text="Already registered?" />
+         <Hyperlink onAction="#handleLoginNavigation" styleClass="footer-link" text="Sign In" />
+      </HBox>
+   </bottom>
+</BorderPane>

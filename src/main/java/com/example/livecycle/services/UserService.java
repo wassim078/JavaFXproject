@@ -1,0 +1,753 @@
+package com.example.livecycle.services;
+
+import com.example.livecycle.entities.User;
+import com.example.livecycle.utils.DatabaseConnection;
+import com.example.livecycle.utils.SessionManager;
+import org.json.JSONArray;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.sql.*;
+import java.util.*;
+
+
+public class UserService implements Service<User> {
+
+
+    private byte[] faceEncoding;
+    private static final String UPDATE_USER_SQL = "UPDATE user SET " +
+            "prenom = ?, nom = ?, email = ?, password = ?, adresse = ?, telephone = ?, image = ? " +
+            "WHERE id = ?";
+
+    private static final String UPDATE_USER_SQL2 = "UPDATE user SET prenom = ?, nom = ?, email = ?, password = ?, adresse = ?, telephone = ?, roles = ?, image = ? WHERE id = ?";
+
+
+
+
+
+
+    private static final String INSERT_USER_SQL = "INSERT INTO user " +
+            "(prenom, nom, email, password, adresse, telephone,roles, image) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String SELECT_USER_BY_ID = "SELECT * FROM user WHERE id = ?";
+
+
+
+    private static final String DELETE_USER = "DELETE FROM user WHERE id = ?";
+
+    String sql = "SELECT * FROM user WHERE email = ?";
+
+    private static final String SELECT_ALL_USERS = "SELECT * FROM user";
+
+
+
+
+
+
+
+
+    @Override
+    public boolean ajouter(User user) throws SQLException {
+        // Update your SQL insert statement to include password
+        String sql = "INSERT INTO user (prenom, nom, email, password, adresse, telephone,roles, image) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        String hashedPw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getPrenom());
+            pstmt.setString(2, user.getNom());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, hashedPw);  // Store hashed password
+            pstmt.setString(5, user.getAdresse());
+            pstmt.setString(6, user.getTelephone());
+            pstmt.setString(7, user.getRoles());
+            pstmt.setString(8, user.getImage());
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<User> recuperer() throws SQLException {
+        List<User> users = new ArrayList<>();
+        System.out.println("[DEBUG] Executing SQL: " + SELECT_ALL_USERS);
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SELECT_ALL_USERS);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            System.out.println("SQL Query: " + SELECT_ALL_USERS);
+            System.out.println("Connection valid? " + conn.isValid(2));
+
+            while (rs.next()) {
+                System.out.println("Found user record:");
+                System.out.println("ID: " + rs.getInt("id"));
+                System.out.println("Prenom: " + rs.getString("prenom"));
+
+                User user = new User(
+                        rs.getString("prenom"),
+                        rs.getString("nom"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("adresse"),
+                        rs.getString("telephone"),
+                        rs.getString("roles"),  // Verify this column exists
+                        rs.getString("image")   // Verify this column exists
+                );
+                user.setId(rs.getInt("id"));
+                user.setBanned(rs.getBoolean("is_banned"));
+                users.add(user);
+            }
+            System.out.println("Total users loaded: " + users.size());
+
+        } catch (SQLException e) {
+            System.err.println("DATABASE ERROR: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+
+    @Override
+    public boolean supprimer(int id) throws SQLException {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(DELETE_USER)) {
+
+            pstmt.setInt(1, id);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+            return false;
+        }
+
+    }
+
+
+    @Override
+    public boolean modifier(User user) throws SQLException {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(UPDATE_USER_SQL2)) {
+
+            pstmt.setString(1, user.getPrenom());
+            pstmt.setString(2, user.getNom());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getPassword()); // Make sure the password is already hashed if needed
+            pstmt.setString(5, user.getAdresse());
+            pstmt.setString(6, user.getTelephone());
+            pstmt.setString(7, user.getRoles());
+            pstmt.setString(8, user.getImage());
+            pstmt.setInt(9, user.getId());
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public void enableUser(String email) {
+        String sql = "UPDATE user SET enabled = true WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error enabling user: " + e.getMessage());
+        }
+    }
+
+
+    public boolean createGoogleUser(User user) {
+        String sql = "INSERT INTO user (prenom, nom, email, password, adresse, telephone, roles, image, enabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            String rolesJson = user.getRoles();
+            String hashedPw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
+            pstmt.setString(1, user.getPrenom());
+            pstmt.setString(2, user.getNom());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, hashedPw);
+            pstmt.setString(5, user.getAdresse());
+            pstmt.setString(6, user.getTelephone());
+            pstmt.setString(7, rolesJson);
+            pstmt.setString(8, user.getImage());
+            pstmt.setBoolean(9, true); // enabled = true
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error creating Google user: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public boolean updateUserProfile(User user) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(UPDATE_USER_SQL)) {
+
+            pstmt.setString(1, user.getPrenom());
+            pstmt.setString(2, user.getNom());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getPassword());
+            pstmt.setString(5, user.getAdresse());
+            pstmt.setString(6, user.getTelephone());
+            pstmt.setString(7, user.getImage());
+            pstmt.setInt(8, user.getId());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Update error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean createUser(User user) {
+        try {
+            // Obtenir la connexion via le Singleton
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+
+            PreparedStatement pstmt = conn.prepareStatement(INSERT_USER_SQL);
+
+            String rolesJson = "[\"" + user.getRoles() + "\"]";
+
+            String hashedPw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
+
+            pstmt.setString(1, user.getPrenom());
+            pstmt.setString(2, user.getNom());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, hashedPw);
+            pstmt.setString(5, user.getAdresse());
+            pstmt.setString(6, user.getTelephone());
+            pstmt.setString(7, rolesJson);
+            pstmt.setString(8, user.getImage());
+            int rowsAffected = pstmt.executeUpdate();
+            pstmt.close();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public User authenticateUser(String email, String password) throws AuthenticationException {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Check if banned first
+                if (rs.getBoolean("is_banned")) {
+                    throw new AuthenticationException("This account has been banned");
+                }
+
+                String storedHash = rs.getString("password");
+                if (storedHash.startsWith("$2y$")) {
+                    storedHash = "$2a$" + storedHash.substring(4);
+                }
+
+                if (BCrypt.checkpw(password, storedHash)) {
+                    User user = mapUserFromResultSet(rs);
+                    user.setEnabled(rs.getBoolean("enabled"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            throw new AuthenticationException("Database error during authentication");
+        }
+        return null;
+    }
+
+
+    public User getUserByVerificationToken(String token) {
+        String sql = "SELECT * FROM user WHERE verification_token = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, token);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapUserFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user by verification token: " + e.getMessage());
+        }
+        return null;
+    }
+
+
+    public User getUser(int id) {
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SELECT_USER_BY_ID)) {
+
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = mapUserFromResultSet(rs); // Use the mapper that includes enabled status
+                    if (user.isBanned()) {
+                        SessionManager.clearSession();
+                    }
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user: " + e.getMessage());
+        }
+        return null;
+    }
+
+
+    public boolean emailExists(String email) {
+        String query = "SELECT COUNT(*) FROM user WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking email existence: " + e.getMessage());
+        }
+        return false;
+    }
+
+
+    //GOOGLE AUTHENTICATION
+
+    public User authenticateGoogleUser(String email) throws AuthenticationException {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Check banned status
+                if (rs.getBoolean("is_banned")) {
+                    throw new AuthenticationException("This account has been banned");
+                }
+
+                User user = new User(
+                        rs.getString("prenom"),
+                        rs.getString("nom"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("adresse"),
+                        rs.getString("telephone"),
+                        rs.getString("roles"),
+                        rs.getString("image")
+                );
+                // ADD THIS LINE
+                user.setId(rs.getInt("id"));
+                user.setBanned(rs.getBoolean("is_banned"));
+                return user;
+            }
+        } catch (SQLException e) {
+            throw new AuthenticationException("Database error during Google authentication");
+        }
+        return null;
+    }
+
+
+    public boolean createUserWithVerification(User user) {
+        user.setVerificationToken(UUID.randomUUID().toString());
+        user.setEnabled(false);
+
+        String sql = "INSERT INTO user (prenom, nom, email, password, adresse, telephone, roles, image, enabled, verification_token) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            String rolesJson = "[\"" + user.getRoles() + "\"]";
+            String hashedPw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
+            pstmt.setString(1, user.getPrenom());
+            pstmt.setString(2, user.getNom());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, hashedPw);
+            pstmt.setString(5, user.getAdresse());
+            pstmt.setString(6, user.getTelephone());
+            pstmt.setString(7, rolesJson);
+            pstmt.setString(8, user.getImage());
+            pstmt.setBoolean(9, user.isEnabled());
+            pstmt.setString(10, user.getVerificationToken());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("User creation error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Verification method
+
+    public boolean verifyUser(String token) {
+        String sql = "UPDATE user SET enabled = true WHERE verification_token = ?";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, token);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Verification error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private User mapUserFromResultSet(ResultSet rs) throws SQLException {
+        User user = new User(
+                rs.getString("prenom"),
+                rs.getString("nom"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("adresse"),
+                rs.getString("telephone"),
+                rs.getString("roles"),
+                rs.getString("image")
+        );
+        user.setBanned(rs.getBoolean("is_banned"));
+        user.setId(rs.getInt("id"));
+        user.setEnabled(rs.getBoolean("enabled"));
+        user.setVerificationToken(rs.getString("verification_token"));
+        return user;
+    }
+
+    public void createPasswordResetToken(String email, String token) {
+        String sql = "UPDATE user SET reset_token = ?, reset_expires = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, token);
+            pstmt.setString(2, email);
+            int updated = pstmt.executeUpdate();
+            System.out.println("Updated rows for reset token: " + updated); // Debug logging
+        } catch (SQLException e) {
+            System.err.println("Error setting reset token: " + e.getMessage());
+            e.printStackTrace(); // Add stack trace
+        }
+    }
+    public boolean resetPassword(String token, String newPassword) {
+        String sql = "UPDATE user SET password = ?, reset_token = NULL, reset_expires = NULL " +
+                "WHERE reset_token = ? AND reset_expires > NOW()";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            String hashedPw = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            if (hashedPw.startsWith("$2a$")) {
+                hashedPw = "$2y$" + hashedPw.substring(4);
+            }
+            pstmt.setString(1, hashedPw);
+            pstmt.setString(2, token);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Password reset error: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public boolean isValidResetToken(String token) {
+        String sql = "SELECT reset_token, reset_expires FROM user WHERE reset_token = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, token);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Timestamp expires = rs.getTimestamp("reset_expires");
+                    return expires != null && expires.after(new Timestamp(System.currentTimeMillis()));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error validating reset token: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Map<String, Integer> getRegistrationTrend(String period) {
+        Map<String, Integer> trend = new LinkedHashMap<>();
+        String sql = "SELECT DATE_FORMAT(created_at, ?) AS period, COUNT(*) AS count "
+                + "FROM user "
+                + "WHERE created_at >= NOW() - INTERVAL 6 MONTH "  // Only show last 6 months
+                + "GROUP BY period ORDER BY period";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            String dateFormat = period.equals("daily") ? "%Y-%m-%d" : "%Y-%m";
+            pstmt.setString(1, dateFormat);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    trend.put(rs.getString("period"), rs.getInt("count"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trend;
+    }
+
+    public Map<String, Integer> getRoleDistribution() {
+        Map<String, Integer> roleCounts = new HashMap<>();
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT roles FROM user")) {
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                JSONArray roles = new JSONArray(rs.getString("roles"));
+                for (int i = 0; i < roles.length(); i++) {
+                    String role = roles.getString(i);
+                    roleCounts.put(role, roleCounts.getOrDefault(role, 0) + 1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roleCounts;
+    }
+
+    public void addNotification(int userId, String message) throws SQLException {
+        String query = "UPDATE user SET notifications = JSON_ARRAY_APPEND(COALESCE(notifications, '[]'), '$', ?) WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setString(1, message);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        }
+    }
+
+    public List<String> getNotifications(int userId) throws SQLException {
+        String query = "SELECT notifications FROM user WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, userId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String notificationsJson = rs.getString("notifications");
+                    if (notificationsJson != null) {
+                        JSONArray jsonArray = new JSONArray(notificationsJson);
+                        List<String> notifications = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            notifications.add(jsonArray.getString(i));
+                        }
+                        return notifications;
+                    }
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public void clearNotifications(int userId) throws SQLException {
+        String query = "UPDATE user SET notifications = '[]' WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, userId);
+            pst.executeUpdate();
+        }
+    }
+
+    public void removeNotification(int userId, String notification) throws SQLException {
+        String query = "UPDATE user SET notifications = JSON_REMOVE(notifications, JSON_UNQUOTE(JSON_SEARCH(notifications, 'one', ?))) WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setString(1, notification);
+            pst.setInt(2, userId);
+            pst.executeUpdate();
+        }
+    }
+
+
+
+
+    //Ban UNBAN
+
+
+    public boolean banUser(int userId) throws SQLException {
+        String sql = "UPDATE user SET is_banned = true WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean unbanUser(int userId) throws SQLException {
+        String sql = "UPDATE user SET is_banned = false WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public class AuthenticationException extends Exception {
+        public AuthenticationException(String message) {
+            super(message);
+        }
+    }
+
+
+
+    public User authenticateByFace(byte[] faceData) throws AuthenticationException {
+        String sql = "SELECT id, face_encoding FROM user WHERE face_encoding IS NOT NULL";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            int bestUserId = -1;
+            double minDistance = Double.MAX_VALUE;
+
+            // Step 1: Iterate over ResultSet to find the best match ID
+            while (rs.next()) {
+                byte[] stored = rs.getBytes("face_encoding");
+                if (stored == null) continue;
+                double distance = calculateFaceDistance(faceData, stored);
+                if (distance < 0.4 && distance < minDistance) {
+                    minDistance = distance;
+                    bestUserId = rs.getInt("id");
+                }
+            }
+
+            // Step 2: Fetch user details only if a match is found, after the ResultSet is done
+            if (bestUserId != -1) {
+                return getUser(bestUserId); // Called outside the loop
+            }
+            throw new AuthenticationException("No matching face found");
+        } catch (SQLException e) {
+            throw new AuthenticationException("Database error: " + e.getMessage());
+        }
+    }
+
+    private double calculateFaceDistance(byte[] capturedData, byte[] storedData) {
+        // Convert byte arrays to float arrays
+        float[] capturedEmbedding = bytesToFloats(capturedData);
+        float[] storedEmbedding = bytesToFloats(storedData);
+
+        // Normalize vectors
+        capturedEmbedding = normalizeVector(capturedEmbedding);
+        storedEmbedding = normalizeVector(storedEmbedding);
+
+        // Calculate Euclidean distance
+        double sum = 0.0;
+        for (int i = 0; i < capturedEmbedding.length; i++) {
+            double diff = capturedEmbedding[i] - storedEmbedding[i];
+            sum += diff * diff;
+        }
+        return Math.sqrt(sum);
+    }
+
+    private float[] normalizeVector(float[] vector) {
+        double norm = 0.0;
+        for (float v : vector) {
+            norm += v * v;
+        }
+        norm = Math.sqrt(norm);
+        if (norm > 0) {
+            for (int i = 0; i < vector.length; i++) {
+                vector[i] /= norm;
+            }
+        }
+        return vector;
+    }
+
+
+
+    private float[] bytesToFloats(byte[] bytes) {
+        FloatBuffer buffer = ByteBuffer.wrap(bytes)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .asFloatBuffer();
+        float[] floats = new float[buffer.remaining()];
+        buffer.get(floats);
+        return floats;
+    }
+
+
+    // In UserService.java
+    public void storeFaceEncoding(int userId, byte[] encoding) {
+        int expectedLength = 3780 * 4; // 3780 floats * 4 bytes
+        if (encoding == null || encoding.length != expectedLength) {
+            throw new IllegalArgumentException("Invalid face encoding length");
+        }
+
+        String sql = "UPDATE user SET face_encoding = ?, face_registered_at = NOW() WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            System.out.println("Storing encoding for user " + userId + ", length: " + encoding.length);
+            pstmt.setBytes(1, encoding);
+            pstmt.setInt(2, userId);
+
+            int updated = pstmt.executeUpdate();
+            System.out.println("Updated rows: " + updated);
+            if (updated == 0) {
+                throw new SQLException("User not found or face already registered");
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error: " + e.getMessage());
+            throw new RuntimeException("Database error: " + e.getMessage());
+        }
+    }
+
+
+    public boolean hasFaceEncoding(int userId) {
+        String sql = "SELECT face_encoding FROM user WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBytes("face_encoding") != null;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking face encoding: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean verifyFaceQuality(byte[] encoding) {
+        if (encoding == null || encoding.length < 1024) {
+            throw new IllegalArgumentException("Face encoding is too small");
+        }
+
+        try {
+            float[] embeddings = bytesToFloats(encoding);
+            if (embeddings.length < 128) { // Minimum expected features
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+
+}

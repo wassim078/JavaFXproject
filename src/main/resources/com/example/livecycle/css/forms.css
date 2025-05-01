@@ -1,0 +1,122 @@
+/* Form container styling */
+.form-container {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 12, 0.0, 0, 3);
+    -fx-padding: 30px;
+    -fx-min-width: 600px;
+    -fx-max-width: 800px;
+}
+
+/* Title styling */
+.form-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 15px 0;
+}
+
+/* Grid layout */
+.form-grid {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+}
+
+/* Form labels */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #495057;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* Input fields */
+.form-input {
+    -fx-font-size: 14px;
+    -fx-pref-height: 40px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+.form-input:focused {
+    -fx-border-color: #80bdff;
+    -fx-effect: innershadow(gaussian, rgba(0,123,255,0.25), 0, 0, 0, 3px); /* Fixed parenthesis */
+}
+
+/* Text area */
+.form-textarea {
+    -fx-font-size: 14px;
+    -fx-pref-height: 100px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-wrap-text: true;
+}
+
+/* Combo box */
+.form-combo {
+    -fx-font-size: 14px;
+    -fx-pref-height: 40px;
+    -fx-background-radius: 4px;
+}
+
+/* File button - Light green variation */
+.file-button {
+    -fx-background-color: #81C784; /* Light green */
+    -fx-text-fill: #2E7D32; /* Dark green text */
+    -fx-font-weight: 500;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+    -fx-border-color: #66BB6A;
+    -fx-border-width: 1px;
+}
+
+.file-button:hover {
+    -fx-background-color: #76B479; /* Slightly darker green */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 0, 0, 0, 2px);
+}
+
+/* Submit button - Light green primary action */
+.submit-button {
+    -fx-background-color: #4CAF50; /* Material green */
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 16px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px 35px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 0, 0, 0, 2px);
+}
+
+.submit-button:hover {
+    -fx-background-color: #45a049; /* Darker green */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 0, 0, 0, 3px);
+}
+
+.file-label {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 13px;
+    -fx-font-style: italic;
+}
+
+/* Validation error */
+.error {
+    -fx-border-color: #dc3545 !important;
+    -fx-effect: innershadow(gaussian, rgba(220,53,69,0.25), 0, 0, 0, 3px);
+}
+.error-label {
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 12px;
+    -fx-padding: 2px 0 0 3px;
+}
+
+.form-input:error, .form-textarea:error {
+    -fx-border-color: #dc3545 !important;
+    -fx-effect: innershadow(gaussian, rgba(220,53,69,0.25), 0, 0, 0, 3px);
+}

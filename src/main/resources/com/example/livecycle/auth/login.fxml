@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefWidth="600" stylesheets="@../css/registration.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.auth.LoginController">
+
+    <top>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 40 0 20 0;">
+            <Label styleClass="title-label" text="LiveCycle Login" />
+            <Text styleClass="subtitle-text" text="Welcome Back to Our Green Community" />
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <VBox alignment="CENTER" spacing="25" style="-fx-padding: 0 10%;">
+                <VBox alignment="CENTER" spacing="25" style="-fx-max-width: 800;">
+                    <GridPane hgap="15" prefHeight="306.0" prefWidth="598.0" styleClass="form-container" vgap="10">
+                        <VBox.margin>
+                            <Insets left="30.0" right="30.0" top="20.0" />
+                        </VBox.margin>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="NEVER" percentWidth="20.0" />
+                            <ColumnConstraints hgrow="ALWAYS" maxWidth="300" percentWidth="70" />
+                        </columnConstraints>
+
+                        <!-- Row 0: Email Label & Field -->
+                        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="emailField" promptText="example@mail.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <!-- Row 1: Email Error -->
+                        <Label fx:id="emailError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <!-- Row 2: Password Label & Field -->
+                        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <PasswordField fx:id="passwordField" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <!-- Row 3: Password Error -->
+                        <Label fx:id="passwordError" styleClass="error-label" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+
+                        <Button fx:id="loginButton" onAction="#handleLogin" styleClass="submit-button" text="Sign In" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                            <VBox.margin>
+                                <Insets bottom="10" />
+                            </VBox.margin>
+                     <GridPane.margin>
+                        <Insets left="35.0" />
+                     </GridPane.margin>
+                        </Button>
+
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                     <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+<HBox spacing="40.0">
+
+
+
+
+    <Button fx:id="googleLoginButton" onAction="#handleGoogleLogin" prefHeight="49.0" prefWidth="183.0" styleClass="google-login-btn">
+        <graphic>
+            <ImageView fitHeight="24" fitWidth="24">
+                <Image url="@../images/google-icon.png" />
+            </ImageView>
+        </graphic>
+        <text>Google</text>
+        <VBox.margin>
+            <Insets bottom="10" />
+        </VBox.margin>
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+    </Button>
+                       <Button fx:id="faceLoginButton" onAction="#handleFaceLogin" styleClass="face-login-btn">
+                           <graphic>
+                               <ImageView fitHeight="24" fitWidth="24">
+                                   <Image url="@../images/face-icon.png" />
+                               </ImageView>
+                           </graphic>
+                           <text>Sign in with Face</text>
+                           <HBox.margin>
+                               <Insets top="2.0" />
+                           </HBox.margin>
+                       </Button>
+
+                  <VBox.margin>
+                     <Insets bottom="60.0" left="42.0" right="10.0" />
+                  </VBox.margin>
+
+
+
+</HBox>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="5" style="-fx-padding: 20;" styleClass="footer">
+            <Label styleClass="footer-text" text="Don't have an account?" />
+            <Hyperlink onAction="#handleRegisterNavigation" styleClass="footer-link" text="Register Here" />
+            <Label styleClass="footer-text" text="|" />
+            <Hyperlink onAction="#handleForgotPasswordNavigation" styleClass="footer-link" text="Forgot Password?" />
+        </HBox>
+    </bottom>
+</BorderPane>

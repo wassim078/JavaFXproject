@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.backoffice.AnnonceManagementController"
+            style="-fx-background-color: white;">
+
+    <VBox spacing="20" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" 
+          AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+        
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 20;">
+            <Label text="Announcement Management" 
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+        </HBox>
+
+        <TableView fx:id="annoncesTable" VBox.vgrow="ALWAYS" 
+                  style="-fx-background-color: white;">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="150"/>
+                <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="120"/>
+                <TableColumn fx:id="weightColumn" text="Weight (kg)" prefWidth="100"/>
+                <TableColumn fx:id="priceColumn" text="Price (TND)" prefWidth="100"/>
+                <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="80"/>
+                <TableColumn fx:id="userEmailColumn" text="User Email" prefWidth="200"/>
+                <TableColumn fx:id="imageColumn" text="Image" prefWidth="150"/>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120"/>
+            </columns>
+            <VBox.margin>
+                <Insets left="20" right="20" bottom="20"/>
+            </VBox.margin>
+        </TableView>
+    </VBox>
+</AnchorPane>

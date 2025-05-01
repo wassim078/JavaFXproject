@@ -1,0 +1,105 @@
+/* Table styling */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Header styling */
+.table-view .column-header-background {
+    -fx-background-color: #c3baba;
+    -fx-background-radius: 5 5 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 10 15;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Table cells */
+.table-view .table-cell {
+    -fx-padding: 10 15;
+    -fx-text-fill: #000000;
+}
+
+/* Row styling */
+.table-row-cell {
+    -fx-background-color: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f8f8;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e0f7fa;
+}
+
+/* Action buttons */
+.action-button {
+    -fx-padding: 3 6; /* Reduced padding */
+    -fx-background-radius: 3;
+    -fx-font-size: 10; /* Reduced font size */
+    -fx-cursor: hand;
+}
+
+.edit-button {
+    -fx-background-color: #379623;
+    -fx-text-fill: white;
+}
+
+.delete-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+.ban-button {
+    -fx-background-color: #ff9800; /* Orange for Ban */
+    -fx-text-fill: white;
+}
+
+.unban-button {
+    -fx-background-color: #4caf50; /* Green for Unban */
+    -fx-text-fill: white;
+}
+
+/* Profile image styling */
+.profile-image {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.table-view .placeholder {
+    visibility: hidden;
+}
+
+.table-avatar {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-background-color: #e0e0e0;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 50%;
+}
+
+/* Optional: Add hover effect */
+.table-avatar:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER-LEFT;
+}
+
+/* Center align the profile column */
+#profileColumn .table-cell {
+    -fx-alignment: CENTER;
+}
+
+.no-scroll-table .scroll-bar:horizontal,
+.no-scroll-table .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-background-color: transparent;
+}
