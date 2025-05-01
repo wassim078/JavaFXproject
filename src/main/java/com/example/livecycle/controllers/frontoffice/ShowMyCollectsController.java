@@ -3,10 +3,6 @@ package com.example.livecycle.controllers.frontoffice;
 import com.example.livecycle.entities.Collect;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.CollectService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -16,28 +12,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import com.itextpdf.text.Font;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import javax.swing.text.Document;
-import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-import javax.swing.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.BaseColor;
 
 public class ShowMyCollectsController implements Initializable {
 
@@ -221,96 +204,6 @@ public class ShowMyCollectsController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-
-
-    @FXML
-    private void handleGeneratePDF(ActionEvent event) {
-        if (collectsTable.getItems().isEmpty()) {
-            showAlert("No Data", "There are no collects to export.");
-            return;
-        }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save PDF");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-
-        // Set initial filename
-        fileChooser.setInitialFileName("my-collects-report.pdf");
-
-        File file = fileChooser.showSaveDialog(collectsTable.getScene().getWindow());
-
-        if (file != null) {
-            try {
-                // 1. Create Document instance
-                com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-
-                // 2. Initialize PDF Writer
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-
-                // 3. Open document
-                document.open();
-
-                // 4. Add content
-                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-                Paragraph title = new Paragraph("My Collects Report\n\n", titleFont);
-                title.setAlignment(Element.ALIGN_CENTER);
-                document.add(title);
-
-                // Create table with 6 columns
-                PdfPTable table = new PdfPTable(6);
-                table.setWidthPercentage(100);
-                table.setSpacingBefore(20f);
-                table.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-                // Table headers
-                String[] headers = {"Titre", "Produit", "Quantité", "Lieu", "Date Début", "Catégorie"};
-                for (String header : headers) {
-                    PdfPCell cell = new PdfPCell(new Phrase(header));
-                    cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    cell.setPadding(5);
-                    table.addCell(cell);
-                }
-
-                // Table data
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                for (Collect collect : collectsTable.getItems()) {
-                    addCell(table, collect.getTitre());
-                    addCell(table, collect.getNomProduit());
-                    addCell(table, String.valueOf(collect.getQuantite()));
-                    addCell(table, collect.getLieu());
-                    addCell(table, collect.getDateDebut().format(dateFormatter));
-                    addCell(table, collect.getCategorieCollect().getNom());
-                }
-
-                document.add(table);
-                document.close();
-
-                // Open the generated PDF
-                if (Desktop.isDesktopSupported()) {
-                    Desktop.getDesktop().open(file);
-                } else {
-                    showAlert("Success", "PDF created at: " + file.getAbsolutePath());
-                }
-
-            } catch (DocumentException | IOException e) {
-                showAlert("PDF Error", "Failed to generate PDF: " + e.getMessage());
-                e.printStackTrace();
-            } catch (Exception e) {
-                showAlert("Error", "Unexpected error: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private void addCell(PdfPTable table, String content) {
-        PdfPCell cell = new PdfPCell(new Phrase(content));
-        cell.setPadding(5);
-        table.addCell(cell);
-    }
-
 
 
 }

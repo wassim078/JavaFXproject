@@ -16,6 +16,12 @@
             <TextField fx:id="txtPostTitle" prefWidth="200" promptText="Titre" style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5; -fx-padding: 8;"/>
             <TextField fx:id="txtPostContent" prefWidth="400" promptText="Contenu" style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5; -fx-padding: 8;"/>
         </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <ComboBox fx:id="cbSourceLang" promptText="Langue source" prefWidth="120"/>
+            <ComboBox fx:id="cbTargetLang" promptText="Langue cible" prefWidth="120"/>
+            <Button onAction="#translateContent" text="Traduire"
+                    style="-fx-background-color: #9b59b6; -fx-text-fill: white;"/>
+        </HBox>
 
         <HBox spacing="15" alignment="CENTER_LEFT">
             <Button fx:id="btnAddPost" onAction="#createPost" text="Ajouter" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
@@ -35,6 +41,9 @@
             <TableColumn fx:id="colContenu" prefWidth="260" text="Contenu" />
             <TableColumn fx:id="colCreatedAt" prefWidth="120" text="Date" style="-fx-alignment: CENTER;"/>
             <TableColumn fx:id="colRating" prefWidth="80" text="Rating" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colShare" prefWidth="100" text="Partager" style="-fx-alignment: CENTER;">
+
+            </TableColumn>
         </columns>
         <style>
             -fx-font-size: 14px;
@@ -69,6 +78,12 @@
                     style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
             <Button fx:id="btnDeleteComment" onAction="#deleteComment" text="Supprimer"
                     style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+        </HBox>
+        <!-- Dans la section des commentaires -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <ComboBox fx:id="cbCommentTargetLang" promptText="Langue cible" prefWidth="120"/>
+            <Button onAction="#translateComment" text="Traduire"
+                    style="-fx-background-color: #9b59b6; -fx-text-fill: white;"/>
         </HBox>
 
         <!-- Table des commentaires -->

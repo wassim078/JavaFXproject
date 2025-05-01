@@ -8,9 +8,20 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <BorderPane prefHeight="600" prefWidth="800" xmlns:http="http://javafx.com/javafx/21" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.frontoffice.UserCategoryController"
             stylesheets="@../css/category.css">
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="20" styleClass="button-container">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <ComboBox fx:id="cbTargetLang" promptText="Choisir langue" prefWidth="150"/>
+            <Button text="Traduire" onAction="#translateCategories" styleClass="access-button"/>
+        </HBox>
+    </top>
+
     <center>
         <ScrollPane fitToWidth="true" BorderPane.alignment="CENTER"
                     fitToHeight="true"
@@ -26,6 +37,10 @@
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
+            <!-- Dans la section bottom/HBox -->
+            <Button text="Créer Événement" onAction="#handleCreateEvent" styleClass="access-button"/>
+            <!-- Ajout du bouton Chatbot ici -->
+            <Button text="Ouvrir ChatBot" onAction="#openChatBot" styleClass="access-button"/>
             <Button fx:id="btnAccess" text="Accéder au Forum" onAction="#goToForum" styleClass="access-button" />
         </HBox>
     </bottom>

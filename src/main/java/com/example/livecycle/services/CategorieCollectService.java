@@ -57,23 +57,4 @@ public class CategorieCollectService implements Service<CategorieCollect> {
     }
 
     // Implement modifier and supprimer methods
-
-
-    public List<CategorieCollect> recupererToutes() throws SQLException {
-        List<CategorieCollect> categories = new ArrayList<>();
-        String query = "SELECT * FROM categorie_collect";
-
-        try (Statement st = DatabaseConnection.getInstance().getConnection().createStatement();
-             ResultSet rs = st.executeQuery(query)) {
-            while (rs.next()) {
-                CategorieCollect categorie = new CategorieCollect();
-                categorie.setId(rs.getInt("id"));
-                categorie.setNom(rs.getString("nom"));
-                categorie.setDescription(rs.getString("description"));
-                categories.add(categorie);
-            }
-        }
-        return categories;
-    }
-
 }

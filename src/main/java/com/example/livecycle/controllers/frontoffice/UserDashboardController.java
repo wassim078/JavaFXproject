@@ -1,14 +1,11 @@
 package com.example.livecycle.controllers.frontoffice;
 
-import com.example.livecycle.controllers.auth.FaceAuthController;
 import com.example.livecycle.controllers.auth.LoginController;
 import com.example.livecycle.entities.Panier;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.CommandeService;
 import com.example.livecycle.services.PanierService;
 import com.example.livecycle.services.UserService;
-import com.example.livecycle.utils.SessionManager;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,14 +20,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.json.JSONObject;
-import com.example.livecycle.controllers.RefreshableController;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class UserDashboardController implements RefreshableController{
+public class UserDashboardController {
     @FXML private Button dashboardBtn;
     @FXML private MenuButton collectBtn;
     @FXML
@@ -41,17 +38,12 @@ public class UserDashboardController implements RefreshableController{
     @FXML private StackPane cartBadge;
     @FXML private Label cartCountLabel;
     @FXML private Button commandeBtn;
-    @FXML private StackPane notificationBadge;
-    @FXML private Label notificationCountLabel;
-
-
 
     private int            cartCount = 0;
 
     private final CommandeService commandeService = new CommandeService();
     private final PanierService panierService = new PanierService();
-    private NotificationController activeNotificationController;
-    private MenuItem faceRegistrationItem;
+
     @FXML
     private ImageView userPhoto;
 
@@ -82,34 +74,8 @@ public class UserDashboardController implements RefreshableController{
         createProfileMenu();
         configureMenuBasedOnRoles();
         cartBadge.setVisible(false);
-        configureSessionPersistence();
-
 
     }
-
-
-
-
-    private void configureSessionPersistence() {
-        Platform.runLater(() -> {
-            try {
-                if (userPhoto.getScene() != null) {
-                    Stage stage = (Stage) userPhoto.getScene().getWindow();
-                    stage.setOnCloseRequest(event -> {
-                        // Only save session if user is logged in
-                        if (currentUser != null) {
-                            SessionManager.saveSession(currentUser.getId());
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                System.err.println("Error configuring session persistence: " + e.getMessage());
-            }
-        });
-    }
-
-
-
 
 
     @FXML
@@ -135,97 +101,22 @@ public class UserDashboardController implements RefreshableController{
         profileMenu = new ContextMenu();
         profileMenu.getStyleClass().add("profile-menu");
 
-        // Existing items
+        // Edit Profile Item
         editProfileItem = new MenuItem("Edit Profile");
-        notificationsItem = new MenuItem("Notifications");
-        faceRegistrationItem = new MenuItem("Register with Face"); // New item
-
-        SeparatorMenuItem separator1 = new SeparatorMenuItem();
-        SeparatorMenuItem separator2 = new SeparatorMenuItem();
-
-        // Style classes
         editProfileItem.getStyleClass().add("profile-menu-item");
-        notificationsItem.getStyleClass().add("profile-menu-item");
-        faceRegistrationItem.getStyleClass().add("profile-menu-item"); // Style new item
-
-        // Add items in order: Edit -> Sep -> Notif -> Sep -> Face Reg
-        profileMenu.getItems().addAll(
-                editProfileItem,
-                separator1,
-                notificationsItem,
-                separator2,
-                faceRegistrationItem
-        );
-
-        // Set actions
         editProfileItem.setOnAction(e -> showEditProfile());
+
+        // Notifications Item
+        notificationsItem = new MenuItem("Notifications");
+        notificationsItem.getStyleClass().add("profile-menu-item");
         notificationsItem.setOnAction(e -> showNotifications());
-        faceRegistrationItem.setOnAction(e -> handleFaceRegistration()); // New handler
+
+        // Separator
+        SeparatorMenuItem separator = new SeparatorMenuItem();
+        separator.getStyleClass().add("menu-separator");
+
+        profileMenu.getItems().addAll(editProfileItem, separator, notificationsItem);
     }
-
-
-
-
-    @FXML
-    private void handleFaceRegistration() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/example/livecycle/auth/face_auth.fxml")
-            );
-            Parent root = loader.load();
-
-            FaceAuthController controller = loader.getController();
-            controller.setRegistrationMode(true);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Face Registration");
-            stage.show();
-
-        } catch (IOException e) {
-            showLoadError("Face Registration", e);
-        }
-    }
-
-
-
-
-
-
-
-
-    private void setupNotificationBadge() {
-        notificationBadge.setVisible(false);
-        notificationCountLabel.setText("");
-    }
-
-    private void updateVerificationNotification() {
-        if (currentUser != null && !currentUser.isEnabled()) {
-            notificationBadge.setVisible(true);
-            notificationCountLabel.setText("1");
-        } else {
-            notificationBadge.setVisible(false);
-            notificationCountLabel.setText("");
-        }
-    }
-
-
-
-
-    @Override
-    public void refreshVerificationStatus() {
-        refreshCurrentUser();
-        updateVerificationNotification();
-
-        if (activeNotificationController != null) {
-            activeNotificationController.updateVerificationStatus(currentUser);
-        }
-    }
-
-
-
-
-
 
     private void showEditProfile() {
         refreshCurrentUser();
@@ -233,20 +124,9 @@ public class UserDashboardController implements RefreshableController{
         System.out.println("Edit Profile clicked");
     }
     private void showNotifications() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/livecycle/frontoffice/notification.fxml"));
-            Parent view = loader.load();
-
-            activeNotificationController = loader.getController();
-            activeNotificationController.updateVerificationStatus(currentUser);
-
-            contentArea.getChildren().setAll(view);
-        } catch (IOException e) {
-            showLoadError("Notifications", e);
-        }
+        // Implement notifications logic
+        System.out.println("Notifications clicked");
     }
-
-
 
     private void loadInitialView() {
         setActiveButton(dashboardBtn);
@@ -291,7 +171,6 @@ public class UserDashboardController implements RefreshableController{
         this.currentUser = user;
         loadUserAvatar();
         loadCartCount();
-        updateVerificationNotification();
     }
 
     void loadCartCount() {
@@ -528,7 +407,7 @@ public class UserDashboardController implements RefreshableController{
     }
 
     public void handleLogout(ActionEvent actionEvent) {
-        SessionManager.clearSession();
+
         LoginController.stopCallbackServer();
         try {
             // Load the login screen

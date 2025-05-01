@@ -1,6 +1,5 @@
 package com.example.livecycle.controllers.backoffice;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.TableView;
 import com.example.livecycle.services.UserService;
@@ -37,9 +36,7 @@ public class UserManagement {
     @FXML private TableColumn<User, String> phoneColumn;
     @FXML private TableColumn<User, String> addressColumn;
     @FXML private TableColumn<User, String> rolesColumn;
-    @FXML private TableColumn<User, Void> editDeleteColumn;
-    @FXML private TableColumn<User, Void> banUnbanColumn;
-
+    @FXML private TableColumn<User, Void> actionsColumn;
     private final UserService userService = new UserService();
     private ObservableList<User> users = FXCollections.observableArrayList();
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + File.separator + "uploads" + File.separator;
@@ -57,21 +54,6 @@ public class UserManagement {
         userTable.setItems(users); // Directly bind the list
         setupTableColumns();
         loadUsers();
-        userTable.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (user == null || empty) {
-                    setStyle("");
-                } else {
-                    if (user.isBanned()) {
-                        setStyle("-fx-background-color: #ffebee;"); // Light red
-                    } else {
-                        setStyle("");
-                    }
-                }
-            }
-        });
     }
 
     private void setupTableColumns() {
@@ -85,117 +67,8 @@ public class UserManagement {
         rolesColumn.setCellValueFactory(new PropertyValueFactory<>("roles"));
         // Set up custom cell factories
         profileColumn.setCellFactory(createProfileCellFactory());
-        editDeleteColumn.setCellFactory(createEditDeleteCellFactory());
-        banUnbanColumn.setCellFactory(createBanUnbanCellFactory());
+        actionsColumn.setCellFactory(createActionsCellFactory());
     }
-
-
-
-
-
-    private Callback<TableColumn<User, Void>, TableCell<User, Void>> createBanUnbanCellFactory() {
-        return column -> new TableCell<>() {
-            private final HBox buttons = new HBox(4);
-            private final Button banBtn = new Button("Ban");
-            private final Button unbanBtn = new Button("Unban");
-
-            {
-                banBtn.getStyleClass().add("ban-button");
-                unbanBtn.getStyleClass().add("unban-button");
-                banBtn.setTooltip(new Tooltip("Ban User"));
-                unbanBtn.setTooltip(new Tooltip("Unban User"));
-
-                // Add action handlers if needed
-                banBtn.setOnAction(event -> {
-                    User user = getTableRow().getItem();
-                    if (user != null) {
-                         handleBanUser(user); // Placeholder for ban logic
-                    }
-                });
-
-                unbanBtn.setOnAction(event -> {
-                    User user = getTableRow().getItem();
-                    if (user != null) {
-                        handleUnbanUser(user); // Placeholder for unban logic
-                    }
-                });
-
-                buttons.getChildren().addAll(banBtn, unbanBtn);
-                buttons.setAlignment(Pos.CENTER); // Center buttons in the column
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-                    setGraphic(null);
-                } else {
-                    User user = getTableRow().getItem();
-                    if (user.isBanned()) {
-                        buttons.getChildren().setAll(unbanBtn);
-                    } else {
-                        buttons.getChildren().setAll(banBtn);
-                    }
-                    setGraphic(buttons);
-                }
-            }
-        };
-    }
-
-
-    private Callback<TableColumn<User, Void>, TableCell<User, Void>> createEditDeleteCellFactory() {
-        return column -> new TableCell<>() {
-            private final HBox buttons = new HBox(4);
-            private final Button editBtn = new Button("Edit");
-            private final Button deleteBtn = new Button("Delete");
-
-            {
-                editBtn.getStyleClass().add("edit-button");
-                deleteBtn.getStyleClass().add("delete-button");
-                editBtn.setTooltip(new Tooltip("Edit User"));
-                deleteBtn.setTooltip(new Tooltip("Delete User"));
-
-                editBtn.setOnAction(event -> {
-                    User user = getTableRow().getItem();
-                    if (user != null) {
-                        handleEditUser(user);
-                    }
-                });
-
-                deleteBtn.setOnAction(event -> {
-                    User user = getTableRow().getItem();
-                    if (user != null) {
-                        try {
-                            handleDeleteUser(user);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-
-                buttons.getChildren().addAll(editBtn, deleteBtn);
-                buttons.setAlignment(Pos.CENTER); // Center buttons in the column
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(buttons);
-                }
-            }
-        };
-    }
-
-
-
-
-
-
-
-
 
     private Callback<TableColumn<User, String>, TableCell<User, String>> createProfileCellFactory() {
         return column -> new TableCell<>() {
@@ -208,8 +81,8 @@ public class UserManagement {
 
             {
                 // Container setup
-                container.setPrefSize(50, 50);
-                container.setMaxSize(50, 50);
+                container.setPrefSize(30, 30);
+                container.setMaxSize(30, 30);
 
                 // Dynamic clipping
                 clip.radiusProperty().bind(container.widthProperty().divide(2));
@@ -276,28 +149,18 @@ public class UserManagement {
 
     private Callback<TableColumn<User, Void>, TableCell<User, Void>> createActionsCellFactory() {
         return column -> new TableCell<>() {
-            private final HBox buttons = new HBox(4); // Reduced spacing from 8 to 4
+            private final HBox buttons = new HBox(8);
 
             // Initialize buttons separately
             private final Button editBtn = new Button("Edit");
             private final Button deleteBtn = new Button("Delete");
-            private final Button banBtn = new Button("Ban");
-            private final Button unbanBtn = new Button("Unban");
 
             {
                 // Style buttons
                 editBtn.getStyleClass().add("edit-button");
                 deleteBtn.getStyleClass().add("delete-button");
-                banBtn.getStyleClass().add("ban-button");
-                unbanBtn.getStyleClass().add("unban-button");
 
-                // Add tooltips for clarity
-                editBtn.setTooltip(new Tooltip("Edit User"));
-                deleteBtn.setTooltip(new Tooltip("Delete User"));
-                banBtn.setTooltip(new Tooltip("Ban User"));
-                unbanBtn.setTooltip(new Tooltip("Unban User"));
-
-                // Set button actions for existing buttons
+                // Set button actions
                 editBtn.setOnAction(event -> {
                     User user = getTableRow().getItem();
                     if (user != null) {
@@ -316,10 +179,8 @@ public class UserManagement {
                     }
                 });
 
-                // No actions for banBtn and unbanBtn as per request
-
                 // Add buttons to HBox
-                buttons.getChildren().addAll(editBtn, deleteBtn, banBtn, unbanBtn);
+                buttons.getChildren().addAll(editBtn, deleteBtn);
             }
 
             @Override
@@ -346,6 +207,7 @@ public class UserManagement {
                 .collect(Collectors.toList());
 
         users.setAll(filteredList);
+        userTable.setItems(users); // Explicitly set items
         userTable.refresh(); // Force refresh
         System.out.println("Filtered non-admin users: " + users.size());
     }
@@ -497,34 +359,4 @@ public class UserManagement {
     private String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
-
-
-    @FXML
-    private void handleBanUser(User user) {
-        try {
-            if (userService.banUser(user.getId())) {
-                // re-fetch so isBanned() really comes back as true
-                loadUsers();
-                userTable.refresh();
-                showAlert("Success", "User has been banned");
-            }
-        } catch (SQLException e) {
-            showAlert("Error", "Failed to ban user");
-        }
-    }
-
-    @FXML
-    private void handleUnbanUser(User user) {
-        try {
-            if (userService.unbanUser(user.getId())) {
-                // re-fetch so isBanned() really comes back as false
-                loadUsers();
-                userTable.refresh();
-                showAlert("Success", "User has been unbanned");
-            }
-        } catch (SQLException e) {
-            showAlert("Error", "Failed to unban user");
-        }
-    }
-
 }

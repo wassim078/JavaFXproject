@@ -14,14 +14,6 @@ module com.example.livecycle {
     requires jdk.jsobject;
     requires java.desktop;
     requires stripe.java;
-    requires java.prefs;
-    requires opencv;
-    requires javafx.swing;
-    requires itextpdf;
-
-    requires okhttp3;
-
-    requires twilio;
 
 
     opens com.example.livecycle to javafx.fxml;

@@ -61,3 +61,57 @@
 .access-button:hover {
     -fx-background-color: #2980b9;
 }
+.access-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-background-radius: 5;
+}
+
+.access-button:hover {
+    -fx-background-color: #45a049;
+}
+.dialog-pane {
+    -fx-pref-width: 600px;
+    -fx-pref-height: 400px;
+}
+
+.dialog-pane .list-view {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+.schedule-button {
+    -fx-background-color: #FFA000;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-background-radius: 5;
+}
+
+.schedule-button:hover {
+    -fx-background-color: #FFB300;
+}
+
+.date-picker {
+    -fx-font-size: 14px;
+}
+
+.time-spinner .text-field {
+    -fx-alignment: CENTER;
+}
+.access-button {
+    -fx-background-color: #4285f4;
+    -fx-text-fill: white;
+    -fx-padding: 8 15;
+    -fx-font-weight: bold;
+}
+
+.access-button:hover {
+    -fx-background-color: #357abd;
+}
+.spinner .text-field {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-pref-width: 80px;
+}

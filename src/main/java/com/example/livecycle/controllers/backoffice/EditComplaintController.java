@@ -1,9 +1,7 @@
 package com.example.livecycle.controllers.backoffice;
 
 import com.example.livecycle.entities.Reclamation;
-import com.example.livecycle.entities.User;
 import com.example.livecycle.services.ReclamationDAO;
-import com.example.livecycle.services.WhatsAppService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -55,23 +53,8 @@ public class EditComplaintController {
 
     @FXML
     private void handleSave() {
-        String newEtat = etatComboBox.getValue();
-        currentReclamation.setEtat(newEtat);
-
+        currentReclamation.setEtat(etatComboBox.getValue());
         if (reclamationDAO.updateReclamation(currentReclamation)) {
-            // Send WhatsApp notification
-            User user = currentReclamation.getUser();
-            String userPhone = user.getTelephone();
-            String userName = user.getNom();
-
-            if (userPhone != null && !userPhone.isEmpty()) {
-                String message = String.format(
-                        "Bonjour %s,\nVotre réclamation \"%s\" a été mise à jour.\nNouveau statut : %s.",
-                        userName, currentReclamation.getSujet(), newEtat
-                );
-                WhatsAppService.sendWhatsAppMessage(userPhone, message);
-            }
-
             parentController.refreshTable();
             closeWindow();
         } else {

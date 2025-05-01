@@ -1,15 +1,7 @@
 package com.example.livecycle.services;
 
-import com.example.livecycle.entities.Annonce;
-import com.example.livecycle.entities.Commande;
-import com.stripe.model.climate.Product;
-import com.stripe.service.climate.ProductService;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class EmailService {
@@ -99,114 +91,5 @@ public class EmailService {
         }).start();
     }
 
-    // In EmailService.java
-    public void sendOrderConfirmation(String userEmail, Commande commande) {
-        new Thread(() -> {
-            try {
-                // First check email credentials
-                if (EMAIL_USER == null || EMAIL_PASSWORD == null) {
-                    System.err.println("Email credentials not configured!");
-                    return;
-                }
-
-                Session session = Session.getInstance(mailProperties, new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(EMAIL_USER, EMAIL_PASSWORD);
-                    }
-                });
-
-                MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(EMAIL_USER));
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(userEmail));
-                message.setSubject("Facture #" + commande.getId() + " - Votre Commande LiveCycle");
-
-                // Parse annonce quantities (format: {"2":4,"3":8})
-                JSONObject annonceQuantities = new JSONObject(commande.getAnnonceQuantities());
-                StringBuilder productsHtml = new StringBuilder();
-                AnnonceService annonceService = new AnnonceService();
-                double calculatedTotal = 0;
-
-                for (String annonceIdStr : annonceQuantities.keySet()) {
-                    try {
-                        int annonceId = Integer.parseInt(annonceIdStr);
-                        int quantity = annonceQuantities.getInt(annonceIdStr);
-
-                        Annonce annonce = annonceService.getById(annonceId);
-                        if (annonce == null) {
-                            System.err.println("Annonce not found for ID: " + annonceId);
-                            continue;
-                        }
-
-                        double price = annonce.getPrix();
-                        double total = price * quantity;
-                        calculatedTotal += total;
-
-                        productsHtml.append("<tr>")
-                                .append("<td style='padding: 10px; border-bottom: 1px solid #ddd;'>").append(annonce.getTitre()).append("</td>")
-                                .append("<td style='padding: 10px; border-bottom: 1px solid #ddd; text-align: center;'>").append(quantity).append("</td>")
-                                .append("<td style='padding: 10px; border-bottom: 1px solid #ddd; text-align: right;'>").append(String.format("%.2f TND", price)).append("</td>")
-                                .append("<td style='padding: 10px; border-bottom: 1px solid #ddd; text-align: right;'>").append(String.format("%.2f TND", total)).append("</td>")
-                                .append("</tr>");
-                    } catch (NumberFormatException | SQLException e) {
-                        System.err.println("Error processing annonce ID " + annonceIdStr + ": " + e.getMessage());
-                    }
-                }
-
-                // Build HTML content
-                String htmlContent = "<html><body style='font-family: Arial, sans-serif; margin: 0; padding: 20px;'>"
-                        + "<div style='max-width: 800px; margin: 0 auto; background: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>"
-
-                        // Header Section
-                        + "<div style='border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px;'>"
-                        + "<h1 style='color: #2d572c; margin: 0;'>Facture #" + commande.getId() + "</h1>"
-                        + "<p style='color: #666; margin: 5px 0 0 0;'>Date: " + commande.getDate().toLocalDate() + "</p>"
-                        + "<p style='color: #666; margin: 0;'>Méthode de paiement: " + commande.getMethodePaiement() + "</p>"
-                        + "</div>"
-
-                        // Client Information
-                        + "<div style='margin-bottom: 30px;'>"
-                        + "<h3 style='color: #333; margin-bottom: 10px;'>Client:</h3>"
-                        + "<p style='margin: 5px 0;'>" + commande.getClientName() + " " + commande.getClientFamilyName() + "</p>"
-                        + "<p style='margin: 5px 0;'>" + commande.getClientAddress() + "</p>"
-                        + "<p style='margin: 5px 0;'>Tél: " + commande.getClientPhone() + "</p>"
-                        + "</div>"
-
-                        // Products Table
-                        + "<table style='width: 100%; border-collapse: collapse; margin-bottom: 30px;'>"
-                        + "<thead>"
-                        + "<tr style='background-color: #f8f9fa;'>"
-                        + "<th style='padding: 15px; text-align: left; border-bottom: 2px solid #ddd;'>Produit</th>"
-                        + "<th style='padding: 15px; text-align: center; border-bottom: 2px solid #ddd;'>Quantité</th>"
-                        + "<th style='padding: 15px; text-align: right; border-bottom: 2px solid #ddd;'>Prix Unitaire</th>"
-                        + "<th style='padding: 15px; text-align: right; border-bottom: 2px solid #ddd;'>Total</th>"
-                        + "</tr></thead>"
-                        + "<tbody>" + productsHtml.toString() + "</tbody>"
-                        + "</table>"
-
-                        // Total Section
-                        + "<div style='text-align: right; padding: 20px; background-color: #f8f9fa; border-radius: 5px;'>"
-                        + "<p style='font-size: 18px; margin: 0;'>"
-                        + "<span style='font-weight: bold;'>Total Général:</span> "
-                        + "<span style='color: #2d572c; font-weight: bold;'>" + String.format("%.2f TND", commande.getPrixTotal()) + "</span>"
-                        + "</p>"
-                        + "</div>"
-
-                        // Footer
-                        + "<div style='margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666;'>"
-                        + "<p style='margin: 5px 0;'>Merci pour votre confiance!</p>"
-                        + "<p style='margin: 5px 0;'>Contact: contact@livecycle.tn | Tél: +216 70 000 000</p>"
-                        + "</div>"
-                        + "</div></body></html>";
-
-                message.setContent(htmlContent, "text/html; charset=utf-8");
-                Transport.send(message);
-                System.out.println("Order confirmation email sent to: " + userEmail);
-            } catch (Exception e) {
-                System.err.println("Failed to send order confirmation: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }).start();
-    }
 
 }

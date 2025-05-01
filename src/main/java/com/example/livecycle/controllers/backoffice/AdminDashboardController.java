@@ -1,8 +1,6 @@
 package com.example.livecycle.controllers.backoffice;
 
-import com.example.livecycle.controllers.RefreshableController;
 import com.example.livecycle.entities.User;
-import com.example.livecycle.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class AdminDashboardController implements RefreshableController {
+public class AdminDashboardController {
     @FXML private VBox sidebarMenu;
     @FXML private StackPane contentArea;
     @FXML private ImageView userPhoto;
@@ -39,30 +37,6 @@ public class AdminDashboardController implements RefreshableController {
     private User currentUser;
     private Button activeButton = null;
 
-
-
-    public void initialize() {
-        // Existing initialization code
-        configureSessionPersistence();
-        userPhoto.sceneProperty().addListener((observable, oldScene, newScene) -> {
-            if (newScene != null) {
-                configureSessionPersistence();
-            }
-        });
-    }
-
-    private void configureSessionPersistence() {
-        try {
-            Stage stage = (Stage) userPhoto.getScene().getWindow();
-            stage.setOnCloseRequest(event -> {
-                // Maintain existing cleanup code
-                SessionManager.saveSession(currentUser.getId());
-                // Add any other cleanup you need here
-            });
-        } catch (Exception e) {
-            System.err.println("Error configuring session persistence: " + e.getMessage());
-        }
-    }
 
 
     private void setActiveButton(Button clickedButton) {
@@ -183,7 +157,6 @@ public class AdminDashboardController implements RefreshableController {
 
     @FXML
     private void handleLogout() {
-        SessionManager.clearSession();
         profileMenu.setVisible(false);
         // Add logout logic
         System.out.println("Logout clicked");
@@ -325,12 +298,15 @@ public class AdminDashboardController implements RefreshableController {
 
     }
 
+    public void showAdminForumManagement(ActionEvent event) {
+        closeAllSubmenus();
+        setActiveButton((Button) event.getSource());
+        loadContent("/com/example/livecycle/backoffice/admin_forum_management.fxml");
+        hideProfileMenu();
+    }
+
     // Update existing show methods to close submenus
 
-    @Override
-    public void refreshVerificationStatus() {
-        // Implement refresh logic if needed
-        // Can leave empty if not used for admin
-    }
+
 
 }

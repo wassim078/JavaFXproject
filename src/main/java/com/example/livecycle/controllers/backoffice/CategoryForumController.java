@@ -2,13 +2,27 @@ package com.example.livecycle.controllers.backoffice;
 
 import com.example.livecycle.entities.CategoryForum;
 import com.example.livecycle.utils.DBConnexion;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
@@ -154,6 +168,95 @@ public class CategoryForumController implements Initializable {
             ID.setText(String.valueOf(selected.getId()));
             NAME.setText(selected.getName());
             DESCRIPTION.setText(selected.getDescription());
+        }
+    }
+
+    // Ajoutez cette méthode dans la classe
+    @FXML
+    void generatePdf(ActionEvent event) {
+        try {
+            // Création du document
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            // Préparation du contenu
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+
+            // En-tête
+            contentStream.beginText();
+            contentStream.newLineAtOffset(100, 700);
+            contentStream.showText("Liste des catégories de forum");
+            contentStream.endText();
+
+            // Contenu
+            int yPosition = 680;
+            contentStream.setFont(PDType1Font.HELVETICA, 12);
+            for (CategoryForum category : categories) {
+                contentStream.beginText();
+                contentStream.newLineAtOffset(100, yPosition);
+                String line = String.format("ID: %d | Nom: %s | Description: %s",
+                        category.getId(), category.getName(), category.getDescription());
+                contentStream.showText(line);
+                contentStream.endText();
+                yPosition -= 20;
+            }
+
+            contentStream.close();
+
+            // Sauvegarde du fichier
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer le PDF");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            File file = fileChooser.showSaveDialog(table.getScene().getWindow());
+
+            if (file != null) {
+                document.save(file);
+                showAlert("Succès", "PDF généré avec succès !", Alert.AlertType.INFORMATION);
+            }
+
+            document.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la génération du PDF", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    void generateQrCode(ActionEvent event) {
+        try {
+            // Créer le contenu du QR Code
+            StringBuilder qrContent = new StringBuilder("Liste des catégories:\n");
+            for (CategoryForum category : categories) {
+                qrContent.append(String.format("ID: %d | Nom: %s\n", category.getId(), category.getName()));
+            }
+
+            // Générer le QR Code
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(
+                    qrContent.toString(),
+                    BarcodeFormat.QR_CODE,
+                    300,
+                    300
+            );
+
+            // Convertir en image
+            BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+
+            // Sauvegarder le fichier
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer le QR Code");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images PNG", "*.png"));
+            File file = fileChooser.showSaveDialog(table.getScene().getWindow());
+
+            if (file != null) {
+                ImageIO.write(bufferedImage, "png", file);
+                showAlert("Succès", "QR Code généré avec succès !", Alert.AlertType.INFORMATION);
+            }
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la génération du QR Code", Alert.AlertType.ERROR);
         }
     }
 }

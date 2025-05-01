@@ -4,7 +4,6 @@ import com.example.livecycle.entities.Commande;
 import com.example.livecycle.entities.Panier;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.CommandeService;
-import com.example.livecycle.services.EmailService;
 import com.example.livecycle.services.PanierService;
 import com.example.livecycle.services.StripeService;
 import com.stripe.exception.StripeException;
@@ -43,10 +42,6 @@ public class CheckoutController {
     private double totalAmount;
 
     private final StripeService stripeService = new StripeService();
-
-    private final EmailService emailService = new EmailService();
-
-
 
     public void initialize() {
         paymentMethodChoice.setItems(FXCollections.observableArrayList(
@@ -147,7 +142,7 @@ public class CheckoutController {
         try {
             new CommandeService().ajouter(commande);
             new PanierService().clearPanier(currentUser.getId());
-            emailService.sendOrderConfirmation(currentUser.getEmail(), commande);
+
             showSuccess("Order created successfully!");
             closeWindow();
 

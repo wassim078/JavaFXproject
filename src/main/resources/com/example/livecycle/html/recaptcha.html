@@ -1,38 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- 1) explicit render, no onload parameter -->
-    <script src="https://www.google.com/recaptcha/api.js?render=explicit"></script>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
-        function initRecaptcha() {
-            grecaptcha.render('recaptcha', {
-                'sitekey'           : '6LdK5icrAAAAABmjiOyfWcvO4lPA8LdCUN4cc5qZ',
-                'callback'          : onRecaptchaSuccess,
-                'expired-callback'  : onRecaptchaExpired
-            });
+        function onCaptchaSuccess(token) {
+            if (window.javaConnector && window.javaConnector.isInitialized()) {
+                window.javaConnector.onCaptchaSuccess(token);
+            }
         }
 
-        function onRecaptchaSuccess(token) {
-            console.log('[JS] reCAPTCHA success, token=', token);
-            window.javaConnector.onCaptchaSuccess(token);
-        }
-        function onRecaptchaExpired() {
-            console.log('[JS] reCAPTCHA expired');
-            window.javaConnector.onCaptchaError('Captcha expired – please retry');
+        function onCaptchaExpired() {
+            if (window.javaConnector) {
+                window.javaConnector.onCaptchaExpired();
+            }
         }
     </script>
-
-    <style>
-        /* optional enlarge badge */
-        .grecaptcha-badge {
-            transform: scale(1.2);
-            opacity: 1 !important;
-        }
-    </style>
 </head>
 <body>
-<!-- container for the checkbox -->
-<div id="recaptcha"></div>
+<div class="g-recaptcha"
+     data-sitekey="6LfiKRsrAAAAAPACnY4E9YRaZGDGP5Z_4capkh4w"
+     data-callback="onCaptchaSuccess"
+     data-expired-callback="onCaptchaExpired"></div>
 </body>
 </html>

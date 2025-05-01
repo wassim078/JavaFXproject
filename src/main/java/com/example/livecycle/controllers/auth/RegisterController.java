@@ -75,8 +75,6 @@ public class RegisterController {
             System.err.println("Error initializing default avatar: " + e.getMessage());
         }
     }
-
-
     @FXML
     private void handleImageUpload(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -226,7 +224,7 @@ public class RegisterController {
 
             // Get the current stage from the event source and set the new scene
             Stage stage = (Stage) ((Control) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(root, 700, 700);
             stage.setScene(scene);
             stage.setTitle("Login");
             stage.centerOnScreen();

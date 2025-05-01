@@ -7,24 +7,37 @@ import com.example.livecycle.utils.DBConnexion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
+import javafx.stage.Stage;
+import javafx.event.ActionEvent;
 
+import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.net.URLEncoder;
 import java.net.URL;
 import java.io.InputStreamReader;
 import java.util.ResourceBundle;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.awt.Desktop;
+import java.net.URI;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class ForumController implements Initializable {
 
@@ -37,7 +50,10 @@ public class ForumController implements Initializable {
     @FXML private Label lblPostId;
     @FXML private TableColumn<Post, Number> colRating;
     @FXML private TableColumn<Comment, Number> colLikes, colDislikes;
-
+    // Décommentez ces lignes
+    @FXML private ComboBox<String> cbSourceLang;
+    @FXML private ComboBox<String> cbTargetLang;
+    @FXML private ComboBox<String> cbCommentTargetLang;
 //    // Ajoutez ces variables de classe
 //    @FXML private ComboBox<String> cbSourceLang;
 //    @FXML private ComboBox<String> cbTargetLang;
@@ -48,12 +64,14 @@ public class ForumController implements Initializable {
     @FXML private TableColumn<Comment, Integer> colCommentId;
     @FXML private TableColumn<Comment, String> colCommentContent, colCommentDate;
 
+    @FXML private TableColumn<Post, Void> colShare;
+
+
     private ObservableList<Comment> comments = FXCollections.observableArrayList();
     // Populate with Comment objects
     private Post selectedPost;
     private CategoryForum category;
     // Au début de la classe avec les autres @FXML
-    @FXML private ComboBox<String> cbCommentTargetLang;
 
     // Ajoutez cette map comme variable de classe
     private final Map<String, String> langCodes = new LinkedHashMap<String, String>() {{
@@ -76,75 +94,124 @@ public class ForumController implements Initializable {
         loadPosts(); // Déplacer l'appel ici
     }
 
-   /* private void initializeTable() {
-        // Configuration des colonnes pour les posts
+    /* private void initializeTable() {
+         // Configuration des colonnes pour les posts
+         colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+         colTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
+         colContenu.setCellValueFactory(cellData -> cellData.getValue().contenuProperty());
+         colCreatedAt.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
+
+         // Configuration des colonnes pour les commentaires
+         colCommentId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+         colCommentContent.setCellValueFactory(cellData -> cellData.getValue().contentProperty());
+         colCommentDate.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
+         // Dans initializeTable()
+         TableColumn<Post, Number> colRating = new TableColumn<>("Rating");
+         colRating.setCellValueFactory(cellData -> cellData.getValue().averageRatingProperty());
+         tablePosts.getColumns().add(colRating);
+
+         // Dans initializeTable()
+         TableColumn<Comment, Number> colLikes = new TableColumn<>("Likes");
+         colLikes.setCellValueFactory(cellData -> cellData.getValue().likesProperty());
+         TableColumn<Comment, Number> colDislikes = new TableColumn<>("Dislikes");
+         colDislikes.setCellValueFactory(cellData -> cellData.getValue().dislikesProperty());
+         tableComments.getColumns().addAll(colLikes, colDislikes);
+     }
+ */
+    private void initializeTable() {
+        colShare.setCellFactory(param -> new TableCell<>() {
+            private final Button btnShare = new Button("Partager");
+
+            {
+                btnShare.setStyle("-fx-background-color: #3b5998; -fx-text-fill: white;");
+                btnShare.setOnAction(event -> {
+                    Post post = getTableView().getItems().get(getIndex());
+                    shareOnFacebook(post);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btnShare);
+            }
+        });
         colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         colTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         colContenu.setCellValueFactory(cellData -> cellData.getValue().contenuProperty());
         colCreatedAt.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
+        colRating.setCellValueFactory(cellData -> cellData.getValue().averageRatingProperty());
 
-        // Configuration des colonnes pour les commentaires
         colCommentId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         colCommentContent.setCellValueFactory(cellData -> cellData.getValue().contentProperty());
         colCommentDate.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
-        // Dans initializeTable()
-        TableColumn<Post, Number> colRating = new TableColumn<>("Rating");
-        colRating.setCellValueFactory(cellData -> cellData.getValue().averageRatingProperty());
-        tablePosts.getColumns().add(colRating);
-
-        // Dans initializeTable()
-        TableColumn<Comment, Number> colLikes = new TableColumn<>("Likes");
         colLikes.setCellValueFactory(cellData -> cellData.getValue().likesProperty());
-        TableColumn<Comment, Number> colDislikes = new TableColumn<>("Dislikes");
         colDislikes.setCellValueFactory(cellData -> cellData.getValue().dislikesProperty());
-        tableComments.getColumns().addAll(colLikes, colDislikes);
-    }
-*/
-   private void initializeTable() {
-       colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-       colTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
-       colContenu.setCellValueFactory(cellData -> cellData.getValue().contenuProperty());
-       colCreatedAt.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
-       colRating.setCellValueFactory(cellData -> cellData.getValue().averageRatingProperty());
 
-       colCommentId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-       colCommentContent.setCellValueFactory(cellData -> cellData.getValue().contentProperty());
-       colCommentDate.setCellValueFactory(cellData -> cellData.getValue().createdAtProperty());
-       colLikes.setCellValueFactory(cellData -> cellData.getValue().likesProperty());
-       colDislikes.setCellValueFactory(cellData -> cellData.getValue().dislikesProperty());
+        Map<String, String> languages = new LinkedHashMap<>();
+        languages.put("Français", "fr");
+        languages.put("Anglais", "en");
+        languages.put("Espagnol", "es");
+        languages.put("Allemand", "de");
+        languages.put("Arabe", "ar");
 
-       Map<String, String> languages = new LinkedHashMap<>();
-       languages.put("Français", "fr");
-       languages.put("Anglais", "en");
-       languages.put("Espagnol", "es");
-       languages.put("Allemand", "de");
-       languages.put("Arabe", "ar");
 
 //       cbSourceLang.getItems().addAll(languages.keySet());
 //       cbTargetLang.getItems().addAll(languages.keySet());
 //       cbSourceLang.setValue("Français");
 //       cbTargetLang.setValue("Anglais");
-   }
+    }
+    private void shareOnFacebook(Post post) {
+        try {
+            String textToShare = URLEncoder.encode(
+                    "Post: " + post.getTitle() + "\n\n" + post.getContenu(),
+                    StandardCharsets.UTF_8.name()
+            );
+
+            String facebookUrl = "https://www.facebook.com/sharer/sharer.php?" +
+                    "u=http://www.example.com" + // URL fictive
+                    "&quote=" + textToShare;
+
+            Desktop.getDesktop().browse(new URI(facebookUrl));
+
+        } catch (Exception e) {
+            showAlert("Erreur", "Impossible d'ouvrir Facebook : " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
     // Ajoutez cette méthode INITIALIZE
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeTable();
         initializeLanguages(); // Appel de la nouvelle méthode des langues
-       // loadPosts();
+        // loadPosts();
+
     }
 
     // Ajoutez cette nouvelle méthode
     private void initializeLanguages() {
-        // Initialisation des ComboBox pour les posts
-//        cbSourceLang.getItems().addAll(langCodes.keySet());
-//        cbTargetLang.getItems().addAll(langCodes.keySet());
-//        cbSourceLang.setValue("Français");
-//        cbTargetLang.setValue("Anglais");
-//
-//        // Initialisation spécifique aux commentaires
-//        cbCommentTargetLang.getItems().addAll(langCodes.keySet());
-//        cbCommentTargetLang.setValue("Anglais");
+        cbSourceLang.getItems().addAll(langCodes.keySet());
+        cbTargetLang.getItems().addAll(langCodes.keySet());
+        cbCommentTargetLang.getItems().addAll(langCodes.keySet());
+
+        cbSourceLang.setValue("Français");
+        cbTargetLang.setValue("Anglais");
+        cbCommentTargetLang.setValue("Anglais");
     }
+    @FXML
+    void translateContent(ActionEvent event) {
+        if (selectedPost == null) return;
+
+        try {
+            String source = langCodes.get(cbSourceLang.getValue());
+            String target = langCodes.get(cbTargetLang.getValue());
+            String translated = translateText(selectedPost.getContenu(), source, target);
+            txtPostContent.setText(translated);
+        } catch (Exception e) {
+            showAlert("Erreur", "Échec de la traduction : " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+
   /*  private void loadPosts() {
         ObservableList<Post> posts = FXCollections.observableArrayList();
         String query = "SELECT * FROM post WHERE forum_id = ?";
@@ -242,6 +309,13 @@ public class ForumController implements Initializable {
         // Validation des champs
         if (title.isEmpty() || content.isEmpty()) {
             showAlert("Erreur", "Titre et contenu obligatoires", Alert.AlertType.ERROR);
+            return;
+        }
+        // Vérification contenu inapproprié
+        if (contientMotsInappropriés(title + " " + content)) {
+            showAlert("Contenu inapproprié",
+                    "Votre message contient des termes interdits. Veuillez le modifier.",
+                    Alert.AlertType.WARNING);
             return;
         }
 
@@ -370,6 +444,13 @@ public class ForumController implements Initializable {
         String content = txtComment.getText().trim(); // Ajout de .trim()
         if (content.isEmpty()) {
             showAlert("Erreur", "Le commentaire ne peut pas être vide", Alert.AlertType.ERROR);
+            return;
+        }
+        // Vérification contenu inapproprié
+        if (contientMotsInappropriés(content)) {
+            showAlert("Contenu inapproprié",
+                    "Votre commentaire contient des termes interdits. Veuillez le modifier.",
+                    Alert.AlertType.WARNING);
             return;
         }
 
@@ -750,5 +831,56 @@ public class ForumController implements Initializable {
                 showAlert("Erreur", e.getMessage(), Alert.AlertType.ERROR);
             }
         }
+    }
+    @FXML
+    private void openChatbot(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chatbot.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Chatbot LiveCycle");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir le chatbot", Alert.AlertType.ERROR);
+        }
+    }
+    // Liste locale de mots inappropriés (à compléter)
+    private final String[] MOTS_INAPPROPRIES = {"merde", "con", "connard", "putain", "salope","animal","ta geule","ferme ta bouche"};
+
+    // Vérification locale + API
+    private boolean contientMotsInappropriés(String texte) {
+        // Vérification locale d'abord
+        String texteMinuscule = texte.toLowerCase();
+        for (String mot : MOTS_INAPPROPRIES) {
+            if (texteMinuscule.contains(mot)) {
+                return true;
+            }
+        }
+
+        // Vérification par API
+        try {
+            String encodedText = URLEncoder.encode(texte, StandardCharsets.UTF_8.name());
+            URL url = new URL("https://www.purgomalum.com/service/containsprofanity?text=" + encodedText);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(3000);
+
+            if (conn.getResponseCode() == 200) {
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+
+                    String reponse = reader.readLine().trim();
+                    return Boolean.parseBoolean(reponse);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la vérification API: " + e.getMessage());
+            // En cas d'échec API, on se fie à la liste locale
+            return false;
+        }
+        return false;
     }
 }

@@ -78,8 +78,9 @@
 
             <Button onAction="#showForumManagement" styleClass="menu-btn" text="Forum Management" />
 
-   
-           </VBox>
+            <Button onAction="#showAdminForumManagement" styleClass="menu-btn" text="Forum Admin Management" />
+
+        </VBox>
     </left>
 
     <!-- Center Content Area -->

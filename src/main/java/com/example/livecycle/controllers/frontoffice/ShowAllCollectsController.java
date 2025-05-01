@@ -1,24 +1,22 @@
 package com.example.livecycle.controllers.frontoffice;
 
-import com.example.livecycle.entities.CategorieCollect;
 import com.example.livecycle.entities.Collect;
-import com.example.livecycle.services.CategorieCollectService;
 import com.example.livecycle.services.CollectService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -34,25 +32,12 @@ public class ShowAllCollectsController implements Initializable {
     @FXML private TableColumn<Collect, String> dateDebutColumn;
     @FXML private FlowPane cardsContainer;
 
-    @FXML private TextField searchTitre;
-    @FXML private TextField searchProduit;
-    @FXML private ComboBox<CategorieCollect> searchCategorie;
-    @FXML private TextField searchLieu;
-    @FXML private DatePicker searchDate;
-    @FXML private TextField searchQuantite;
-
-
 
     private final CollectService collectService = new CollectService();
-    private final CategorieCollectService categorieService = new CategorieCollectService();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-
-        loadCategories();
         loadCollects();
-
-
     }
 
     private void configureTableColumns() {
@@ -115,83 +100,4 @@ public class ShowAllCollectsController implements Initializable {
         }
     }
 
-
-
-
-
-
-
-
-    private void loadCategories() {
-        try {
-            List<CategorieCollect> categories = categorieService.recupererToutes();
-            searchCategorie.getItems().addAll(categories);
-            searchCategorie.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(CategorieCollect categorie) {
-                    return categorie != null ? categorie.getNom() : "";
-                }
-
-                @Override
-                public CategorieCollect fromString(String string) {
-                    return null;
-                }
-            });
-        } catch (SQLException e) {
-            showAlert("Error", "Failed to load categories");
-        }
-    }
-
-
-    @FXML
-    private void handleSearch(ActionEvent event) {
-        String titre = searchTitre.getText().trim();
-        String produit = searchProduit.getText().trim();
-        CategorieCollect categorie = searchCategorie.getValue();
-        String lieu = searchLieu.getText().trim();
-        LocalDate date = searchDate.getValue();
-        String quantiteStr = searchQuantite.getText().trim();
-
-        Integer quantite = null;
-        try {
-            if (!quantiteStr.isEmpty()) {
-                quantite = Integer.parseInt(quantiteStr);
-            }
-        } catch (NumberFormatException e) {
-            showAlert("Invalid Input", "Quantity must be a number");
-            return;
-        }
-
-        try {
-            List<Collect> filtered = collectService.rechercheAvancee(
-                    titre, produit, categorie, lieu, date, quantite
-            );
-            updateCards(filtered);
-        } catch (SQLException e) {
-            showAlert("Search Error", "Failed to perform search: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleClear(ActionEvent event) {
-        searchTitre.clear();
-        searchProduit.clear();
-        searchCategorie.getSelectionModel().clearSelection();
-        searchLieu.clear();
-        searchDate.setValue(null);
-        searchQuantite.clear();
-        loadCollects();
-    }
-
-    private void updateCards(List<Collect> collects) {
-        cardsContainer.getChildren().clear();
-        collects.forEach(this::createCollectCard);
-    }
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }
