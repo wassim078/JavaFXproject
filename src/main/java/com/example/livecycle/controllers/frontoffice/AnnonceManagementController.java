@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -173,51 +174,43 @@ public class AnnonceManagementController implements Initializable {
     private VBox createAnnonceCard(Annonce annonce) {
         VBox card = new VBox(8);
         card.getStyleClass().add("annonce-card");
-        card.setMaxWidth(200);
-        card.setMinWidth(200);
-        card.setAlignment(Pos.CENTER);
+        card.setMaxWidth(180);  // Reduced from 200
+        card.setMinWidth(180);  // Reduced from 200
+        card.setAlignment(Pos.TOP_CENTER);  // Changed alignment
 
-        // Image et bouton favori
-        StackPane imageStack = new StackPane();
-        ImageView imageView = createImageView(annonce);
-        
-        // Bouton favori
+        // Top bar with buttons
+        HBox topBar = new HBox();
+        topBar.setAlignment(Pos.CENTER_RIGHT);
+        topBar.setPadding(new Insets(0, 5, 5, 0));
+
+        // Cart icon first (left side)
+        StackPane cartIcon = createCartIcon(annonce);
+        HBox.setMargin(cartIcon, new Insets(0, 5, 0, 0));
+
+        // Favorite button
         Button favoriteButton = new Button();
         favoriteButton.getStyleClass().add("favorite-button");
         if (annonce.isFavori()) {
             favoriteButton.getStyleClass().add("active");
         }
-        
-        // Utiliser "★" pour étoile pleine et "☆" pour étoile vide
+
         Text starIcon = new Text(annonce.isFavori() ? "★" : "☆");
         starIcon.getStyleClass().add("icon");
         favoriteButton.setGraphic(starIcon);
-        
-        favoriteButton.setOnAction(e -> {
-            try {
-                boolean success = annonceService.toggleFavori(currentUser.getId(), annonce.getId());
-                if (success) {
-                    annonce.setFavori(!annonce.isFavori());
-                    starIcon.setText(annonce.isFavori() ? "★" : "☆");
-                    favoriteButton.getStyleClass().removeAll("active");
-                    if (annonce.isFavori()) {
-                        favoriteButton.getStyleClass().add("active");
-                    }
-                    // Rafraîchir l'affichage pour mettre les favoris en premier
-                    loadPage(pagination.getCurrentPageIndex());
-                }
-            } catch (SQLException ex) {
-                showError("Error updating favorite status: " + ex.getMessage());
-            }
-        });
-        
-        StackPane.setAlignment(favoriteButton, Pos.TOP_RIGHT);
-        StackPane.setMargin(favoriteButton, new Insets(5));
-        imageStack.getChildren().addAll(imageView, favoriteButton);
+
+        // Add buttons to top bar
+        topBar.getChildren().addAll(cartIcon, favoriteButton);
+
+        // Image
+        ImageView imageView = createImageView(annonce);
+        VBox imageContainer = new VBox(imageView);
+        imageContainer.setAlignment(Pos.CENTER);
+        imageContainer.setPadding(new Insets(5));
 
         // Details
         VBox details = new VBox(5);
         details.getStyleClass().add("detail-section");
+        details.setAlignment(Pos.CENTER);
 
         Text title = new Text(annonce.getTitre());
         title.getStyleClass().add("annonce-title");
@@ -228,16 +221,22 @@ public class AnnonceManagementController implements Initializable {
         Text price = new Text(String.format("%.2f TND", annonce.getPrix()));
         price.getStyleClass().add("price-text");
 
-        Text descriptionPreview = new Text(getPreviewText(annonce.getDescription(), 80));
+        Text descriptionPreview = new Text(getPreviewText(annonce.getDescription(), 60));  // Reduced preview length
         descriptionPreview.getStyleClass().add("description-preview");
 
         details.getChildren().addAll(title, category, price, descriptionPreview);
 
-        // Add all elements
-        card.getChildren().addAll(imageStack, details);
+        // Add all elements to card
+        card.getChildren().addAll(topBar, imageContainer, details);
 
-        // Add click handler
-        card.setOnMouseClicked(e -> showAnnonceDetails(annonce));
+        // Event handlers
+        card.setOnMouseClicked(e -> {
+            // Only show details if the click is not on the cart icon
+            if (!(e.getTarget() instanceof StackPane && ((Node)e.getTarget()).getStyleClass().contains("cart-icon"))) {
+                showAnnonceDetails(annonce);
+            }
+        });
+        favoriteButton.setOnAction(e -> handleFavoriteToggle(annonce, starIcon, favoriteButton));
 
         return card;
     }
@@ -330,28 +329,22 @@ public class AnnonceManagementController implements Initializable {
                 File file = new File(annonce.getImage());
                 if (file.exists()) {
                     Image image = new Image(file.toURI().toString(),
-                            320,  // requested width
-                            200,  // requested height
-                            true, // preserve ratio
-                            true, // smooth filtering
-                            true  // load in background
-                    );
+                            160,  // Reduced width
+                            100,  // Reduced height
+                            true, true, true);
                     imageView.setImage(image);
                 }
             }
         } catch (Exception e) {
             Image defaultImage = new Image(
                     getClass().getResourceAsStream("/images/default-annonce.png"),
-                    320, 200, true, true
-            );
+                    160, 100, true, true);
             imageView.setImage(defaultImage);
         }
 
-        // Force exact dimensions
-        imageView.setFitWidth(320);
-        imageView.setFitHeight(200);
-        imageView.setPreserveRatio(false); // Force exact dimensions
-
+        imageView.setFitWidth(160);  // Reduced from 320
+        imageView.setFitHeight(100); // Reduced from 200
+        imageView.setPreserveRatio(false);
         imageView.getStyleClass().add("annonce-image");
         return imageView;
     }
@@ -381,7 +374,10 @@ public class AnnonceManagementController implements Initializable {
         cartContainer.setVisible(isEnterprise);
 
         if (isEnterprise) {
-            cartContainer.setOnMouseClicked(e -> handleAddToCart(annonce));
+            cartContainer.setOnMouseClicked(e -> {
+                handleAddToCart(annonce);
+                e.consume(); // Prevent event propagation
+            });
         }
         return cartContainer;
     }
@@ -635,5 +631,25 @@ public class AnnonceManagementController implements Initializable {
         
         List<Annonce> pageAnnonces = annonces.subList(fromIndex, toIndex);
         populateGrid(pageAnnonces);
+    }
+
+
+
+
+    private void handleFavoriteToggle(Annonce annonce, Text starIcon, Button favoriteButton) {
+        try {
+            boolean success = annonceService.toggleFavori(currentUser.getId(), annonce.getId());
+            if (success) {
+                annonce.setFavori(!annonce.isFavori());
+                starIcon.setText(annonce.isFavori() ? "★" : "☆");
+                favoriteButton.getStyleClass().removeAll("active");
+                if (annonce.isFavori()) {
+                    favoriteButton.getStyleClass().add("active");
+                }
+                loadPage(pagination.getCurrentPageIndex());
+            }
+        } catch (SQLException ex) {
+            showError("Error updating favorite status: " + ex.getMessage());
+        }
     }
 }

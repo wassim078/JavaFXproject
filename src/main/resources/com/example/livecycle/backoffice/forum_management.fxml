@@ -14,7 +14,7 @@
     <children>
         <VBox layoutX="14.0" layoutY="107.0" prefHeight="300.0" prefWidth="300.0" spacing="15.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="110.0">
             <children>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID" />
+                <!-- <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID" />-->
                 <TextField fx:id="ID" />
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name " />
                 <TextField fx:id="NAME" />
@@ -30,6 +30,12 @@
             </columns>
         </TableView>
         <Label alignment="CENTER" layoutX="221.0" layoutY="29.0" prefHeight="44.0" prefWidth="415.0" styleClass="title" text="Les catégories de Forum" />
+        <!-- Nouveau bouton PDF ici -->
+        <Button fx:id="btnPdf" layoutX="500.0" layoutY="29.0" mnemonicParsing="false"
+                onAction="#generatePdf" text="Générer PDF" />
+        <!-- À côté du bouton PDF -->
+        <Button fx:id="btnQr" layoutX="600.0" layoutY="29.0" mnemonicParsing="false"
+                onAction="#generateQrCode" text="Générer QR Code" />
         <ButtonBar layoutX="214.0" layoutY="431.0" prefHeight="66.0" prefWidth="476.0">
             <buttons>
                 <Button fx:id="btnSave" mnemonicParsing="false" onAction="#createCategory" text="Save" />

@@ -351,3 +351,13 @@
         -fx-max-width: 280px;
     }
 }
+.cart-icon {
+    -fx-background-radius: 15;
+    -fx-background-color: #4CAF50;
+    -fx-padding: 5;
+    -fx-cursor: hand;
+}
+
+.cart-icon:hover {
+    -fx-background-color: #45a049;
+}

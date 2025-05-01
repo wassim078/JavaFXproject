@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.livecycle.controllers.backoffice.AdminForumController"
+      spacing="20"
+      style="-fx-padding: 20; -fx-background-color: #f5f6fa;">
+
+    <!-- Sélection de catégorie -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Catégorie:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cbCategories" prefWidth="300"/>
+    </HBox>
+
+    <!-- Liste des publications -->
+    <Label text="Liste des Publications" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="postsTable" prefHeight="300">
+        <columns>
+            <TableColumn prefWidth="50" text="ID"/>
+            <TableColumn prefWidth="150" text="Titre"/>
+            <TableColumn prefWidth="300" text="Contenu"/>
+            <TableColumn prefWidth="120" text="Date"/>
+            <TableColumn prefWidth="100" text="Actions" fx:id="postActionCol"/>
+        </columns>
+    </TableView>
+
+    <!-- Liste des commentaires -->
+    <Label text="Liste des Commentaires" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="commentsTable" prefHeight="300">
+        <columns>
+            <TableColumn prefWidth="50" text="ID"/>
+            <TableColumn prefWidth="300" text="Contenu"/>
+            <TableColumn prefWidth="120" text="Date"/>
+            <TableColumn prefWidth="100" text="Actions" fx:id="commentActionCol"/>
+        </columns>
+    </TableView>
+
+</VBox>

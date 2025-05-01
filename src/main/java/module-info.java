@@ -18,14 +18,24 @@ module com.example.livecycle {
     requires opencv;
     requires javafx.swing;
     requires itextpdf;
-
     requires okhttp3;
-
     requires twilio;
-
+    requires com.google.zxing.javase;
+    requires org.apache.pdfbox;
+    requires org.apache.fontbox;
+    requires commons.logging;
+    requires com.google.zxing;
+    requires com.google.api.client.extensions.jetty.auth;
+    requires com.google.api.client.extensions.java6.auth;
+    requires com.google.api.client.auth;
+    requires google.api.client;
+    requires com.google.api.client;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.core;
+    requires com.google.api.client.json.gson;
+    requires com.google.api.services.calendar;
 
     opens com.example.livecycle to javafx.fxml;
-
     exports com.example.livecycle;
     exports com.example.livecycle.entities;
     exports com.example.livecycle.controllers.backoffice;
