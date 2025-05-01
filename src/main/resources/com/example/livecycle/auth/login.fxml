@@ -74,13 +74,13 @@
 
 
 
-    <Button fx:id="googleLoginButton" onAction="#handleGoogleLogin" styleClass="google-login-btn">
+    <Button fx:id="googleLoginButton" onAction="#handleGoogleLogin" prefHeight="49.0" prefWidth="183.0" styleClass="google-login-btn">
         <graphic>
             <ImageView fitHeight="24" fitWidth="24">
                 <Image url="@../images/google-icon.png" />
             </ImageView>
         </graphic>
-        <text>Sign in with Google</text>
+        <text>Google</text>
         <VBox.margin>
             <Insets bottom="10" />
         </VBox.margin>
@@ -88,29 +88,25 @@
                         <Insets left="50.0" />
                      </HBox.margin>
     </Button>
+                       <Button fx:id="faceLoginButton" onAction="#handleFaceLogin" styleClass="face-login-btn">
+                           <graphic>
+                               <ImageView fitHeight="24" fitWidth="24">
+                                   <Image url="@../images/face-icon.png" />
+                               </ImageView>
+                           </graphic>
+                           <text>Sign in with Face</text>
+                           <HBox.margin>
+                               <Insets top="2.0" />
+                           </HBox.margin>
+                       </Button>
 
-    <Button fx:id="faceLoginButton" onAction="#handleFaceLogin" styleClass="face-login-btn">
-        <graphic>
-            <ImageView fitHeight="24" fitWidth="24">
-                <Image url="@../images/face-icon.png" />
-            </ImageView>
-        </graphic>
-        <text>Sign in with Face</text>
-        <VBox.margin>
-            <Insets bottom="30" />
-        </VBox.margin>
-                     <HBox.margin>
-                        <Insets top="2.0" />
-                     </HBox.margin>
-    </Button>
                   <VBox.margin>
-                     <Insets bottom="60.0" right="10.0" />
+                     <Insets bottom="60.0" left="42.0" right="10.0" />
                   </VBox.margin>
 
 
 
 </HBox>
-
 
                 </VBox>
             </VBox>

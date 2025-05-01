@@ -1,9 +1,6 @@
 package com.example.livecycle.controllers.backoffice;
 
-import com.example.livecycle.services.AnnonceService;
-import com.example.livecycle.services.CommandeService;
-import com.example.livecycle.services.UserService;
-import com.example.livecycle.services.CategoryAnnonceService;
+import com.example.livecycle.services.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
