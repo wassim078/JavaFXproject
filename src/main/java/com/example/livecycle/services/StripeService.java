@@ -15,6 +15,10 @@ public class StripeService {
     private static final Pattern CVC_REGEX = Pattern.compile("^\\d{3,4}$");
 
     static {
+
+
+
+
         String secretKey = System.getenv("STRIPE_SECRET_KEY");
         if (secretKey == null || secretKey.isBlank()) {
             throw new IllegalStateException("STRIPE_SECRET_KEY environment variable not configured");

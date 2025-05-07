@@ -22,9 +22,7 @@
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
         <TableView fx:id="commandeTableView" prefHeight="450">
             <columns>
-                <TableColumn fx:id="idColumn" text="ID" minWidth="50">
-                    <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
-                </TableColumn>
+
                 <TableColumn fx:id="userEmailColumn" text="Email Utilisateur" prefWidth="200"/>
                 <TableColumn fx:id="clientNameColumn" text="Prénom" prefWidth="150">
                     <cellValueFactory><PropertyValueFactory property="clientName"/></cellValueFactory>

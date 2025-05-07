@@ -16,9 +16,8 @@ module com.example.livecycle {
     requires stripe.java;
     requires java.prefs;
     requires opencv;
-
+    requires twilio;
     requires okhttp3;
-
 
 
     opens com.example.livecycle to javafx.fxml;

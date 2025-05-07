@@ -3,7 +3,8 @@ package com.example.livecycle.controllers.backoffice;
 import com.example.livecycle.entities.Reclamation;
 import com.example.livecycle.entities.User;
 import com.example.livecycle.services.ReclamationDAO;
-import com.example.livecycle.services.WhatsAppService;
+import com.example.livecycle.services.SMSService;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -69,7 +70,8 @@ public class EditComplaintController {
                         "Bonjour %s,\nVotre réclamation \"%s\" a été mise à jour.\nNouveau statut : %s.",
                         userName, currentReclamation.getSujet(), newEtat
                 );
-                WhatsAppService.sendWhatsAppMessage(userPhone, message);
+                SMSService.sendSMS(userPhone, message);
+
             }
 
             parentController.refreshTable();

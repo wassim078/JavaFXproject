@@ -25,7 +25,7 @@
 
         <columns>
             <!-- Colonne ID -->
-            <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+
 
             <TableColumn fx:id="userEmailColumn" text="User Email" prefWidth="180"/>
 

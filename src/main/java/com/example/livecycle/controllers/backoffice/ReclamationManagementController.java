@@ -3,7 +3,8 @@ package com.example.livecycle.controllers.backoffice;
 import com.example.livecycle.services.ReclamationDAO;
 import com.example.livecycle.entities.Reclamation;
 
-import com.example.livecycle.services.WhatsAppService;
+
+import com.example.livecycle.services.SMSService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -71,7 +72,7 @@ public class ReclamationManagementController {
     }
 
     private void configureTableColumns() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         sujetColumn.setCellValueFactory(new PropertyValueFactory<>("sujet"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         etatColumn.setCellValueFactory(new PropertyValueFactory<>("etat"));
@@ -164,7 +165,8 @@ public class ReclamationManagementController {
                     );
 
                     // Envoi du message WhatsApp
-                    WhatsAppService.sendWhatsAppMessage(userPhone, message);
+                    SMSService.sendSMS(userPhone, message);
+
                 } else {
                     System.out.println("Aucun numéro WhatsApp valide.");
                 }

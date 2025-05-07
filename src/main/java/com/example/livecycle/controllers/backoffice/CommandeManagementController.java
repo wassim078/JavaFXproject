@@ -64,7 +64,7 @@ public class CommandeManagementController {
     }
 
     private void setupTableColumns() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
         clientNameColumn.setCellValueFactory(new PropertyValueFactory<>("clientName"));
         clientFamilyNameColumn.setCellValueFactory(new PropertyValueFactory<>("clientFamilyName"));
         methodePaiementColumn.setCellValueFactory(new PropertyValueFactory<>("methodePaiement"));
