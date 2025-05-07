@@ -257,7 +257,12 @@ public class AdminDashboardController implements RefreshableController {
         hideProfileMenu();
     }
 
-
+    public void showAdminForumManagement(ActionEvent event) {
+        closeAllSubmenus();
+        setActiveButton((Button) event.getSource());
+        loadContent("/com/example/livecycle/backoffice/admin_forum_management.fxml");
+        hideProfileMenu();
+    }
 
     @FXML
     private void toggleCategorySubmenu(ActionEvent event) {

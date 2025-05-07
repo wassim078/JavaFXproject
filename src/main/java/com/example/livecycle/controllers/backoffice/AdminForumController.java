@@ -44,7 +44,6 @@ public class AdminForumController implements Initializable {
     private void configureTableColumns() {
         // Configuration des colonnes pour les posts
         postsTable.getColumns().forEach(col -> {
-            if (col.getText().equals("ID")) col.setCellValueFactory(new PropertyValueFactory<>("id"));
             if (col.getText().equals("Titre")) col.setCellValueFactory(new PropertyValueFactory<>("title"));
             if (col.getText().equals("Contenu")) col.setCellValueFactory(new PropertyValueFactory<>("contenu"));
             if (col.getText().equals("Date")) col.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
@@ -52,7 +51,6 @@ public class AdminForumController implements Initializable {
 
         // Configuration des colonnes pour les commentaires
         commentsTable.getColumns().forEach(col -> {
-            if (col.getText().equals("ID")) col.setCellValueFactory(new PropertyValueFactory<>("id"));
             if (col.getText().equals("Contenu")) col.setCellValueFactory(new PropertyValueFactory<>("content"));
             if (col.getText().equals("Date")) col.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         });

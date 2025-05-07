@@ -42,7 +42,6 @@
 
         <TableView fx:id="postsTable" style="-fx-table-header-border-color: transparent;">
             <columns>
-                <TableColumn prefWidth="50" text="ID" style="-fx-alignment: CENTER;"/>
                 <TableColumn prefWidth="200" text="Titre"/>
                 <TableColumn prefWidth="350" text="Contenu"/>
                 <TableColumn prefWidth="120" text="Date" style="-fx-alignment: CENTER;"/>
@@ -83,7 +82,6 @@
 
         <TableView fx:id="commentsTable" style="-fx-table-header-border-color: transparent;">
             <columns>
-                <TableColumn prefWidth="50" text="ID" style="-fx-alignment: CENTER;"/>
                 <TableColumn prefWidth="450" text="Contenu"/>
                 <TableColumn prefWidth="120" text="Date" style="-fx-alignment: CENTER;"/>
                 <TableColumn prefWidth="150" text="Actions" fx:id="commentActionCol" style="-fx-alignment: CENTER;">
