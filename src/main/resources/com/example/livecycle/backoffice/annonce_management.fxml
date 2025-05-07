@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.livecycle.controllers.backoffice.AnnonceManagementController"
-            prefHeight="600" prefWidth="1200"
-            style="-fx-padding: 20;">
+            style="-fx-background-color: white;">
 
-    <TableView fx:id="annoncesTable" layoutX="10" layoutY="10" prefHeight="550" prefWidth="1160">
-        <columns>
-            <!-- ID Column -->
-            <TableColumn text="ID" prefWidth="50" fx:id="idColumn"/>
+    <VBox spacing="20" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" 
+          AnchorPane.leftAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+        
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 20;">
+            <Label text="Announcement Management" 
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+        </HBox>
 
-            <!-- Title Column -->
-            <TableColumn text="Title" prefWidth="150" fx:id="titleColumn"/>
-
-            <!-- Description Column -->
-            <TableColumn text="Description" prefWidth="250" fx:id="descriptionColumn"/>
-
-            <!-- Category Column -->
-            <TableColumn text="Category" prefWidth="120" fx:id="categoryColumn"/>
-
-            <!-- Weight Column -->
-            <TableColumn text="Weight (kg)" prefWidth="80" fx:id="weightColumn"/>
-
-            <!-- Price Column -->
-            <TableColumn text="Price (TND)" prefWidth="80" fx:id="priceColumn"/>
-
-            <!-- Quantity Column -->
-            <TableColumn text="Quantity" prefWidth="80" fx:id="quantityColumn"/>
-
-            <!-- User Email Column -->
-            <TableColumn text="User Email" prefWidth="200" fx:id="userEmailColumn"/>
-
-            <!-- Image Column -->
-            <TableColumn text="Image" prefWidth="200" fx:id="imageColumn"/>
-
-            <!-- Actions Column -->
-            <TableColumn text="Actions" prefWidth="150" fx:id="actionsColumn"/>
-        </columns>
-    </TableView>
-
+        <TableView fx:id="annoncesTable" VBox.vgrow="ALWAYS" 
+                  style="-fx-background-color: white;">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="150"/>
+                <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="120"/>
+                <TableColumn fx:id="weightColumn" text="Weight (kg)" prefWidth="100"/>
+                <TableColumn fx:id="priceColumn" text="Price (TND)" prefWidth="100"/>
+                <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="80"/>
+                <TableColumn fx:id="userEmailColumn" text="User Email" prefWidth="200"/>
+                <TableColumn fx:id="imageColumn" text="Image" prefWidth="150"/>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120"/>
+            </columns>
+            <VBox.margin>
+                <Insets left="20" right="20" bottom="20"/>
+            </VBox.margin>
+        </TableView>
+    </VBox>
 </AnchorPane>

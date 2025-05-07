@@ -1,40 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="866.0" prefWidth="668.0" spacing="20" style="-fx-padding: 25; -fx-background-color: #f5f6fa;" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.frontoffice.ForumController">
+<VBox prefHeight="966.0" prefWidth="859.0" spacing="20" style="-fx-padding: 25; -fx-background-color: #f5f6fa;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.livecycle.controllers.frontoffice.ForumController">
 
-    <!-- Titre de la catégorie -->
-    <Label fx:id="lblCategoryName" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d3436; -fx-padding: 0 0 15 0;" />
+    <!-- Titre de la catégorie avec icône -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <ImageView fitHeight="30" fitWidth="30">
+            <image>
+                <Image url="@../images/forum-icon.png" />
+            </image>
+        </ImageView>
+        <Label fx:id="lblCategoryName" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d3436;" />
+    </HBox>
 
     <!-- Formulaire des publications -->
-    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="txtPostTitle" prefWidth="200" promptText="Titre" style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5; -fx-padding: 8;"/>
-            <TextField fx:id="txtPostContent" prefWidth="400" promptText="Contenu" style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5; -fx-padding: 8;"/>
+    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <TextField fx:id="txtPostTitle" prefWidth="200" promptText="Titre" style="-fx-background-radius: 20; -fx-border-color: #dcdde1; -fx-border-radius: 20; -fx-padding: 10;" />
+            <TextField fx:id="txtPostContent" prefWidth="400" promptText="Écrivez quelque chose..." style="-fx-background-radius: 20; -fx-border-color: #dcdde1; -fx-border-radius: 20; -fx-padding: 10;" />
+        </HBox>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <ComboBox fx:id="cbSourceLang" prefWidth="120" promptText="Langue source" style="-fx-background-radius: 20;" />
+            <ComboBox fx:id="cbTargetLang" prefWidth="120" promptText="Langue cible" style="-fx-background-radius: 20;" />
+            <Button onAction="#translateContent" style="-fx-background-color: transparent; -fx-background-radius: 20;" text="Translate">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20">
+                        <image>
+                            <Image url="@../images/translate-icon.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
 
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <Button fx:id="btnAddPost" onAction="#createPost" text="Ajouter" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
-            <Button fx:id="btnUpdatePost" onAction="#updatePost" text="Modifier" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
-            <Button fx:id="btnDeletePost" onAction="#deletePost" text="Supprimer" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
-            <Button fx:id="btnClearPost" onAction="#clearPost" text="Vider" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button fx:id="btnAddPost" onAction="#createPost" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/add-icon.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Publier</text>
+            </Button>
+            <Button fx:id="btnUpdatePost" onAction="#updatePost" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/edit.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Modifier</text>
+            </Button>
+            <Button fx:id="btnDeletePost" onAction="#deletePost" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/delete.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Supprimer</text>
+            </Button>
+            <Button fx:id="btnClearPost" onAction="#clearPost" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/close.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Effacer</text>
+            </Button>
         </HBox>
 
         <Label fx:id="lblPostId" visible="false" />
     </VBox>
 
     <!-- Table des publications -->
-    <TableView fx:id="tablePosts" onMouseClicked="#selectPost" prefHeight="310.0" prefWidth="580.0" style="-fx-background-radius: 10; -fx-border-color: transparent;">
+    <TableView fx:id="tablePosts" onMouseClicked="#selectPost" prefHeight="536.0" prefWidth="810.0" style="-fx-background-radius: 15; -fx-border-color: transparent; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
         <columns>
-            <TableColumn fx:id="colId" prefWidth="50" text="ID" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colId" prefWidth="50" style="-fx-alignment: CENTER;" text="ID" />
             <TableColumn fx:id="colTitle" prefWidth="120" text="Titre" />
             <TableColumn fx:id="colContenu" prefWidth="260" text="Contenu" />
-            <TableColumn fx:id="colCreatedAt" prefWidth="120" text="Date" style="-fx-alignment: CENTER;"/>
-            <TableColumn fx:id="colRating" prefWidth="80" text="Rating" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colCreatedAt" prefWidth="120" style="-fx-alignment: CENTER;" text="Date" />
+            <TableColumn fx:id="colRating" prefWidth="80" style="-fx-alignment: CENTER;" text="⭐" />
+            <TableColumn fx:id="colShare" prefWidth="100" style="-fx-alignment: CENTER;" text="🔗">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/share-icon.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </TableColumn>
         </columns>
         <style>
             -fx-font-size: 14px;
@@ -50,41 +121,111 @@
             -fx-background-color: #2196F3;
             -fx-text-fill: white;
             -fx-font-weight: bold;
+            -fx-background-radius: 15 15 0 0;
             }
         </style>
     </TableView>
-
-    <Button alignment="CENTER" contentDisplay="CENTER" onAction="#ratePost" text="Rating"
-            style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 20;"/>
+    <!-- Bouton Rating aligné à gauche -->
+    <HBox alignment="CENTER_LEFT">
+        <Button onAction="#ratePost" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
+            <graphic>
+                <ImageView fitHeight="16" fitWidth="16">
+                    <image>
+                        <Image url="@../images/star-icon.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <text>Noter</text>
+        </Button>
+    </HBox>
+    <!--    <HBox alignment="CENTER" spacing="5">-->
+    <!--        <ImageView fitHeight="16" fitWidth="16">-->
+    <!--            <image>-->
+    <!--                <Image url="@../images/star-filled.png" />-->
+    <!--            </image>-->
+    <!--        </ImageView>-->
+    <!--        <ImageView fitHeight="16" fitWidth="16">-->
+    <!--            <image>-->
+    <!--                <Image url="@../images/star-filled.png" />-->
+    <!--            </image>-->
+    <!--        </ImageView>-->
+    <!--        <ImageView fitHeight="16" fitWidth="16">-->
+    <!--            <image>-->
+    <!--                <Image url="@../images/star-filled.png" />-->
+    <!--            </image>-->
+    <!--        </ImageView>-->
+    <!--        <ImageView fitHeight="16" fitWidth="16">-->
+    <!--            <image>-->
+    <!--                <Image url="@../images/star-empty.png" />-->
+    <!--            </image>-->
+    <!--        </ImageView>-->
+    <!--    </HBox>-->
 
     <!-- Section Commentaires -->
-    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-        <Label text="Commentaires" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2d3436;"/>
+    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+        <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="738.0" spacing="10">
+            <ImageView fitHeight="20" fitWidth="20">
+                <image>
+                    <Image url="@../images/comment.png" />
+                </image>
+            </ImageView>
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2d3436;" text="Commentaires" />
+        </HBox>
 
         <!-- Zone d'ajout commentaire -->
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <TextField fx:id="txtComment" prefWidth="400" promptText="Écrire un commentaire..."
-                       style="-fx-background-radius: 5; -fx-border-color: #dcdde1; -fx-border-radius: 5; -fx-padding: 8;"/>
-            <Button fx:id="btnAddComment" onAction="#createComment" text="Ajouter"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
-            <Button fx:id="btnDeleteComment" onAction="#deleteComment" text="Supprimer"
-                    style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <TextField fx:id="txtComment" prefWidth="400" promptText="Écrire un commentaire..." style="-fx-background-radius: 20; -fx-border-color: #dcdde1; -fx-border-radius: 20; -fx-padding: 10;" />
+            <Button fx:id="btnAddComment" onAction="#createComment" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/send.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Envoyer</text>
+            </Button>
+            <Button fx:id="btnDeleteComment" onAction="#deleteComment" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 15;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/delete.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Supprimer</text>
+            </Button>
+        </HBox>
+
+        <!-- Traduction des commentaires -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <ComboBox fx:id="cbCommentTargetLang" prefWidth="120" promptText="Langue cible" style="-fx-background-radius: 20;" />
+            <Button onAction="#translateComment" style="-fx-background-color: transparent; -fx-background-radius: 20;" text="Translate">
+                <graphic>
+                    <ImageView fitHeight="20" fitWidth="20">
+                        <image>
+                            <Image url="@../images/translate-icon.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
 
         <!-- Table des commentaires -->
-        <TableView fx:id="tableComments" prefHeight="200" style="-fx-font-size: 14px; -fx-background-radius: 10;">
+        <TableView fx:id="tableComments" prefHeight="343.0" prefWidth="770.0" style="-fx-font-size: 14px; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
             <columns>
-                <TableColumn fx:id="colCommentId" prefWidth="50" text="ID" style="-fx-alignment: CENTER;"/>
+                <TableColumn fx:id="colCommentId" prefWidth="50" style="-fx-alignment: CENTER;" text="ID" />
                 <TableColumn fx:id="colCommentContent" prefWidth="300" text="Contenu" />
-                <TableColumn fx:id="colCommentDate" prefWidth="120" text="Date" style="-fx-alignment: CENTER;"/>
-                <TableColumn fx:id="colLikes" prefWidth="70" text="Likes" style="-fx-alignment: CENTER;"/>
-                <TableColumn fx:id="colDislikes" prefWidth="70" text="Dislikes" style="-fx-alignment: CENTER;"/>
+                <TableColumn fx:id="colCommentDate" prefWidth="120" style="-fx-alignment: CENTER;" text="Date" />
+                <TableColumn fx:id="colLikes" prefWidth="70" style="-fx-alignment: CENTER;" text="👍" />
+                <TableColumn fx:id="colDislikes" prefWidth="70" style="-fx-alignment: CENTER;" text="👎" />
             </columns>
             <style>
                 .column-header {
                 -fx-background-color: #4CAF50;
                 -fx-text-fill: white;
                 -fx-font-weight: bold;
+                -fx-background-radius: 15 15 0 0;
                 }
                 .table-row-cell:filled:selected {
                 -fx-background-color: #e8f5e9;
@@ -93,11 +234,27 @@
         </TableView>
 
         <!-- Boutons Like/Dislike -->
-        <HBox spacing="15">
-            <Button onAction="#likeComment" text="Like"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 20;"/>
-            <Button onAction="#dislikeComment" text="Dislike"
-                    style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 20;"/>
+        <HBox prefHeight="150.0" prefWidth="770.0" spacing="15">
+            <Button onAction="#likeComment" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/like-icon.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Like</text>
+            </Button>
+            <Button onAction="#dislikeComment" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <image>
+                            <Image url="@../images/dislike-icon.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <text>Dislike</text>
+            </Button>
         </HBox>
     </VBox>
 

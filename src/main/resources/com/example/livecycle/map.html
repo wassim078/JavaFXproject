@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #map {
+            height: 100vh;
+            width: 100vw;
+            background: #f0f0f0;
+        }
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            color: #2d6b4d;
+            font-family: Arial;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="loader" id="loader">Loading map...</div>
+<div id="map"></div>
+
+<script>
+    const loader = document.getElementById('loader');
+    let map;
+
+    try {
+        mapboxgl.accessToken = 'pk.eyJ1IjoibW91aGliOSIsImEiOiJjbWEydHR6c2wxZHFsMmpzaDA4d2Q1aGVtIn0.6fc-Ci93X-s9PycfhiWaPw';
+
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [-6.0, 34.0],
+            zoom: 10
+        });
+
+        // Success handler
+        map.on('load', () => {
+            loader.style.display = 'none';
+            if (window.javaConnector) {
+                window.javaConnector.mapLoaded();
+            }
+        });
+
+        // Error handler
+        map.on('error', (e) => {
+            loader.innerHTML = `Map Error: ${e.error.message}`;
+            console.error('Map Error:', e.error);
+            if (window.javaConnector) {
+                window.javaConnector.reportError(e.error.message);
+            }
+        });
+
+    } catch (e) {
+        loader.innerHTML = `Fatal Error: ${e.message}`;
+        console.error("Init Error:", e);
+        if (window.javaConnector) {
+            window.javaConnector.reportError(e.message);
+        }
+    }
+</script>
+</body>
+</html>

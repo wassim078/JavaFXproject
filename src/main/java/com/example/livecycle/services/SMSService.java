@@ -7,7 +7,7 @@ import com.twilio.type.PhoneNumber;
 public class SMSService {
 
     private static final String ACCOUNT_SID = System.getenv("ACCOUNT_SID1");
-    private static final String AUTH_TOKEN = System.getenv("AUTH_TOKEN1");   
+    private static final String AUTH_TOKEN = System.getenv("AUTH_TOKEN1");
     private static final String FROM_NUMBER = System.getenv("FROM_NUMBER1");                         // Numéro Twilio validé
 
     // Initialisation statique de Twilio

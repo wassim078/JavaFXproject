@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.livecycle.controllers.backoffice.CategorieForumController">
+    <top>
+        <HBox spacing="10" style="-fx-background-color: #f4f4f4; -fx-padding: 10;">
+            <Button text="Create Category" onAction="#handleCreateCategory"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        </HBox>
+    </top>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.livecycle.controllers.backoffice.CategoryForumController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+    <center>
+        <TableView fx:id="categoriesTable">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50">
+                    <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colName" text="Name" prefWidth="200">
+                    <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colDesc" text="Description" prefWidth="400">
+                    <cellValueFactory><PropertyValueFactory property="description"/></cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="150">
+                </TableColumn>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>
