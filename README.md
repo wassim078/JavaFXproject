@@ -1,4 +1,10 @@
 
+ 🌍 Présentation Générale
+
+LiveCycle is an innovative JavaFX application designed for intelligent waste management and recycling. This comprehensive platform integrates modern features
+
+📚 Project Structure
+
 livecycle/
 ├── src/
 │   ├── main/
@@ -106,89 +112,92 @@ livecycle/
 ├── pom.xml
 └── module-info.java
 
-🛠️ Technology Stack
-Core Technologies
-JavaFX 17 - GUI framework
-Maven - Build and dependency management
-Java 17 - Programming language
-
-Database
-MySQL - Database management system
-JDBC - Database connectivity
-
-Security
-JBCrypt - Password hashing
-Face Authentication - Biometric security
-Twilio - SMS verification
-
-UI Components
-Ikonli - Icon library (FontAwesome, Material Design)
-JavaFX WebView - Embedded web content
-
-External Services
-Stripe - Payment processing
-Google Calendar API - Event management
-Twilio - SMS services
-OkHttp - HTTP client
-JavaMail - Email services
-
-Utilities
-Gson - JSON processing
-iTextPDF - PDF generation
-ZXing - Barcode generation
-PDFBox - PDF manipulation
-OpenCV - Computer vision (for face auth)
-
 📋 Key Features
 
 Authentication System
-Face authentication
-Traditional login/registration
-Password reset via email/SMS
-Secure password hashing
+   Face authentication
+   Traditional login/registration
+   Password reset via email/SMS
+   Secure password hashing
 
 Backoffice (Admin) Features
-Dashboard with analytics
-Announcement management
-Forum management
-Category management
-Collection management
-Order management
-Complaint management
-User management
+   Dashboard with analytics
+   Announcement management
+   Forum management
+   Category management
+   Collection management
+   Order management
+   Complaint management
+   User management
 
 Frontoffice (User) Features
-Announcement browsing/creation
-Forum participation
-Shopping cart
-Checkout and payment
-Order tracking
-Complaint submission
-Profile management
-Calendar integration
-WhatsApp integration
-Chatbot
+   Announcement browsing/creation
+   Forum participation
+   Shopping cart
+   Checkout and payment
+   Order tracking
+   Complaint submission
+   Profile management
+   Calendar integration
+   WhatsApp integration
+   Chatbot
 
 Utility Features
-PDF generation
-Barcode generation
-Email notifications
-SMS notifications
-Payment processing
+   PDF generation
+   Barcode generation
+   Email notifications
+   SMS notifications
+   Payment processing
+
+🛠️ Technology Stack
+
+Core Technologies
+  JavaFX 17 - GUI framework
+  Maven - Build and dependency management
+  Java 17 - Programming language
+
+Database
+  MySQL - Database management system
+  JDBC - Database connectivity
+
+Security
+  JBCrypt - Password hashing
+  Face Authentication - Biometric security
+  Twilio - SMS verification
+
+UI Components
+  Ikonli - Icon library (FontAwesome, Material Design)
+  JavaFX WebView - Embedded web content
+
+External Services
+  Stripe - Payment processing
+  Google Calendar API - Event management
+  Twilio - SMS services
+  OkHttp - HTTP client
+  JavaMail - Email services
+
+Utilities
+  Gson - JSON processing
+  iTextPDF - PDF generation
+  ZXing - Barcode generation
+  PDFBox - PDF manipulation
+  OpenCV - Computer vision (for face auth)
 
 🚀 Getting Started
+
 Prerequisites
-Java 17 JDK
-Maven 3.6+
-MySQL 8.0+
+  Java 17 JDK
+  Maven 3.6+
+  MySQL 8.0+
 
 Installation
-Clone the repository
-Configure MySQL database connection in your application
-Build the project:
+  Clone the repository
+  Configure MySQL database connection in your application
+  Build the project:
 mvn clean install
-Run the application:
+  Run the application:
 mvn javafx:run
+
 🔧 Configuration
 Database Setup
 Configure your MySQL connection in the appropriate service class (likely UserService or similar).
@@ -198,4 +207,32 @@ Set up API keys for:
 Stripe (payment processing)
 Twilio (SMS services)
 Google Calendar API
+
+ 📊 Dashboard Features
+User Authentication: Maintains admin session with profile persistence
+Session Handling: Automatic session save on window close
+Profile Display: Shows admin name and profile picture
+Secure Logout: Proper session cleanup on logout
+
+🧩 Maven Dependencies (pom.xml)
+
+The project includes a comprehensive set of dependencies covering:
+JavaFX components
+Database connectivity
+Security
+External services (Stripe, Twilio, Google)
+PDF generation and manipulation
+UI enhancements (icons, fonts)
+Utility libraries (JSON, HTTP, etc.)
+
+🤝 Contributing
+Fork the repository
+Create your feature branch (git checkout -b feature/amazing-feature)
+Commit your changes (git commit -m 'Add some amazing feature')
+Push to the branch (git push origin feature/amazing-feature)
+Open a Pull Request
+
+📜 License
+
+This project is licensed under the MIT License.
 
