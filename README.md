@@ -254,40 +254,8 @@ Création de points de collecte
 Planification de collectes
 Visualisation des points de collecte sur une carte
 
-Module Administration
 
-Tableau de bord administrateur
-Gestion des utilisateurs
-Statistiques et rapports
-Modération du contenu
 
-Structure du Projet
-L'application suit une architecture MVC (Modèle-Vue-Contrôleur):
-livecycle/
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── example/
-│       │           └── livecycle/
-│       │               ├── controllers/
-│       │               │   ├── auth/
-│       │               │   ├── backoffice/
-│       │               │   └── frontoffice/
-│       │               ├── entities/
-│       │               ├── services/
-│       │               └── utils/
-│       └── resources/
-│           └── com/
-│               └── example/
-│                   └── livecycle/
-│                       ├── auth/
-│                       ├── backoffice/
-│                       ├── css/
-│                       ├── frontoffice/
-│                       ├── html/
-│                       └── images/
-└── pom.xml
 Technologies Utilisées
 
 JavaFX: Framework GUI pour l'interface utilisateur
