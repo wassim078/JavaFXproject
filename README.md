@@ -1,39 +1,5 @@
-**🌱 LiveCycle - Plateforme de Recyclage**
-Description du Projet
-LiveCycle est une application de recyclage développée avec JavaFX qui met en relation les vendeurs (particuliers) et les acheteurs (entreprises de recyclage). Ce projet a été développé dans le cadre d'un projet académique à Esprit School of Engineering.
-Le projet vise à promouvoir les Objectifs de Développement Durable (ODD) liés à la consommation responsable en:
+# 🌱 LiveCycle - Plateforme de Recyclage
 
-Réduisant les déchets par la réutilisation de produits recyclables
-Créant de nouveaux emplois dans l'économie circulaire
-Favorisant une culture de recyclage et de consommation durable
-
-**Table des Matières
-**
-Installation
-Fonctionnalités
-Structure du Projet
-Technologies Utilisées
-APIs Intégrées
-Modules
-Contribution
-License
-
-Installation
-
-Clonez le repository:
-bashgit clone https://github.com/votre-nom/livecycle.git
-cd livecycle
-
-Assurez-vous d'avoir installé:
-
-Java JDK 17 ou supérieur
-Maven 3.8 ou supérieur
-MySQL 8.0
-
-
-Configurez la base deLiveCycle est une application de recyclage développée avec JavaFX qui met en relation les vendeurs (particuliers) et les acheteurs (entreprises de recyclage). Ce projet a été développé dans le cadre d'un projet académique à [Esprit School of Engineering](https://esprit.tn/).
-
-Le proje# 🌱 LiveCycle - Plateforme de Recyclage
 
 ## 📝 Description du Projet
 
